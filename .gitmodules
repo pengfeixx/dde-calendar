@@ -1,0 +1,3 @@
+[submodule "schedule-plugin"]
+	path = schedule-plugin
+	url = git@gitlabnj.uniontech.com:chenhaifeng/schedule-plugin.git
