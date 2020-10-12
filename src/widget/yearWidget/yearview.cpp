@@ -97,15 +97,6 @@ CYearView::CYearView(QWidget *parent)
     createYearSchceduleView(parent);
 }
 
-void CYearView::updateInfoWIndow(bool flag)
-{
-    if (flag) {
-        m_Scheduleview->show(0, 0);
-    } else {
-        m_Scheduleview->hide();
-    }
-}
-
 void CYearView::slotupdateSchedule(const int id)
 {
     setCurrentDate(m_currentDate, id);

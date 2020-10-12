@@ -44,7 +44,7 @@ public:
      * @brief CMonthWindow 构造函数
      * @param parent 父类
      */
-    CMonthWindow(QWidget *parent = nullptr);
+    explicit CMonthWindow(QWidget *parent = nullptr);
     /**
       * @brief ~CMonthWindow 析构函数
       */

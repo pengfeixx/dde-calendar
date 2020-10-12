@@ -334,11 +334,6 @@ void CWeekWindow::clearSearch()
 {
 }
 
-void CWeekWindow::setSearchText(QString str)
-{
-    m_searchText = str;
-}
-
 void CWeekWindow::updateHigh()
 {
     m_scheduleView->updateHigh();

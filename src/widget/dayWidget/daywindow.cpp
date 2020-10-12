@@ -122,11 +122,6 @@ void CDayWindow::clearSearch()
 {
 }
 
-void CDayWindow::setSearchText(QString str)
-{
-    m_searchText = str;
-}
-
 void CDayWindow::setLunarVisible(bool state)
 {
     m_LunarLabel->setVisible(state);

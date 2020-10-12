@@ -117,11 +117,6 @@ public slots:
      */
     void slotSchceduleUpdate();
     /**
-     * @brief slotUpdateUI
-     * @param type
-     */
-    void slotUpdateUI(int type);
-    /**
      * @brief setSelectSchedule 设置选择的日程
      * @param scheduleInfo 日程信息
      */

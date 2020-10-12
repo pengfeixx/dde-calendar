@@ -45,7 +45,7 @@ class CYearWindow: public QMainWindow
 {
     Q_OBJECT
 public:
-    CYearWindow(QWidget *parent = nullptr);
+    explicit CYearWindow(QWidget *parent = nullptr);
     ~CYearWindow() override;
     /**
      * @brief setDate 设置年视图当前显示的时间
@@ -79,11 +79,6 @@ public:
      * @brief clearSearch
      */
     void clearSearch();
-    /**
-     * @brief setSearchText
-     * @param str
-     */
-    void setSearchText(QString str);
     /**
      * @brief getScheduleInfo 判断一年中每一天是否有日程信息
      */

@@ -272,13 +272,6 @@ void CDayMonthView::setCurrentDate(const QDate date, int type)
     updateCurrentLunar();
 }
 
-void CDayMonthView::setCellSelectable(bool selectable)
-{
-    if (selectable == m_cellSelectable)
-        return;
-    m_cellSelectable = selectable;
-}
-
 int CDayMonthView::getDateIndex(const QDate &date) const
 {
     for (int i = 0; i != DDEDayCalendar::PainterCellNum; ++i)

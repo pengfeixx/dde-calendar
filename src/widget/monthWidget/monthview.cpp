@@ -109,16 +109,6 @@ void CMonthView::slotSchceduleUpdate()
     emit signalsupdatescheduleD(this, m_days[0], m_days[41]);
 }
 
-void CMonthView::slotUpdateUI(int type)
-{
-    if (type == 0) {
-        m_sflag = false;
-    } else {
-        m_sflag = true;
-        slotSchceduleUpdate();
-    }
-}
-
 void CMonthView::setSelectSchedule(const ScheduleDtailInfo &scheduleInfo)
 {
     m_MonthGraphicsView->setSelectSchedule(scheduleInfo);

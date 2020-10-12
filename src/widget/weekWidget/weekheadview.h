@@ -154,11 +154,6 @@ public slots:
      */
     void setLunarVisible(bool visible);
     /**
-     * @brief setLunarFestivalHighlight
-     * @param highlight
-     */
-    void setLunarFestivalHighlight(bool highlight);
-    /**
      * @brief setCellSelectable
      * @param selectable
      */

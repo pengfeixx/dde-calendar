@@ -36,7 +36,6 @@ public:
     void setCurrentDate(const QDate date);
     void setRCurrentDate(const QDate date);
     void setTheMe(int type = 0);
-    void setwindowFixw(int w, int rw);
     void setsearchfalg(bool flag);
 signals:
     void signalsSelectDate(QDate date);

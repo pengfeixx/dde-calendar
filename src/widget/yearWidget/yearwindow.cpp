@@ -339,11 +339,6 @@ void CYearWindow::clearSearch()
 {
 }
 
-void CYearWindow::setSearchText(QString str)
-{
-    m_searchText = str;
-}
-
 void CYearWindow::getScheduleInfo()
 {
     m_YearWidget->getInfoAndSetLineFlag();

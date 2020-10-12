@@ -242,20 +242,6 @@ void CWeekHeadView::setLunarVisible(bool visible)
     update();
 }
 
-void CWeekHeadView::setLunarFestivalHighlight(bool highlight)
-{
-    highlight = true;
-    int state = int(m_showState);
-
-    if (highlight)
-        state |= ShowLunarFestivalHighlight;
-    else
-        state &= ~ShowLunarFestivalHighlight;
-
-    m_showState = ShowState(state);
-    update();
-}
-
 void CWeekHeadView::setCellSelectable(bool selectable)
 {
     if (selectable == m_cellSelectable)

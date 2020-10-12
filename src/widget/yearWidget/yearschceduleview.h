@@ -40,7 +40,7 @@ public:
      * @brief CYearSchceduleView 构造函数
      * @param parent 父类
      */
-    CYearSchceduleView(QWidget *parent = nullptr);
+    explicit CYearSchceduleView(QWidget *parent = nullptr);
     /**
       * @brief ~CYearSchceduleView 析构函数
       */

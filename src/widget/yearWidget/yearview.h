@@ -127,11 +127,6 @@ public slots:
      */
     void setCellSelectable(bool selectable);
     /**
-     * @brief updateInfoWIndow
-     * @param flag
-     */
-    void updateInfoWIndow(bool flag);
-    /**
      * @brief slotupdateSchedule 设置当前时间
      * @param id
      */
@@ -225,7 +220,7 @@ public:
      * @brief CYearMonthView 构造函数
      * @param parent 父类
      */
-    CYearMonthView(DWidget *parent = nullptr);
+    explicit CYearMonthView(DWidget *parent = nullptr);
     /**
       *@brief ~CYearMonthView 析构函数
       */
