@@ -101,10 +101,7 @@ void CWeekWindow::initUI()
     todayfont.setPixelSize(DDECalendar::FontSizeFourteen);
     m_today->setFont(todayfont);
     m_today->setPalette(todaypa);
-    m_prevButton = new DIconButton(DStyle::SP_ArrowLeft, this);
-    m_prevButton->setFixedSize(36, 36);
-    m_nextButton = new DIconButton(DStyle::SP_ArrowRight, this);
-    m_nextButton->setFixedSize(36, 36);
+    //新建年份label
     m_YearLabel = new QLabel();
     m_YearLabel->setFixedHeight(DDEWeekCalendar::W_YLableHeight);
 
@@ -164,9 +161,9 @@ void CWeekWindow::initUI()
     QHBoxLayout *todaylayout = new QHBoxLayout;
     todaylayout->setMargin(0);
     todaylayout->setSpacing(0);
-    todaylayout->addWidget(m_prevButton);
+    //将显示周数的view加入布局
     todaylayout->addWidget(m_weekview);
-    todaylayout->addWidget(m_nextButton);
+    //设置布局
     m_todayframe->setLayout(todaylayout);
 
     yeartitleLayout->addWidget(m_todayframe, 0, Qt::AlignCenter);
@@ -211,9 +208,11 @@ void CWeekWindow::initUI()
 
 void CWeekWindow::initConnection()
 {
-    connect(m_prevButton, &DIconButton::clicked, this, &CWeekWindow::slotprev);
     connect(m_today, &CTodyButton::clicked, this, &CWeekWindow::slottoday);
-    connect(m_nextButton, &DIconButton::clicked, this, &CWeekWindow::slotnext);
+    //周数信息区域前按钮点击事件关联触发前一周
+    connect(m_weekview, &CWeekView::signalBtnPrev, this, &CWeekWindow::slotprev);
+    //周数信息区域后按钮点击事件关联触发后一周
+    connect(m_weekview, &CWeekView::signalBtnNext, this, &CWeekWindow::slotnext);
     connect(m_weekview, &CWeekView::signalsSelectDate, this, &CWeekWindow::slotCurrentWeek);
     connect(m_weekHeadView, &CWeekHeadView::signalcurrentLunarDateChanged, this, &CWeekWindow::slotcurrentDateLunarChanged);
     connect(m_weekHeadView, &CWeekHeadView::signalcurrentDateChanged, this, &CWeekWindow::slotcurrentDateChanged);
@@ -223,6 +222,10 @@ void CWeekWindow::initConnection()
     connect(m_weekHeadView, &CWeekHeadView::signalsViewSelectDate, this, &CWeekWindow::signalsViewSelectDate);
     connect(m_weekHeadView, &CWeekHeadView::signaleSchedulHide, this, &CWeekWindow::slotScheduleHide);
     connect(m_weekview,&CWeekView::signalIsDragging,this,&CWeekWindow::slotIsDragging);
+    //日程信息区域滚动信号关联
+    connect(m_scheduleView,&CScheduleView::signalAngleDelta,this,&CWeekWindow::slotAngleDelta);
+    //每周信息区域滚动信号关联
+    connect(m_weekHeadView,&CWeekHeadView::signalAngleDelta,this,&CWeekWindow::slotAngleDelta);
 }
 
 void CWeekWindow::setTheMe(int type)
@@ -249,14 +252,7 @@ void CWeekWindow::setTheMe(int type)
         m_today->setBColor("#FFFFFF", todayhover, todaypress, "#FFFFFF", todayhover, todaypress);
         m_today->setTColor(todayColor, "#001A2E", "#0081FF");
         m_today->setshadowColor(sbcolor);
-
-        DPalette prevpa = m_prevButton->palette();
-        prevpa.setColor(DPalette::Dark, QColor("#E6E6E6"));
-        prevpa.setColor(DPalette::Light, QColor("#E3E3E3"));
-
-        DPalette nextvpa = m_nextButton->palette();
-        nextvpa.setColor(DPalette::Dark, QColor("#E6E6E6"));
-        nextvpa.setColor(DPalette::Light, QColor("#E3E3E3"));
+        //返回今天按钮的背景色
         m_todayframe->setBColor(Qt::white);
         DPalette pa = m_YearLabel->palette();
         pa.setColor(DPalette::WindowText, QColor("#3B3B3B"));
@@ -289,14 +285,7 @@ void CWeekWindow::setTheMe(int type)
         m_today->setBColor("#484848", "#727272", "#242424", "#414141", "#535353", "#282828");
         m_today->setTColor(todayColor, "#FFFFFF", "#0081FF");
         m_today->setshadowColor(sbcolor);
-
-        DPalette prevpa = m_prevButton->palette();
-        prevpa.setColor(DPalette::Dark, QColor("#484848"));
-        prevpa.setColor(DPalette::Light, QColor("#414141"));
-
-        DPalette nextvpa = m_nextButton->palette();
-        nextvpa.setColor(DPalette::Dark, QColor("#484848"));
-        nextvpa.setColor(DPalette::Light, QColor("#414141"));
+        //设置返回今天按钮的背景色
         QColor bcolor = "#FFFFFF";
         bcolor.setAlphaF(0.05);
         m_todayframe->setBColor(bcolor);
@@ -456,6 +445,20 @@ void CWeekWindow::slotsearchDateSelect(QDate date)
     slotupdateSchedule();
 }
 
+void CWeekWindow::slotAngleDelta(int delta)
+{
+    //如果为拖拽状态则退出
+    if(!m_scheduleView->IsDragging()){
+        if(delta>0){
+            slotprev();
+        }else if(delta < 0 ){
+            slotnext();
+        }
+    }
+}
+/**
+ * @brief slotScheduleHide 隐藏日程浮框
+ */
 void CWeekWindow::slotScheduleHide()
 {
     m_scheduleView->slotScheduleShow(false);
@@ -477,10 +480,11 @@ void CWeekWindow::resizeEvent(QResizeEvent *event)
         m_tmainLayout->setContentsMargins(0, 0, 10, 0);
     }
 
+    //添加2个按钮的宽度 36+36。原来m_weekview 不包含前后按钮
     if (!m_searchfalg) {
-        m_weekview->setFixedSize(qRound(dw), dh);
+        m_weekview->setFixedSize(qRound(dw + 72), dh);
     } else {
-        m_weekview->setFixedSize(qRound(dw - 100), dh);
+        m_weekview->setFixedSize(qRound(dw - 100 + 72), dh);
     }
 
     m_weekHeadView->setMounthLabelWidth(qRound(sleftMagin + 1), qRound(width() * 0.9802 + 0.5));

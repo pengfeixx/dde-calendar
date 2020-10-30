@@ -24,9 +24,6 @@
 #include "calendardbus.h"
 
 #include <DFrame>
-#include <DIconButton>
-#include <DImageButton>
-#include <DPushButton>
 #include <DMainWindow>
 
 #include <QWidget>
@@ -211,6 +208,11 @@ private slots:
      * @param date 日期
      */
     void slotsearchDateSelect(QDate date);
+    /**
+     * @brief slotAngleDelta    接受处理滚动相对量
+     * @param delta 滚动相对量
+     */
+    void slotAngleDelta(int delta);
 protected:
     /**
      * @brief resizeEvent 调整周视图窗口
@@ -225,8 +227,6 @@ protected:
 private:
     CWeekHeadView *m_weekHeadView = nullptr; //周视图头
     DFrame *m_contentBackground = nullptr;
-    DIconButton *m_prevButton = nullptr;
-    DIconButton *m_nextButton = nullptr;
     CTodyButton       *m_today = nullptr;
     QDate              m_currentdate;
     QLabel *m_YearLabel = nullptr;
