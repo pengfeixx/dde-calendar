@@ -92,11 +92,6 @@ public slots:
      * @param date 日期
      */
     void slotsearchDateSelect(QDate date);
-protected:
-    /**
-     * @brief wheelEvent 鼠标滚轮事件
-     */
-    void wheelEvent(QWheelEvent *) override;
 private:
     /**
      * @brief initUI 初始化界面

@@ -184,20 +184,6 @@ void CMonthWindow::clearSearch()
 {
 }
 
-void CMonthWindow::wheelEvent(QWheelEvent *e)
-{
-    //拖拽时禁用
-    if (!m_monthView->isDragging()) {
-        QPoint numDegrees = e->angleDelta();
-
-        if (numDegrees.y()>0) {
-            nextMonth();
-        } else {
-            previousMonth();
-        }
-    }
-}
-
 /**
  * @brief initUI 初始化界面
  */
@@ -313,6 +299,8 @@ void CMonthWindow::initConnection()
     connect(m_monthView, &CMonthView::signalViewtransparentFrame, this, &CMonthWindow::signalViewtransparentFrame);
     connect(m_monthView, &CMonthView::signalsViewSelectDate, this, &CMonthWindow::signalsViewSelectDate);
     connect(m_monthView,&CMonthView::signalAngleDelta,this,&CMonthWindow::slotAngleDelta);
+    //月份控件区域左右滚动信号关联
+    connect(m_monthDayView,&CMonthDayView::signalAngleDelta,this,&CMonthWindow::slotAngleDelta);
 }
 
 void CMonthWindow::initLunar()

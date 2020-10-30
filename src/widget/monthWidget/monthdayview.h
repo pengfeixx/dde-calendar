@@ -37,9 +37,16 @@ public:
     void setRCurrentDate(const QDate date);
     void setTheMe(int type = 0);
     void setsearchfalg(bool flag);
+protected:
+    void wheelEvent(QWheelEvent *e) override;
 signals:
     void signalsSelectDate(QDate date);
     void signalsCurrentDate(QDate date);
+    /**
+     * @brief signalAngleDelta      发送滚动信号滚动相对量
+     * @param delta     滚动相对量
+     */
+    void signalAngleDelta(int delta);
 private:
     CMonthWidget *m_monthWidget = nullptr;
     QDate                       m_selectDate;
