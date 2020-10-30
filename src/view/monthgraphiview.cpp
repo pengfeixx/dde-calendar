@@ -435,7 +435,10 @@ void CMonthGraphiview::changeEvent(QEvent *event)
 
 void CMonthGraphiview::wheelEvent(QWheelEvent *e)
 {
-    Q_UNUSED(e);
+    //如果滚动为上下则发送信号
+    if(e->orientation() ==Qt::Orientation::Vertical){
+        emit signalAngleDelta(e->angleDelta().y());
+    }
 }
 
 void CMonthGraphiview::setDragPixmap(QDrag *drag, DragInfoItem *item)

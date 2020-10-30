@@ -89,6 +89,11 @@ signals:
     void signalFontChange();
     void signalsViewSelectDate(QDate date);
     void signalsSchceduleUpdate(const int id = 0);
+    /**
+     * @brief signalAngleDelta      发送滚动信号滚动相对量
+     * @param delta     滚动相对量
+     */
+    void signalAngleDelta(int delta);
 public slots:
     void slotCreate(const QDateTime &date) override;
     void slotdelete(const int id =0);
