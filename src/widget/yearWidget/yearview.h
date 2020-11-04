@@ -170,11 +170,6 @@ protected:
      * @param event 窗口大小调整事件
      */
     void resizeEvent(QResizeEvent *event) override;
-    /**
-     * @brief mousePressEvent 单击鼠标发出隐藏日程浮框信号
-     * @param event 鼠标事件
-     */
-    void mousePressEvent(QMouseEvent *event) override;
 protected:
     /**
      * @brief paintEvent 绘制每个月的背景
@@ -287,6 +282,12 @@ protected:
      * @param event QT事件
      */
     void leaveEvent(QEvent *event) override;
+private:
+    /**
+     * @brief mousePress 鼠标点击触发事件
+     * @param QPoint 鼠标触发坐标
+     */
+    void mousePress(const QPoint &point);
 signals:
     /**
      * @brief signalPressDate 鼠标点击日期的信号
@@ -304,6 +305,10 @@ private:
     QVector<bool>                   m_vlineflag; //节假日和日程标识
     bool                            m_press = false;
     int                             m_pressIndex =0;
+    //触摸状态 0：原始  1：点击  2：移动
+    int         m_touchState{0};
+    //触摸点击坐标
+    QPoint      m_touchBeginPoint;
 };
 
 
