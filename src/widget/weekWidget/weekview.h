@@ -19,6 +19,8 @@
 #ifndef WEEKVIEW_H
 #define WEEKVIEW_H
 
+#include "../widget/touchgestureoperation.h"
+
 #include <DIconButton>
 
 #include <QObject>
@@ -102,7 +104,7 @@ protected:
      * @param event 鼠标滚轮事件
      */
     void wheelEvent(QWheelEvent *event) override;
-
+    bool event(QEvent *e) override;
 private:
     /**
      * @brief paintCell 绘制周数
@@ -147,6 +149,10 @@ private:
     int m_weekAddDay = 0;
     int m_themetype = 1;
     bool m_searchfalg = false;
+    /**
+     * @brief m_touchGesture        触摸手势处理
+     */
+    touchGestureOperation   m_touchGesture;
 };
 
 #endif // MONTDAYVIEW_H

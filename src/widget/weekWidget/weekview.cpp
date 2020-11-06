@@ -36,6 +36,7 @@ DWIDGET_USE_NAMESPACE
 
 CWeekView::CWeekView(QWidget *parent)
     : QWidget(parent)
+    ,m_touchGesture(this)
 {
     m_dayNumFont.setPixelSize(DDECalendar::FontSizeSixteen);
     m_dayNumFont.setWeight(QFont::Light);
@@ -276,5 +277,36 @@ void CWeekView::wheelEvent(QWheelEvent *event)
                 slotprev();
             }
         }
+    }
+}
+
+bool CWeekView::event(QEvent *e)
+{
+    if(m_touchGesture.event(e)){
+        //获取触摸状态
+        switch (m_touchGesture.getTouchState()) {
+        case touchGestureOperation::T_SLIDE:{
+             //在滑动状态如果可以更新数据则切换月份
+            if(m_touchGesture.isUpdate()){
+                m_touchGesture.setUpdate(false);
+                switch (m_touchGesture.getMovingDir()) {
+                case touchGestureOperation::T_LEFT:
+                    slotnext();
+                    break;
+                case touchGestureOperation::T_RIGHT:
+                    slotprev();
+                    break;
+                default:
+                    break;
+                }
+            }
+            break;
+        }
+        default:
+            break;
+        }
+        return true;
+    }else{
+        return DWidget::event(e);
     }
 }

@@ -19,6 +19,8 @@
 #ifndef MONTHDAYVIEW_H
 #define MONTHDAYVIEW_H
 
+#include "../touchgestureoperation.h"
+
 #include <DFrame>
 
 #include <QObject>
@@ -39,6 +41,7 @@ public:
     void setsearchfalg(bool flag);
 protected:
     void wheelEvent(QWheelEvent *e) override;
+    bool event(QEvent *e) override;
 signals:
     void signalsSelectDate(QDate date);
     void signalsCurrentDate(QDate date);
@@ -48,6 +51,10 @@ signals:
      */
     void signalAngleDelta(int delta);
 private:
+    /**
+     * @brief m_touchGesture        触摸手势处理
+     */
+    touchGestureOperation   m_touchGesture;
     CMonthWidget *m_monthWidget = nullptr;
     QDate                       m_selectDate;
     QDate                       m_days[12];
@@ -69,7 +76,18 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void paintEvent(QPaintEvent *event) override;
+    /**
+     * @brief mouseReleaseEvent 鼠标释放事件
+     * @param event 鼠标事件
+     */
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    /**
+     * @brief mouseMoveEvent 鼠标移动事件，设置hover状态
+     * @param event 鼠标事件
+     */
+    void mouseMoveEvent(QMouseEvent *event) override;
 private:
+    void mousePress(const QPoint &point);
     void updateSize();
     int getMousePosItem(const QPointF &pos);
 signals:
@@ -77,6 +95,10 @@ signals:
 private:
     QVector<CMonthRect *> m_MonthItem;
     QDate                       m_days[12];
+    //触摸状态 0：原始  1：点击  2：移动
+    int         m_touchState{0};
+    //触摸点击坐标
+    QPoint      m_touchBeginPoint;
 
 };
 

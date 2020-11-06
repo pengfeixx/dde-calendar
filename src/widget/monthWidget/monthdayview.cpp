@@ -34,6 +34,7 @@
 DGUI_USE_NAMESPACE
 CMonthDayView::CMonthDayView(QWidget *parent)
     : DFrame(parent)
+    ,m_touchGesture(this)
 {
     QHBoxLayout *hboxLayout = new QHBoxLayout;
     hboxLayout->setMargin(0);
@@ -120,6 +121,37 @@ void CMonthDayView::wheelEvent(QWheelEvent *e)
         emit signalAngleDelta(e->angleDelta().x());
     }
 }
+
+bool CMonthDayView::event(QEvent *e)
+{
+    if(m_touchGesture.event(e)){
+        //获取触摸状态
+        switch (m_touchGesture.getTouchState()) {
+        case touchGestureOperation::T_SLIDE:{
+             //在滑动状态如果可以更新数据则切换月份
+            if(m_touchGesture.isUpdate()){
+                m_touchGesture.setUpdate(false);
+                switch (m_touchGesture.getMovingDir()) {
+                case touchGestureOperation::T_LEFT:
+                        emit signalAngleDelta(-1);
+                    break;
+                case touchGestureOperation::T_RIGHT:
+                        emit signalAngleDelta(1);
+                    break;
+                default:
+                    break;
+                }
+            }
+            break;
+        }
+        default:
+            break;
+        }
+        return true;
+    }else{
+        return DFrame::event(e);
+    }
+}
 /**
  * @brief CMonthWidget 构造函数
  * @param parent 父类
@@ -161,19 +193,17 @@ void CMonthWidget::resizeEvent(QResizeEvent *event)
 
 void CMonthWidget::mousePressEvent(QMouseEvent *event)
 {
+    if(event->source() == Qt::MouseEventSynthesizedByQt){
+        //如果为触摸转换则设置触摸状态和触摸开始坐标
+        m_touchState = 1;
+        m_touchBeginPoint = event->pos();
+        QWidget::mousePressEvent(event);
+        return;
+    }
     if (event->button() ==Qt::RightButton)
         return;
 
-    int itemindex = getMousePosItem(event->pos());
-
-    if (!(itemindex<0)) {
-        if (m_MonthItem.at(itemindex)->getDate().year() < DDECalendar::QueryEarliestYear) {
-            return;
-        }
-        CMonthRect::setSelectRect(m_MonthItem.at(itemindex));
-        emit signalsSelectDate(m_MonthItem.at(itemindex)->getDate());
-    }
-    update();
+    mousePress(event->pos());
 }
 
 void CMonthWidget::paintEvent(QPaintEvent *event)
@@ -187,6 +217,43 @@ void CMonthWidget::paintEvent(QPaintEvent *event)
                                      m_MonthItem.at(i)->rect());
     }
     painter.end();
+}
+
+void CMonthWidget::mouseReleaseEvent(QMouseEvent *event)
+{
+    if(event->source() == Qt::MouseEventSynthesizedByQt){
+        if(m_touchState ==1){
+            //如果为触摸且状态为点击则为触摸点击
+            mousePress(event->pos());
+            m_touchState = 0;
+        }
+        QWidget::mouseReleaseEvent(event);
+    }
+}
+
+void CMonthWidget::mouseMoveEvent(QMouseEvent *event)
+{
+    if(event->source() == Qt::MouseEventSynthesizedByQt){
+        QPoint currentPoint = event->pos();
+        //如果移动距离大与5则为触摸移动状态
+        if(QLineF(m_touchBeginPoint,currentPoint).length()>5){
+            m_touchState =2;
+        }
+        QWidget::mouseMoveEvent(event);
+    }
+}
+
+void CMonthWidget::mousePress(const QPoint &point)
+{
+    int itemindex = getMousePosItem(point);
+    if (!(itemindex<0)) {
+        if (m_MonthItem.at(itemindex)->getDate().year() < DDECalendar::QueryEarliestYear) {
+            return;
+        }
+        CMonthRect::setSelectRect(m_MonthItem.at(itemindex));
+        emit signalsSelectDate(m_MonthItem.at(itemindex)->getDate());
+    }
+    update();
 }
 
 void CMonthWidget::updateSize()
