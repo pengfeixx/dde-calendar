@@ -39,6 +39,7 @@ static int hourTextHeight = 20;
 CScheduleView::CScheduleView(QWidget *parent, int viewType)
     : DFrame(parent)
     , m_viewType(viewType)
+    ,m_touchGesture(this)
 {
     initUI();
     initConnection();
@@ -405,6 +406,37 @@ void CScheduleView::wheelEvent(QWheelEvent *e)
     }
 }
 
+bool CScheduleView::event(QEvent *e)
+{
+    if(m_touchGesture.event(e)){
+        //获取触摸状态
+        switch (m_touchGesture.getTouchState()) {
+        case touchGestureOperation::T_SLIDE:{
+             //在滑动状态如果可以更新数据则切换月份
+            if(m_touchGesture.isUpdate()){
+                m_touchGesture.setUpdate(false);
+                switch (m_touchGesture.getMovingDir()) {
+                case touchGestureOperation::T_LEFT:
+                        emit signalAngleDelta(-1);
+                    break;
+                case touchGestureOperation::T_RIGHT:
+                        emit signalAngleDelta(1);
+                    break;
+                default:
+                    break;
+                }
+            }
+            break;
+        }
+        default:
+            break;
+        }
+        return true;
+    }else{
+        return DFrame::event(e);
+    }
+}
+
 void CScheduleView::initUI()
 {
     m_layout = new QVBoxLayout;
@@ -438,6 +470,11 @@ void CScheduleView::initConnection()
             &CScheduleView::signalViewtransparentFrame);
     connect(m_graphicsView, &CGraphicsView::signalViewtransparentFrame, this,
             &CScheduleView::signalViewtransparentFrame);
+    //切换前后时间信号关联
+    connect(m_graphicsView,&CAllDayEventWeekView::signalAngleDelta,this
+            ,&CScheduleView::signalAngleDelta);
+    connect(m_alldaylist,&CAllDayEventWeekView::signalAngleDelta,this
+            ,&CScheduleView::signalAngleDelta);
 
     connect(m_graphicsView
             , &CGraphicsView::signalScheduleShow

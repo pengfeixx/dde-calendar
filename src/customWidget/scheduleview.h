@@ -20,6 +20,7 @@
 #define SCHEDULEVIEW_H
 #include "schedulestructs.h"
 #include "SchecduleRemindWidget.h"
+#include "../widget/touchgestureoperation.h"
 
 #include <DFrame>
 
@@ -72,6 +73,7 @@ protected:
     void paintEvent(QPaintEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
     void wheelEvent(QWheelEvent *e) override;
+    bool event(QEvent *e)override;
 private:
     void initUI();
     void initConnection();
@@ -105,6 +107,10 @@ private:
     int m_minTime; //最小高度对应的最小时间
     QFont font;
     const int m_radius = 8;
+    /**
+     * @brief m_touchGesture        触摸手势处理
+     */
+    touchGestureOperation   m_touchGesture;
 };
 
 #endif // SCHEDULEVIEW_H

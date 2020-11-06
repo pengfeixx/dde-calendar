@@ -41,6 +41,16 @@ public:
     enum PosInItem {LEFT,MIDDLE,RIGHT,TOP,BOTTOM};
     //鼠标移动状态
     enum DragStatus {IsCreate =0,ChangeBegin =1,ChangeEnd =2,ChangeWhole =3,NONE =4};
+    /**
+     * @brief The TouchState enum   触摸状态
+     */
+    enum TouchState{
+        TS_NONE             //默认状态
+        ,TS_PRESS           //点击
+        ,TS_DRAG_MOVE       //拖拽移动
+        ,TS_SLIDE           //滑动
+        ,TS_LONG_PRESS       //长按
+    };
 
     int getDragStatus() const;
 
@@ -62,6 +72,11 @@ private:
     void updateScheduleInfo(const ScheduleDtailInfo &info);
     void DragPressEvent(const QPoint &pos,DragInfoItem *item);
     void mouseReleaseScheduleUpdate();
+    /**
+     * @brief mousePress        鼠标左击事件处理
+     * @param point             左击坐标
+     */
+    void mousePress(const QPoint &point);
 protected:
     void DeleteItem(const ScheduleDtailInfo &info);
 protected:
@@ -82,14 +97,38 @@ protected:
     //根据鼠标移动的距离判断是否创建日程
     virtual bool JudgeIsCreate(const QPointF &pos) =0;
     virtual void RightClickToCreate(QGraphicsItem *listItem,const QPoint &pos) =0;
-    //
+    /**
+     * @brief getDragScheduleInfoBeginTime      获取拖拽日程开始时间
+     * @param moveDateTime                      当前鼠标移动坐标对应的时间
+     * @return
+     */
     virtual QDateTime getDragScheduleInfoBeginTime(const QDateTime &moveDateTime) =0;
-    //
+    /**
+     * @brief getDragScheduleInfoEndTime    获取拖拽日程结束时间
+     * @param moveDateTime                  当前鼠标移动坐标对应的时间
+     * @return
+     */
     virtual QDateTime getDragScheduleInfoEndTime(const QDateTime &moveDateTime) =0;
+    /**
+     * @brief slideEvent            触摸滑动事件处理
+     * @param startPoint            触摸开始坐标
+     * @param stopPort              触摸结束坐标
+     */
+    virtual void slideEvent(QPointF &startPoint,QPointF &stopPort);
 signals:
+    /**
+     * @brief signalAngleDelta      发送滚动信号滚动相对量
+     * @param delta     滚动相对量
+     */
+    void signalAngleDelta(int delta);
     //更新获取日程信息
     void signalsUpdateShcedule();
     void signalViewtransparentFrame(const int id = 0);
+    /**
+     * @brief signalScheduleShow        发送日程提示框信号
+     * @param isShow                    是否显示
+     * @param out                       显示的日程信息
+     */
     void signalScheduleShow(const bool isShow, const ScheduleDtailInfo &out = ScheduleDtailInfo());
 protected:
     int                                 m_themetype = 0;
@@ -114,6 +153,26 @@ protected:
     //点击的原始info
     ScheduleDtailInfo                   m_PressScheduleInfo;
     QRectF                              m_PressRect;
+    /**
+     * @brief m_TouchBeginPoint     触摸开始坐标
+     */
+    QPointF         m_TouchBeginPoint;
+    /**
+     * @brief m_TouchBeginTime      触摸点击屏幕的事件
+     */
+    qint64          m_TouchBeginTime;
+    /**
+     * @brief m_touchState          触摸状态
+     */
+    TouchState      m_touchState;
+    /**
+     * @brief m_touchDragMoveState      触摸拖拽移动状态
+     * 0 原始状态
+     * 1 拖拽确认，移动的时候触发点击事件
+     * 2 拖拽移动
+     */
+    int             m_touchDragMoveState;
+
 };
 
 #endif // DRAGINFOGRAPHICSVIEW_H

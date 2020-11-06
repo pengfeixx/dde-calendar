@@ -22,6 +22,7 @@
 
 #include "constants.h"
 #include "calendardbus.h"
+#include "../touchgestureoperation.h"
 
 #include <DLabel>
 #include <DFrame>
@@ -234,6 +235,7 @@ protected:
      */
     void mousePressEvent(QMouseEvent *event) override;
     void wheelEvent(QWheelEvent *e) override;
+    bool event(QEvent *e) override;
 private slots:
     /**
      * @brief cellClicked
@@ -284,6 +286,10 @@ private:
     int m_monthW = 80;
     int m_fixwidth = 200;
     const int m_radius = 8;
+    /**
+     * @brief m_touchGesture        触摸手势处理
+     */
+    touchGestureOperation   m_touchGesture;
 };
 
 #endif // MYCALENDARWIDGET_H

@@ -23,6 +23,7 @@
 #include "../dialog/schceduledlg.h"
 #include "../dialog/schcedulectrldlg.h"
 #include "../dialog/myschceduleview.h"
+#include "../widget/touchgestureoperation.h"
 #include "constants.h"
 
 #include <DHiDPIHelper>
@@ -286,6 +287,38 @@ void CMonthGraphiview::upDateInfoShow(const CMonthGraphiview::DragStatus &status
     case IsCreate:
         m_MonthSchceduleView->updateDate(info);
         break;
+    }
+}
+
+void CMonthGraphiview::slideEvent(QPointF &startPoint, QPointF &stopPort)
+{
+    qreal _movingLine {0};
+    touchGestureOperation::TouchMovingDirection _touchMovingDir =
+            touchGestureOperation::getTouchMovingDir(startPoint,stopPort,_movingLine);
+    //切换月份 0 不切换  1 下一个  -1 上个月
+    int delta {0};
+    //移动偏移 25则切换月份
+    const int moveOffset = 25;
+    switch (_touchMovingDir) {
+    case touchGestureOperation::T_TOP:{
+        if(_movingLine >moveOffset){
+            delta = -1;
+            startPoint = stopPort;
+        }
+        break;
+    }
+    case touchGestureOperation::T_BOTTOM:{
+        if(_movingLine >moveOffset){
+            delta = 1;
+            startPoint = stopPort;
+        }
+        break;
+    }
+    default:
+        break;
+    }
+    if(delta !=0){
+        emit signalAngleDelta(delta);
     }
 }
 

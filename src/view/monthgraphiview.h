@@ -85,15 +85,16 @@ private:
     PosInItem getPosInItem(const QPoint &p,const QRectF &itemRect)override;
     QDateTime getPosDate(const QPoint &p)override;
     void upDateInfoShow(const DragStatus &status = NONE,const ScheduleDtailInfo &info =ScheduleDtailInfo())override;
+    /**
+     * @brief slideEvent            触摸滑动事件处理
+     * @param startPoint            触摸开始坐标
+     * @param stopPort              触摸结束坐标
+     */
+    void slideEvent(QPointF &startPoint ,QPointF &stopPort) override;
 signals:
     void signalFontChange();
     void signalsViewSelectDate(QDate date);
     void signalsSchceduleUpdate(const int id = 0);
-    /**
-     * @brief signalAngleDelta      发送滚动信号滚动相对量
-     * @param delta     滚动相对量
-     */
-    void signalAngleDelta(int delta);
 public slots:
     void slotCreate(const QDateTime &date) override;
     void slotdelete(const int id =0);

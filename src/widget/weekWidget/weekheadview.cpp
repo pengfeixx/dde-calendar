@@ -37,6 +37,7 @@
 DGUI_USE_NAMESPACE
 CWeekHeadView::CWeekHeadView(QWidget *parent)
     : DFrame(parent)
+    ,m_touchGesture(this)
 {
     setContentsMargins(0, 0, 0, 0);
     m_DBusInter = new CalendarDBus("com.deepin.api.LunarCalendar",
@@ -607,4 +608,36 @@ void CWeekHeadView::wheelEvent(QWheelEvent *e)
     if(e->orientation() == Qt::Orientation::Horizontal){
         emit signalAngleDelta(e->angleDelta().x());
     }
+}
+
+bool CWeekHeadView::event(QEvent *e)
+{
+    if(m_touchGesture.event(e)){
+        //获取触摸状态
+        switch (m_touchGesture.getTouchState()) {
+        case touchGestureOperation::T_SLIDE:{
+             //在滑动状态如果可以更新数据则切换月份
+            if(m_touchGesture.isUpdate()){
+                m_touchGesture.setUpdate(false);
+                switch (m_touchGesture.getMovingDir()) {
+                case touchGestureOperation::T_LEFT:
+                        emit signalAngleDelta(-1);
+                    break;
+                case touchGestureOperation::T_RIGHT:
+                        emit signalAngleDelta(1);
+                    break;
+                default:
+                    break;
+                }
+            }
+            break;
+        }
+        default:
+            break;
+        }
+        return true;
+    }else{
+        return DFrame::event(e);
+    }
+
 }
