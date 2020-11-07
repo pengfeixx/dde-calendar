@@ -23,7 +23,6 @@
 #include "schcedulectrldlg.h"
 #include "myschceduleview.h"
 #include "constants.h"
-#include "../widget/touchgestureoperation.h"
 
 #include <DMenu>
 
@@ -61,6 +60,13 @@ DragInfoGraphicsView::DragInfoGraphicsView(DWidget *parent)
     grabGesture(Qt::TapAndHoldGesture);
     grabGesture(Qt::PanGesture);
     grabGesture(Qt::TapGesture);
+    grabGesture(Qt::SwipeGesture);
+
+    m_touchAnimation  = new QPropertyAnimation(this,"touchSlidePos");
+    //设置动画时间
+    m_touchAnimation->setDuration(1000);
+    //设置动画曲线
+    m_touchAnimation->setEasingCurve(QEasingCurve::OutQuart);
 }
 
 DragInfoGraphicsView::~DragInfoGraphicsView()
@@ -73,7 +79,7 @@ void DragInfoGraphicsView::mousePressEvent(QMouseEvent *event)
     if (event->button() != Qt::LeftButton) {
         return;
     }
-
+    stopTouchAnimation();
     if(event->source() == Qt::MouseEventSynthesizedByQt){
         //如果为触摸点击则记录相关状态并改变触摸状态
         DGraphicsView::mousePressEvent(event);
@@ -95,6 +101,34 @@ void DragInfoGraphicsView::mouseReleaseEvent(QMouseEvent *event)
         if(m_touchState ==TS_PRESS){
             mousePress(m_TouchBeginPoint.toPoint());
         }
+        if(m_touchState == TS_SLIDE){
+            stopTouchAnimation();
+            const qint64 timeOffset = QDateTime::currentDateTime().toMSecsSinceEpoch()-m_TouchBeginTime;
+            //如果为快速滑动则开启滑动动画效果
+            if(timeOffset < 150){
+                m_touchAnimation->setStartValue(verticalScrollBar()->sliderPosition());
+                m_touchAnimation->setEndValue(verticalScrollBar()->minimum());
+                switch (m_touchMovingDir) {
+                case touchGestureOperation::T_TOP:{
+                    //如果手势往上
+                    m_touchAnimation->setStartValue(verticalScrollBar()->sliderPosition());
+                    m_touchAnimation->setEndValue(verticalScrollBar()->maximum());
+                    m_touchAnimation->start();
+                    break;
+                }
+                case touchGestureOperation::T_BOTTOM:{
+                    //如果手势往下
+                    m_touchAnimation->setStartValue(verticalScrollBar()->sliderPosition());
+                    m_touchAnimation->setEndValue(verticalScrollBar()->minimum());
+                    m_touchAnimation->start();
+                    break;
+                }
+                default:
+
+                    break;
+                }
+            }
+        }
     }
     m_touchState = TS_NONE;
     mouseReleaseScheduleUpdate();
@@ -106,6 +140,7 @@ void DragInfoGraphicsView::mouseMoveEvent(QMouseEvent *event)
     //移动偏移
     const int lengthOffset = 5;
     if(event->source() == Qt::MouseEventSynthesizedByQt){
+        m_touchMovingDir = touchGestureOperation::T_MOVE_NONE;
         switch (m_touchState) {
         case TS_NONE:{
             break;
@@ -239,6 +274,7 @@ void DragInfoGraphicsView::mouseMoveEvent(QMouseEvent *event)
 
 void DragInfoGraphicsView::wheelEvent(QWheelEvent *event)
 {
+    stopTouchAnimation();
     DGraphicsView::wheelEvent(event);
 }
 
@@ -517,6 +553,22 @@ void DragInfoGraphicsView::mousePress(const QPoint &point)
     update();
 }
 
+int DragInfoGraphicsView::getSlidePos() const
+{
+    return m_touchSlidePos;
+}
+
+void DragInfoGraphicsView::setSlidePos(int pos)
+{
+    m_touchSlidePos = pos;
+    verticalScrollBar()->setValue(m_touchSlidePos);
+}
+
+void DragInfoGraphicsView::stopTouchAnimation()
+{
+    m_touchAnimation->stop();
+}
+
 void DragInfoGraphicsView::DeleteItem(const ScheduleDtailInfo &info)
 {
     emit signalViewtransparentFrame(1);
@@ -658,17 +710,17 @@ void DragInfoGraphicsView::slideEvent(QPointF &startPoint, QPointF &stopPort)
     //获取滑动方向
     touchGestureOperation::TouchMovingDirection _touchMovingDir =
             touchGestureOperation::getTouchMovingDir(startPoint,stopPort,_movingLine);
+    m_touchMovingDir = _touchMovingDir;
     //切换标志 0 不切换  1 下一页  -1 上一页
     int delta {0};
     //移动偏移 25则切换
     const int moveOffset = 25;
     switch (_touchMovingDir) {
-    case touchGestureOperation::T_TOP:{
-
-        break;
-    }
+    case touchGestureOperation::T_TOP:
     case touchGestureOperation::T_BOTTOM:{
-
+        const int pos_Diff_Y = qFloor(stopPort.y() - startPoint.y());
+        verticalScrollBar()->setValue( verticalScrollBar()->sliderPosition() - pos_Diff_Y);
+        startPoint= stopPort;
         break;
     }
     case touchGestureOperation::T_LEFT:{

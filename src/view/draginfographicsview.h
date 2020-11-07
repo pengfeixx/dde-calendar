@@ -21,6 +21,7 @@
 #ifndef DRAGINFOGRAPHICSVIEW_H
 #define DRAGINFOGRAPHICSVIEW_H
 #include "draginfoitem.h"
+#include "../widget/touchgestureoperation.h"
 
 #include <DGraphicsView>
 
@@ -33,6 +34,7 @@ class CScheduleDataManage;
 class DragInfoGraphicsView : public DGraphicsView
 {
     Q_OBJECT
+    Q_PROPERTY(int touchSlidePos READ getSlidePos WRITE setSlidePos)
 public:
     explicit DragInfoGraphicsView(DWidget *parent = nullptr);
     ~DragInfoGraphicsView() override;
@@ -77,6 +79,20 @@ private:
      * @param point             左击坐标
      */
     void mousePress(const QPoint &point);
+    /**
+     * @brief getSlidePos       获取滑动位置
+     * @return
+     */
+    int getSlidePos() const;
+    /**
+     * @brief setSlidePos       设置滑动位置
+     * @param pos
+     */
+    void setSlidePos(int pos);
+    /**
+     * @brief stopTouchAnimation    停止触摸滑动动画效果
+     */
+    void stopTouchAnimation();
 protected:
     void DeleteItem(const ScheduleDtailInfo &info);
 protected:
@@ -172,6 +188,19 @@ protected:
      * 2 拖拽移动
      */
     int             m_touchDragMoveState;
+    /**
+     * @brief m_touchState          触摸滑动位置
+     */
+    int             m_touchSlidePos{0};
+    /**
+     * @brief m_touchAnimation      触摸滑动动画
+     */
+    QPropertyAnimation  *m_touchAnimation;
+    /**
+     * @brief m_touchMovingDir      记录快速滑动方向
+     */
+    touchGestureOperation::TouchMovingDirection m_touchMovingDir{touchGestureOperation::T_MOVE_NONE};
+
 
 };
 
