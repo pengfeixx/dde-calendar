@@ -16,8 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef MYSCHCEDULEVIEW_H
-#define MYSCHCEDULEVIEW_H
+#ifndef MYSCHEDULEVIEW_H
+#define MYSCHEDULEVIEW_H
 
 #include "schedulestructs.h"
 
@@ -34,12 +34,12 @@
 
 DWIDGET_USE_NAMESPACE
 
-class CMySchceduleView : public DDialog
+class CMyScheduleView : public DDialog
 {
     Q_OBJECT
 public:
-    explicit CMySchceduleView(const ScheduleDtailInfo &schduleInfo,QWidget *parent = nullptr);
-    ~CMySchceduleView() override;
+    explicit CMyScheduleView(const ScheduleDtailInfo &schduleInfo,QWidget *parent = nullptr);
+    ~CMyScheduleView() override;
     ScheduleDtailInfo getSchedules()
     {
         return  m_scheduleInfo;
@@ -69,7 +69,7 @@ protected:
     void showEvent(QShowEvent *event) override;
     bool eventFilter(QObject *o, QEvent *e) override;
 private:
-    QLabel                           *m_schceduleLabel = nullptr;
+    QLabel                           *m_scheduleLabel = nullptr;
     QLabel                           *m_timeLabel = nullptr;
     DSuggestButton *m_editBt = nullptr;
     DPushButton                      *m_deleteBt = nullptr;
@@ -81,4 +81,4 @@ private:
     QFont labelF;
 };
 
-#endif // MYSCHCEDULEVIEW_H
+#endif // MYSCHEDULEVIEW_H

@@ -16,8 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef YEARSCHCEDULEVIEW_H
-#define YEARSCHCEDULEVIEW_H
+#ifndef YEARSCHEDULEVIEW_H
+#define YEARSCHEDULEVIEW_H
 
 #include "schedulestructs.h"
 
@@ -29,22 +29,22 @@
 
 DWIDGET_USE_NAMESPACE
 class QVBoxLayout;
-class CYearSchceduleItem;
-class CYearSchceduleOutView;
-class CYearSchceduleView : public DWidget
+class CYearScheduleItem;
+class CYearScheduleOutView;
+class CYearScheduleView : public DWidget
 {
     Q_OBJECT
 
 public:
     /**
-     * @brief CYearSchceduleView 构造函数
+     * @brief CYearScheduleView 构造函数
      * @param parent 父类
      */
-    explicit CYearSchceduleView(QWidget *parent = nullptr);
+    explicit CYearScheduleView(QWidget *parent = nullptr);
     /**
-      * @brief ~CYearSchceduleView 析构函数
+      * @brief ~CYearScheduleView 析构函数
       */
-    ~CYearSchceduleView();
+    ~CYearScheduleView();
     /**
      * @brief setSoloDay
      * @param soloday
@@ -147,16 +147,16 @@ private:
     bool                  adjustPos = false;
 };
 
-class CYearSchceduleItem : public DLabel
+class CYearScheduleItem : public DLabel
 {
     Q_OBJECT
 
 public:
     /**
-     * @brief CYearSchceduleItem 构造函数
+     * @brief CYearScheduleItem 构造函数
      * @param parent 父类
      */
-    explicit CYearSchceduleItem(QWidget *parent = nullptr);
+    explicit CYearScheduleItem(QWidget *parent = nullptr);
     /**
      * @brief setBackgroundColor 设置背景颜色
      * @param color1 背景颜色
@@ -200,16 +200,16 @@ private:
     QFont                 m_tfont;
 };
 
-class CYearSchceduleOutView : public DArrowRectangle
+class CYearScheduleOutView : public DArrowRectangle
 {
     Q_OBJECT
 
 public:
     /**
-     * @brief CYearSchceduleOutView 构造函数
+     * @brief CYearScheduleOutView 构造函数
      * @param parent 父类
      */
-    explicit CYearSchceduleOutView(QWidget *parent = nullptr);
+    explicit CYearScheduleOutView(QWidget *parent = nullptr);
     /**
      * @brief setSoloDay
      * @param soloday
@@ -256,11 +256,11 @@ signals:
      */
     void signalsViewSelectDate(QDate date);
     /**
-     * @brief signalupdateschcedule 更新日程信息的信号
+     * @brief signalupdateschedule 更新日程信息的信号
      */
-    void signalupdateschcedule();
+    void signalupdateschedule();
 private:
-    CYearSchceduleView *yearschceduleview = nullptr;
+    CYearScheduleView *yearscheduleview = nullptr;
     QVector<ScheduleDtailInfo> scheduleinfoList;
     QDate currentdate;
     int list_count = 0;
@@ -272,5 +272,5 @@ protected:
      */
     void mousePressEvent(QMouseEvent *event) override;
 };
-#endif // CSHCEDULEDAYVIEW_H
+#endif // YEARSCHEDULEVIEW_H
 

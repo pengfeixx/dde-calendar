@@ -19,10 +19,10 @@
 #include "graphicsview.h"
 #include "scheduleitem.h"
 #include "schedulecoormanage.h"
-#include "schceduledlg.h"
+#include "scheduledlg.h"
 #include "scheduledatamanage.h"
-#include "schcedulectrldlg.h"
-#include "myschceduleview.h"
+#include "schedulectrldlg.h"
+#include "myscheduleview.h"
 #include "constants.h"
 
 #include <DMessageBox>
@@ -115,7 +115,7 @@ void CGraphicsView::setTheMe(int type)
 void CGraphicsView::slotCreate(const QDateTime &date)
 {
     emit signalViewtransparentFrame(1);
-    CSchceduleDlg dlg(1, this);
+    CScheduleDlg dlg(1, this);
     dlg.setDate(date);
 
     if (dlg.exec() == DDialog::Accepted) {
@@ -425,7 +425,7 @@ void CGraphicsView::mouseDoubleClickEvent( QMouseEvent *event )
     if (item == nullptr) {
         QPointF senceposs = mapToScene(event->pos());
         emit signalViewtransparentFrame(1);
-        CSchceduleDlg dlg(1, this);
+        CScheduleDlg dlg(1, this);
         QDateTime tDatatime = m_coorManage->getDate(senceposs);
         dlg.setDate(tDatatime);
         if (dlg.exec() == DDialog::Accepted) {
@@ -440,11 +440,11 @@ void CGraphicsView::mouseDoubleClickEvent( QMouseEvent *event )
     }
     emit signalViewtransparentFrame(1);
     m_updateDflag  = false;
-    CMySchceduleView dlg(item->getData(), this);
-    connect(&dlg, &CMySchceduleView::signalsEditorDelete, this, &CGraphicsView::slotDoubleEvent);
+    CMyScheduleView dlg(item->getData(), this);
+    connect(&dlg, &CMyScheduleView::signalsEditorDelete, this, &CGraphicsView::slotDoubleEvent);
     dlg.exec();
     emit signalViewtransparentFrame(0);
-    disconnect(&dlg, &CMySchceduleView::signalsEditorDelete, this, &CGraphicsView::slotDoubleEvent);
+    disconnect(&dlg, &CMyScheduleView::signalsEditorDelete, this, &CGraphicsView::slotDoubleEvent);
 
     if (item == nullptr) {
         return;

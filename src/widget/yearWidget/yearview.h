@@ -18,8 +18,8 @@ DWIDGET_USE_NAMESPACE
 class CalendarDBus;
 class CaLunarDayInfo;
 class QLabel;
-class CYearSchceduleView;
-class CYearSchceduleOutView;
+class CYearScheduleView;
+class CYearScheduleOutView;
 class WeekIndicator;
 /**
  * @brief The CalendarYearDayType enum
@@ -68,9 +68,9 @@ public:
      */
     void setTheMe(int type = 0);
     /**
-     * @brief SchceduleViewHide 隐藏日程浮框
+     * @brief ScheduleViewHide 隐藏日程浮框
      */
-    static void SchceduleViewHide();
+    static void ScheduleViewHide();
     /**
      * @brief getInfoAndSetLineFlag 获取日程信息，设置是否有日程的标志
      */
@@ -102,9 +102,9 @@ signals:
      */
     void signalselectWeekwindow(QDate date);
     /**
-     * @brief signalupdateschcedule 更新日程的信号
+     * @brief signalupdateschedule 更新日程的信号
      */
-    void signalupdateschcedule();
+    void signalupdateschedule();
     /**
      * @brief signalHideInfo 隐藏日程浮框的信号
      */
@@ -160,10 +160,10 @@ private:
      */
     void updateDate();
     /**
-     * @brief createYearSchceduleView 创建日程浮框对象，并连接信号和槽
+     * @brief createYearScheduleView 创建日程浮框对象，并连接信号和槽
      * @param parent 父类
      */
-    void createYearSchceduleView(QWidget *parent = nullptr);
+    void createYearScheduleView(QWidget *parent = nullptr);
 protected:
     /**
      * @brief resizeEvent 更新月份框的高度
@@ -198,7 +198,7 @@ private:
     QColor m_bnormalColor = "#FFFFFF";
     const int m_radius = 8;
     const int m_borderframew = 0;
-    static CYearSchceduleOutView *m_Scheduleview;
+    static CYearScheduleOutView *m_Scheduleview;
     bool m_selectFlag = false;
     QDate m_selectDate;
     QVector<bool> m_vlineflag; //节假日和日程标识

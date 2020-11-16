@@ -20,7 +20,7 @@
 #include "constants.h"
 #include "customframe.h"
 #include "daymonthview.h"
-#include "schcedulesearchview.h"
+#include "schedulesearchview.h"
 #include "scheduleview.h"
 
 #include <DPalette>

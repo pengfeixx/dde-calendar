@@ -18,7 +18,7 @@
  */
 
 #include "calendardbus.h"
-#include "todybutton.h"
+#include "todaybutton.h"
 #include "scheduledatamanage.h"
 #include "daymonthview.h"
 #include "constants.h"
@@ -345,7 +345,7 @@ void CDayMonthView::initUI()
 {
     m_dayNumFont.setPixelSize(DDECalendar::FontSizeTwelve);
 
-    m_today = new CTodyButton;
+    m_today = new CTodayButton;
 
     m_today->setText(QCoreApplication::translate("today", "Today", "Today"));
 
@@ -496,7 +496,7 @@ void CDayMonthView::initUI()
 void CDayMonthView::initConnection()
 {
     connect(m_prevButton, &DIconButton::clicked, this, &CDayMonthView::slotprev);
-    connect(m_today, &CTodyButton::clicked, this, &CDayMonthView::slottoday);
+    connect(m_today, &CTodayButton::clicked, this, &CDayMonthView::slottoday);
     connect(m_nextButton, &DIconButton::clicked, this, &CDayMonthView::slotnext);
     connect(this, &CDayMonthView::dateSelected, this, &CDayMonthView::handleCurrentDateChanged);
 }

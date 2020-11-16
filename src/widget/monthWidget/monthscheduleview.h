@@ -16,8 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef MONTHSCHCEDULEVIEW_H
-#define MONTHSCHCEDULEVIEW_H
+#ifndef MONTHSCHEDULEVIEW_H
+#define MONTHSCHEDULEVIEW_H
 
 #include "schedulestructs.h"
 #include "draginfoitem.h"
@@ -32,28 +32,28 @@
 #include <QGraphicsScene>
 
 DWIDGET_USE_NAMESPACE
-class CMonthSchceduleWidgetItem;
+class CMonthScheduleWidgetItem;
 class QVBoxLayout;
-class CMonthSchceduleNumButton;
+class CMonthScheduleNumButton;
 class SchecduleRemindWidget;
 class QPropertyAnimation;
 class QSequentialAnimationGroup;
 class CWeekScheduleView;
 class CScheduleDataManage;
-class CMonthSchceduleView : public QObject
+class CMonthScheduleView : public QObject
 {
     Q_OBJECT
 
 public:
-    CMonthSchceduleView(QWidget *parent,QGraphicsScene *scene);
-    ~CMonthSchceduleView() override;
+    CMonthScheduleView(QWidget *parent,QGraphicsScene *scene);
+    ~CMonthScheduleView() override;
     void setallsize(int w, int h, int left, int top, int buttom, int itemHeight = 22);
     void setData(QVector<ScheduleDateRangeInfo> &data, int currentMonth);
     void setTheMe(int type = 0);
     void updateData();
     void updateHigh();
     QVector<QGraphicsRectItem *> getScheduleShowItem() const;
-    int getSchceduleHeight() const
+    int getScheduleHeight() const
     {
         return m_ItemHeight;
     }
@@ -67,8 +67,8 @@ signals:
     void signalUpdateUI(int type);
     void signalPressScheduleShow(const bool isShow, const ScheduleDtailInfo &out = ScheduleDtailInfo());
 public slots:
-    void slotdeleteitem(CMonthSchceduleWidgetItem *item);
-    void slotedititem(CMonthSchceduleWidgetItem *item, int type = 0);
+    void slotdeleteitem(CMonthScheduleWidgetItem *item);
+    void slotedititem(CMonthScheduleWidgetItem *item, int type = 0);
     void slotFontChange();
 private:
     void updateDateShow(QVector<QVector<MScheduleDateRangeInfo> > &vCMDaySchedule,QVector<QGraphicsRectItem *> &schudeleShowItem);
@@ -133,13 +133,13 @@ private:
 };
 
 
-class CMonthSchceduleNumButton : public QObject, public QGraphicsRectItem
+class CMonthScheduleNumButton : public QObject, public QGraphicsRectItem
 {
     Q_OBJECT
 
 public:
-    CMonthSchceduleNumButton(QGraphicsItem *parent = nullptr);
-    ~CMonthSchceduleNumButton() override;
+    CMonthScheduleNumButton(QGraphicsItem *parent = nullptr);
+    ~CMonthScheduleNumButton() override;
     void setColor(QColor color1, QColor color2, bool GradientFlag = false);
     void setText(QColor tcolor, QFont font, QPoint pos);
     void setSizeType(DFontSizeManager::SizeType sizeType);
@@ -175,12 +175,12 @@ private:
     DFontSizeManager::SizeType m_SizeType = DFontSizeManager::T8;
 };
 
-class CMonthSchceduleWidgetItem :public DragInfoItem
+class CMonthScheduleWidgetItem :public DragInfoItem
 {
     Q_OBJECT
 public:
-    explicit CMonthSchceduleWidgetItem(QRect rect,QGraphicsItem  *parent = nullptr, int edittype = 0);
-    ~CMonthSchceduleWidgetItem() override;
+    explicit CMonthScheduleWidgetItem(QRect rect,QGraphicsItem  *parent = nullptr, int edittype = 0);
+    ~CMonthScheduleWidgetItem() override;
     QPixmap getPixmap();
 
 private:
@@ -189,4 +189,4 @@ private:
     QPoint                                  m_pos;
 };
 
-#endif // CSHCEDULEDAYVIEW_H
+#endif // MONTHSCHEDULEVIEW_H

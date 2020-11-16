@@ -18,9 +18,9 @@
  */
 #include "alldayeventview.h"
 #include "schedulecoormanage.h"
-#include "schcedulectrldlg.h"
-#include "schceduledlg.h"
-#include "myschceduleview.h"
+#include "schedulectrldlg.h"
+#include "scheduledlg.h"
+#include "myscheduleview.h"
 #include "scheduledatamanage.h"
 #include "constants.h"
 
@@ -184,7 +184,7 @@ bool CAllDayEventWeekView::MeetCreationConditions(const QDateTime &date)
 void CAllDayEventWeekView::slotCreate(const QDateTime &date)
 {
     emit signalViewtransparentFrame(1);
-    CSchceduleDlg dlg(1, this);
+    CScheduleDlg dlg(1, this);
     dlg.setDate(date);
     dlg.setAllDay(true);
     if (dlg.exec() == DDialog::Accepted) {
@@ -471,11 +471,11 @@ void CAllDayEventWeekView::mouseDoubleClickEvent(QMouseEvent *event)
     } else {
         emit signalViewtransparentFrame(1);
         m_updateDflag  = false;
-        CMySchceduleView dlg(item->getData(), this);
-        connect(&dlg, &CMySchceduleView::signalsEditorDelete, this, &CAllDayEventWeekView::slotDoubleEvent);
+        CMyScheduleView dlg(item->getData(), this);
+        connect(&dlg, &CMyScheduleView::signalsEditorDelete, this, &CAllDayEventWeekView::slotDoubleEvent);
         dlg.exec();
         emit signalViewtransparentFrame(0);
-        disconnect(&dlg, &CMySchceduleView::signalsEditorDelete, this, &CAllDayEventWeekView::slotDoubleEvent);
+        disconnect(&dlg, &CMyScheduleView::signalsEditorDelete, this, &CAllDayEventWeekView::slotDoubleEvent);
         if (item == nullptr) {
             return;
         }

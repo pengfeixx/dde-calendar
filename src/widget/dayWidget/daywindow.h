@@ -32,7 +32,7 @@ DWIDGET_USE_NAMESPACE
 
 class CDayMonthView;
 class CScheduleView;
-class CSchceduleSearchView;
+class CScheduleSearchView;
 class QHBoxLayout;
 class CustomFrame;
 class CDayWindow: public QMainWindow

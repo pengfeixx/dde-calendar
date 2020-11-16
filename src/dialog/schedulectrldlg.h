@@ -16,8 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef CSCHCEDULECTRLDLG_H
-#define CSCHCEDULECTRLDLG_H
+#ifndef CSCHEDULECTRLDLG_H
+#define CSCHEDULECTRLDLG_H
 
 #include <DDialog>
 #include <DPushButton>
@@ -31,11 +31,11 @@
 
 DWIDGET_USE_NAMESPACE
 
-class CSchceduleCtrlDlg : public DDialog
+class CScheduleCtrlDlg : public DDialog
 {
     Q_OBJECT
 public:
-    explicit CSchceduleCtrlDlg(QWidget *parent = nullptr);
+    explicit CScheduleCtrlDlg(QWidget *parent = nullptr);
     QAbstractButton *addPushButton(QString btName, bool type = false);
     QAbstractButton *addsuggestButton(QString btName, bool type = false);
     QAbstractButton *addWaringButton(QString btName, bool type = false);
@@ -75,4 +75,4 @@ private:
     QVector<QString> str_btName;
 };
 
-#endif // MYSCHCEDULEVIEW_H
+#endif // CSCHEDULECTRLDLG_H

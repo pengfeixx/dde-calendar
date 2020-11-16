@@ -38,8 +38,8 @@ class CWeekHeadView;
 class CaLunarDayInfo;
 class CWeekView;
 class CScheduleView;
-class CSchceduleSearchView;
-class CTodyButton;
+class CScheduleSearchView;
+class CTodayButton;
 class CWeekWindow: public QMainWindow
 {
     Q_OBJECT
@@ -227,7 +227,7 @@ protected:
 private:
     CWeekHeadView *m_weekHeadView = nullptr; //周视图头
     DFrame *m_contentBackground = nullptr;
-    CTodyButton       *m_today = nullptr;
+    CTodayButton       *m_today = nullptr;
     QDate              m_currentdate;
     QLabel *m_YearLabel = nullptr;
     QLabel *m_YearLunarLabel = nullptr;

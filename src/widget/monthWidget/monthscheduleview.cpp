@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "monthschceduleview.h"
+#include "monthscheduleview.h"
 #include "SchecduleRemindWidget.h"
 #include "monthview.h"
-#include "schcedulectrldlg.h"
-#include "schceduledlg.h"
-#include "myschceduleview.h"
+#include "schedulectrldlg.h"
+#include "scheduledlg.h"
+#include "myscheduleview.h"
 
 #include <DMessageBox>
 #include <DPushButton>
@@ -42,19 +42,19 @@
 #include <QDebug>
 
 DGUI_USE_NAMESPACE
-CMonthSchceduleWidgetItem::CMonthSchceduleWidgetItem(QRect rect, QGraphicsItem *parent, int edittype)
+CMonthScheduleWidgetItem::CMonthScheduleWidgetItem(QRect rect, QGraphicsItem *parent, int edittype)
     : DragInfoItem(rect, parent)
     , m_pos(13, 5)
 {
     Q_UNUSED(edittype);
 }
 
-CMonthSchceduleWidgetItem::~CMonthSchceduleWidgetItem()
+CMonthScheduleWidgetItem::~CMonthScheduleWidgetItem()
 {
 
 }
 
-QPixmap CMonthSchceduleWidgetItem::getPixmap()
+QPixmap CMonthScheduleWidgetItem::getPixmap()
 {
     QPixmap pixmap(this->rect().size().toSize());
     pixmap.fill(Qt::transparent);
@@ -65,7 +65,7 @@ QPixmap CMonthSchceduleWidgetItem::getPixmap()
     return  pixmap;
 }
 
-void CMonthSchceduleWidgetItem::paintBackground(QPainter *painter, const QRectF &rect, const int isPixMap)
+void CMonthScheduleWidgetItem::paintBackground(QPainter *painter, const QRectF &rect, const int isPixMap)
 {
     qreal labelwidth = rect.width();
     qreal labelheight = rect.height();
@@ -185,43 +185,43 @@ void CMonthSchceduleWidgetItem::paintBackground(QPainter *painter, const QRectF 
     }
 }
 
-CMonthSchceduleNumButton::CMonthSchceduleNumButton(QGraphicsItem *parent)
+CMonthScheduleNumButton::CMonthScheduleNumButton(QGraphicsItem *parent)
     : QGraphicsRectItem(parent)
 {
 
 }
 
-CMonthSchceduleNumButton::~CMonthSchceduleNumButton()
+CMonthScheduleNumButton::~CMonthScheduleNumButton()
 {
 
 }
 
-void CMonthSchceduleNumButton::setColor(QColor color1, QColor color2, bool GradientFlag)
+void CMonthScheduleNumButton::setColor(QColor color1, QColor color2, bool GradientFlag)
 {
     m_color1 = color1;
     m_color2 = color2;
     m_GradientFlag = GradientFlag;
 }
 
-void CMonthSchceduleNumButton::setText( QColor tcolor, QFont font, QPoint pos)
+void CMonthScheduleNumButton::setText( QColor tcolor, QFont font, QPoint pos)
 {
     Q_UNUSED(pos);
     m_textcolor = tcolor;
     m_font = font;
 }
 
-void CMonthSchceduleNumButton::setSizeType(DFontSizeManager::SizeType sizeType)
+void CMonthScheduleNumButton::setSizeType(DFontSizeManager::SizeType sizeType)
 {
     m_SizeType = sizeType;
 }
 
-void CMonthSchceduleNumButton::setTransparentB(bool t, QColor tcolor)
+void CMonthScheduleNumButton::setTransparentB(bool t, QColor tcolor)
 {
     m_transparentcolor = tcolor;
     m_transparentf = t;
 }
 
-void CMonthSchceduleNumButton::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void CMonthScheduleNumButton::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     Q_UNUSED(option);
     Q_UNUSED(widget);
@@ -281,13 +281,13 @@ void CMonthSchceduleNumButton::paint(QPainter *painter, const QStyleOptionGraphi
     }
 }
 
-void CMonthSchceduleView::setTheMe(int type)
+void CMonthScheduleView::setTheMe(int type)
 {
     Q_UNUSED(type);
     updateData();
 }
 
-CMonthSchceduleView::CMonthSchceduleView(QWidget *parent, QGraphicsScene *scene)
+CMonthScheduleView::CMonthScheduleView(QWidget *parent, QGraphicsScene *scene)
     : QObject(parent)
     , m_Scene(scene)
 {
@@ -298,12 +298,12 @@ CMonthSchceduleView::CMonthSchceduleView(QWidget *parent, QGraphicsScene *scene)
     slotFontChange();
 }
 
-CMonthSchceduleView::~CMonthSchceduleView()
+CMonthScheduleView::~CMonthScheduleView()
 {
 
 }
 
-void CMonthSchceduleView::setallsize(int w, int h, int left, int top, int buttom, int itemHeight)
+void CMonthScheduleView::setallsize(int w, int h, int left, int top, int buttom, int itemHeight)
 {
     m_width = w;
     m_height = h;
@@ -313,25 +313,25 @@ void CMonthSchceduleView::setallsize(int w, int h, int left, int top, int buttom
     m_cNum = static_cast<int>(((m_height - m_topMagin - m_buttommagin) / 6.0 + 0.5  - 27) / (itemHeight + 1));
 }
 
-void CMonthSchceduleView::setData(QVector<ScheduleDateRangeInfo> &data, int currentMonth)
+void CMonthScheduleView::setData(QVector<ScheduleDateRangeInfo> &data, int currentMonth)
 {
     m_data = data;
     m_currentMonth = currentMonth;
     updateData();
 }
 
-void CMonthSchceduleView::slotdeleteitem( CMonthSchceduleWidgetItem *item)
+void CMonthScheduleView::slotdeleteitem( CMonthScheduleWidgetItem *item)
 {
     emit signalsUpdateShcedule(item->getData().id);
 }
 
-void CMonthSchceduleView::slotedititem(CMonthSchceduleWidgetItem *item, int type)
+void CMonthScheduleView::slotedititem(CMonthScheduleWidgetItem *item, int type)
 {
     Q_UNUSED(type);
     emit signalsUpdateShcedule(item->getData().id);
 }
 
-void CMonthSchceduleView::slotFontChange()
+void CMonthScheduleView::slotFontChange()
 {
     QFont font;
     DFontSizeManager::instance()->setFontGenericPixelSize(
@@ -370,7 +370,7 @@ bool MScheduleDaysThan(const MScheduleDateRangeInfo &s1, const MScheduleDateRang
 {
     return s1.bdate.daysTo(s1.edate) > s2.bdate.daysTo(s2.edate);
 }
-void CMonthSchceduleView::updateData()
+void CMonthScheduleView::updateData()
 {
     //保护数据防止越界
     if (m_data.count() != DDEMonthCalendar::ItemSizeofMonthDay || m_cNum < 1)
@@ -391,7 +391,7 @@ void CMonthSchceduleView::updateData()
     return;
 }
 
-void CMonthSchceduleView::updateHigh()
+void CMonthScheduleView::updateHigh()
 {
     for (int j = 0 ; j < m_weekSchedule.size(); ++j) {
         for (int i = 0; i < m_weekSchedule[j]->getScheduleShowItem().count(); i++) {
@@ -400,7 +400,7 @@ void CMonthSchceduleView::updateHigh()
     }
 }
 
-QVector<QGraphicsRectItem *> CMonthSchceduleView::getScheduleShowItem() const
+QVector<QGraphicsRectItem *> CMonthScheduleView::getScheduleShowItem() const
 {
     QVector<QGraphicsRectItem *>   m_scheduleShowItem;
 
@@ -413,7 +413,7 @@ QVector<QGraphicsRectItem *> CMonthSchceduleView::getScheduleShowItem() const
     return m_scheduleShowItem;
 }
 
-void CMonthSchceduleView::updateDate(const ScheduleDtailInfo &info)
+void CMonthScheduleView::updateDate(const ScheduleDtailInfo &info)
 {
     for (int i = 0 ; i < m_weekSchedule.size(); ++i) {
         if (m_weekSchedule.at(i)->addData(info)) {
@@ -426,7 +426,7 @@ void CMonthSchceduleView::updateDate(const ScheduleDtailInfo &info)
     }
 }
 
-void CMonthSchceduleView::changeDate(const ScheduleDtailInfo &info)
+void CMonthScheduleView::changeDate(const ScheduleDtailInfo &info)
 {
     for (int i = 0 ; i < m_weekSchedule.size(); ++i) {
         m_weekSchedule.at(i)->changeDate(info);
@@ -435,7 +435,7 @@ void CMonthSchceduleView::changeDate(const ScheduleDtailInfo &info)
     }
 }
 
-void CMonthSchceduleView::updateDate(const int row, const ScheduleDtailInfo &info)
+void CMonthScheduleView::updateDate(const int row, const ScheduleDtailInfo &info)
 {
     for (int i = 0 ; i < m_weekSchedule.size(); ++i) {
         if ( row ==i) {
@@ -448,7 +448,7 @@ void CMonthSchceduleView::updateDate(const int row, const ScheduleDtailInfo &inf
         updateDateShow(mSchedule,m_weekSchedule[i]->getScheduleShowItem());
     }
 }
-void CMonthSchceduleView::updateDateShow(QVector<QVector<MScheduleDateRangeInfo> > &vCMDaySchedule, QVector<QGraphicsRectItem *> &schudeleShowItem)
+void CMonthScheduleView::updateDateShow(QVector<QVector<MScheduleDateRangeInfo> > &vCMDaySchedule, QVector<QGraphicsRectItem *> &schudeleShowItem)
 {
     for (int i = 0; i < vCMDaySchedule.count(); i++) {
         for (int j = 0; j < vCMDaySchedule[i].count(); j++) {
@@ -461,14 +461,14 @@ void CMonthSchceduleView::updateDateShow(QVector<QVector<MScheduleDateRangeInfo>
     }
 }
 
-void CMonthSchceduleView::createScheduleItemWidget(MScheduleDateRangeInfo info, int cnum,QVector<QGraphicsRectItem *> &schudeleShowItem)
+void CMonthScheduleView::createScheduleItemWidget(MScheduleDateRangeInfo info, int cnum,QVector<QGraphicsRectItem *> &schudeleShowItem)
 {
     ScheduleDtailInfo gd = info.tData;
     QPoint pos;
     int fw;
     int fh;
     computePos(cnum, info.bdate, info.edate, pos, fw, fh);
-    CMonthSchceduleWidgetItem *gwi = new CMonthSchceduleWidgetItem(QRect(pos.x(),pos.y(),fw,fh),nullptr);
+    CMonthScheduleWidgetItem *gwi = new CMonthScheduleWidgetItem(QRect(pos.x(),pos.y(),fw,fh),nullptr);
     m_Scene->addItem(gwi);
 
     QFont font;
@@ -480,10 +480,10 @@ void CMonthSchceduleView::createScheduleItemWidget(MScheduleDateRangeInfo info, 
     schudeleShowItem.append(gwi);
 }
 
-void CMonthSchceduleView::createScheduleNumWidget(MScheduleDateRangeInfo info, int cnum,QVector<QGraphicsRectItem *> &schudeleShowItem)
+void CMonthScheduleView::createScheduleNumWidget(MScheduleDateRangeInfo info, int cnum,QVector<QGraphicsRectItem *> &schudeleShowItem)
 {
     int type = CScheduleDataManage::getScheduleDataManage()->getTheme();
-    CMonthSchceduleNumButton *gwi = new CMonthSchceduleNumButton(nullptr);
+    CMonthScheduleNumButton *gwi = new CMonthScheduleNumButton(nullptr);
     QPoint pos;
     int fw;
     int fh;
@@ -516,13 +516,13 @@ void CMonthSchceduleView::createScheduleNumWidget(MScheduleDateRangeInfo info, i
         TransparentC.setAlphaF(0.05);
         gwi->setTransparentB(true, TransparentC);
     }
-    connect(gwi, &CMonthSchceduleNumButton::signalsCurrentScheduleDate, this, &CMonthSchceduleView::signalsCurrentScheduleDate);
-    connect(gwi, &CMonthSchceduleNumButton::signalPressScheduleShow, this, &CMonthSchceduleView::signalPressScheduleShow);
+    connect(gwi, &CMonthScheduleNumButton::signalsCurrentScheduleDate, this, &CMonthScheduleView::signalsCurrentScheduleDate);
+    connect(gwi, &CMonthScheduleNumButton::signalPressScheduleShow, this, &CMonthScheduleView::signalPressScheduleShow);
 
     schudeleShowItem.append(gwi);
 }
 
-void CMonthSchceduleView::computePos(int cnum, QDate bgeindate, QDate enddate, QPoint &pos, int &fw, int &fh)
+void CMonthScheduleView::computePos(int cnum, QDate bgeindate, QDate enddate, QPoint &pos, int &fw, int &fh)
 {
     int brow = static_cast<int>((m_beginDate.daysTo(bgeindate)) / DDEMonthCalendar::AFewDaysofWeek);
     int bcol = (m_beginDate.daysTo(bgeindate)) % DDEMonthCalendar::AFewDaysofWeek;

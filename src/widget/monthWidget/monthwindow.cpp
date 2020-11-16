@@ -21,8 +21,8 @@
 #include "monthdayview.h"
 #include "constants.h"
 #include "calendardbus.h"
-#include "schcedulesearchview.h"
-#include "todybutton.h"
+#include "schedulesearchview.h"
+#include "todaybutton.h"
 #include "scheduledatamanage.h"
 
 #include <DPalette>
@@ -42,7 +42,7 @@ CMonthWindow::CMonthWindow(QWidget *parent)
 
 CMonthWindow::~CMonthWindow()
 {
-    disconnect(m_today, &CTodyButton::clicked, this, &CMonthWindow::slottoday);
+    disconnect(m_today, &CTodayButton::clicked, this, &CMonthWindow::slottoday);
     delete  m_monthDayView;
     m_monthDayView = nullptr;
     delete  m_monthView;
@@ -196,7 +196,7 @@ void CMonthWindow::initUI()
     m_contentBackground->setAutoFillBackground(true);
     m_contentBackground->setPalette(anipa);
 
-    m_today = new CTodyButton;
+    m_today = new CTodayButton;
     m_today->setText(QCoreApplication::translate("today", "Today", "Today"));
     m_today->setFixedSize(DDEMonthCalendar::MTodayWindth, DDEMonthCalendar::MTodayHeight);
     QColor todayColor = CScheduleDataManage::getScheduleDataManage()->getSystemActiveColor();
@@ -293,7 +293,7 @@ void CMonthWindow::initConnection()
     connect(m_monthView, &CMonthView::signalcurrentLunarDateChanged, this, &CMonthWindow::slotcurrentDateLunarChanged);
     connect(m_monthView, &CMonthView::signalcurrentDateChanged, this, &CMonthWindow::slotcurrentDateChanged);
     connect(m_monthDayView, &CMonthDayView::signalsSelectDate, this, &CMonthWindow::slotSelectedMonth);
-    connect(m_monthView, &CMonthView::signalsSchceduleUpdate, this, &CMonthWindow::slotTransitSchedule);
+    connect(m_monthView, &CMonthView::signalsScheduleUpdate, this, &CMonthWindow::slotTransitSchedule);
     connect(m_monthDayView, &CMonthDayView::signalsCurrentDate, this, &CMonthWindow::slotSelectedMonth);
     connect(m_monthView, &CMonthView::signalsCurrentScheduleDate, this, &CMonthWindow::signalsCurrentScheduleDate);
     connect(m_monthView, &CMonthView::signalViewtransparentFrame, this, &CMonthWindow::signalViewtransparentFrame);
@@ -355,7 +355,7 @@ void CMonthWindow::slotAngleDelta(int delta)
 void CMonthWindow::slotupdateSchedule(int id)
 {
     Q_UNUSED(id);
-    m_monthView->slotSchceduleUpdate();
+    m_monthView->slotScheduleUpdate();
 }
 
 void CMonthWindow::slotTransitSchedule(int id)

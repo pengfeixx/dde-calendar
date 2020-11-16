@@ -37,8 +37,8 @@
 DWIDGET_USE_NAMESPACE
 
 class CDayGraphicsItem;
-class CMonthSchceduleWidgetItem;
-class CMonthSchceduleView;
+class CMonthScheduleWidgetItem;
+class CMonthScheduleView;
 
 class CMonthGraphiview : public DragInfoGraphicsView
 {
@@ -94,7 +94,7 @@ private:
 signals:
     void signalFontChange();
     void signalsViewSelectDate(QDate date);
-    void signalsSchceduleUpdate(const int id = 0);
+    void signalsScheduleUpdate(const int id = 0);
 public slots:
     void slotCreate(const QDateTime &date) override;
     void slotdelete(const int id =0);
@@ -104,7 +104,7 @@ private:
     QMap<QDate, CaLunarDayInfo> *m_lunarCache = nullptr;
     QVector<FestivalInfo>               m_festivallist;
     int                                 m_currentMonth;
-    CMonthSchceduleView *m_MonthSchceduleView = nullptr;
+    CMonthScheduleView *m_MonthScheduleView = nullptr;
     QVector<ScheduleDateRangeInfo>      m_shceludelistdata;
 };
 

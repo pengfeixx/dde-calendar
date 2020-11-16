@@ -16,8 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef SCHCEDULESEARCHVIEW_H
-#define SCHCEDULESEARCHVIEW_H
+#ifndef SCHEDULESEARCHVIEW_H
+#define SCHEDULESEARCHVIEW_H
 
 #include "schedulestructs.h"
 
@@ -29,14 +29,14 @@
 DWIDGET_USE_NAMESPACE
 class QVBoxLayout;
 class CScheduleListWidget;
-class CSchceduleSearchItem;
-class CSchceduleSearchDateItem;
-class CSchceduleSearchView : public DWidget
+class CScheduleSearchItem;
+class CScheduleSearchDateItem;
+class CScheduleSearchView : public DWidget
 {
     Q_OBJECT
 public:
-    CSchceduleSearchView(QWidget *parent = nullptr);
-    ~CSchceduleSearchView() override;
+    CScheduleSearchView(QWidget *parent = nullptr);
+    ~CScheduleSearchView() override;
     void setTheMe(int type = 0);
     void clearSearch();
     void setMaxWidth(const int w);
@@ -47,8 +47,8 @@ signals:
     void signalViewtransparentFrame(int type);
     void signalScheduleHide();
 public slots:
-    void slotdeleteitem(CSchceduleSearchItem *item);
-    void slotedititem(CSchceduleSearchItem *item);
+    void slotdeleteitem(CScheduleSearchItem *item);
+    void slotedititem(CScheduleSearchItem *item);
     void slotsetSearch(QString str);
     void slotSelectDate(QDate date);
     void slotSelectSchedule(const ScheduleDtailInfo &scheduleInfo);
@@ -87,12 +87,12 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;
 };
 
-class CSchceduleSearchItem : public DLabel
+class CScheduleSearchItem : public DLabel
 {
     Q_OBJECT
     enum MouseStatus {M_NONE,M_PRESS,M_HOVER};
 public:
-    explicit CSchceduleSearchItem(QWidget *parent = nullptr);
+    explicit CScheduleSearchItem(QWidget *parent = nullptr);
     void setBackgroundColor(QColor color1);
     void setSplitLineColor(QColor color1);
     void setText(QColor tcolor, QFont font);
@@ -105,8 +105,8 @@ public:
         return m_ScheduleInfo;
     }
 signals:
-    void signalsDelete(CSchceduleSearchItem *item);
-    void signalsEdit(CSchceduleSearchItem *item);
+    void signalsDelete(CScheduleSearchItem *item);
+    void signalsEdit(CScheduleSearchItem *item);
     void signalSelectDate(QDate date);
     void signalSelectSchedule(const ScheduleDtailInfo &scheduleInfo);
     void signalViewtransparentFrame(int type);
@@ -148,12 +148,12 @@ private:
     const int m_radius = 8;
     const int m_borderframew = 0;
 };
-class CSchceduleSearchDateItem : public DLabel
+class CScheduleSearchDateItem : public DLabel
 {
     Q_OBJECT
 
 public:
-    explicit CSchceduleSearchDateItem(QWidget *parent = nullptr);
+    explicit CScheduleSearchDateItem(QWidget *parent = nullptr);
     void setBackgroundColor(QColor color1);
     void setText(QColor tcolor, QFont font);
     void setDate(QDate  date);
@@ -169,4 +169,4 @@ private:
     QFont                 m_font;
     QDate                 m_date;
 };
-#endif // CSHCEDULEDAYVIEW_H
+#endif // SCHEDULESEARCHVIEW_H

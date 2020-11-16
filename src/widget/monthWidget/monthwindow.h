@@ -31,11 +31,11 @@
 #include <QSpacerItem>
 
 DWIDGET_USE_NAMESPACE
-class CSchceduleSearchView;
+class CScheduleSearchView;
 class CMonthView;
 class CMonthDayView;
 class QHBoxLayout;
-class CTodyButton;
+class CTodayButton;
 class CMonthWindow: public QMainWindow
 {
     Q_OBJECT
@@ -210,7 +210,7 @@ private:
     CMonthView *m_monthView = nullptr;
     CMonthDayView *m_monthDayView = nullptr;
     DFrame *m_contentBackground = nullptr;
-    CTodyButton *m_today = nullptr;
+    CTodayButton *m_today = nullptr;
     QDate                   m_currentdate;
     QLabel *m_YearLabel = nullptr;
     QLabel *m_YearLunarLabel = nullptr;

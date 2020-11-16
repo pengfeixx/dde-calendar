@@ -39,7 +39,7 @@ DWIDGET_USE_NAMESPACE
 
 class CYearView;
 class CaLunarDayInfo;
-class CSchceduleSearchView;
+class CScheduleSearchView;
 class YearFrame;
 class CustomFrame;
 
@@ -131,9 +131,9 @@ signals:
      */
     void signalCurrentDate(QDate date);
     /**
-     * @brief signalupdateschcedule 更新日程的信号
+     * @brief signalupdateschedule 更新日程的信号
      */
-    void signalupdateschcedule();
+    void signalupdateschedule();
 private slots:
     /**
      * @brief slotprev 通过鼠标点击左箭头切换到上一年，刷新年视图下的所有内容，并隐藏日程展示浮窗。
@@ -159,9 +159,9 @@ private slots:
     void slotTransitSearchSchedule(int id = 0);
 public slots:
     /**
-     * @brief slotSetSchceduleHide 隐藏日程浮框
+     * @brief slotSetScheduleHide 隐藏日程浮框
      */
-    void slotSetSchceduleHide();
+    void slotSetScheduleHide();
     /**
      * @brief slotReturnTodayUpdate
      */
@@ -329,9 +329,9 @@ signals:
      */
     void signalUpdateYearDate(const QDate &date);
     /**
-     * @brief signalupdateschcedule 更新日程的信号
+     * @brief signalupdateschedule 更新日程的信号
      */
-    void signalupdateschcedule();
+    void signalupdateschedule();
 public slots:
     /**
      * @brief slotHideInfo 隐藏日程浮框
@@ -348,9 +348,9 @@ public slots:
      */
     void slotupdateSchedule(const int id);
     /**
-     * @brief slotSetSchceduleHide 隐藏日程浮框
+     * @brief slotSetScheduleHide 隐藏日程浮框
      */
-    void slotSetSchceduleHide();
+    void slotSetScheduleHide();
     /**
      * @brief slotcurrentDateChanged 设置当前时间
      * @param date 时间

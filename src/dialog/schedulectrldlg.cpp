@@ -16,8 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "schcedulectrldlg.h"
-#include "schceduledlg.h"
+#include "schedulectrldlg.h"
+#include "scheduledlg.h"
 #include "scheduledatamanage.h"
 #include "cdynamicicon.h"
 
@@ -30,7 +30,7 @@
 #include <QVBoxLayout>
 
 DGUI_USE_NAMESPACE
-CSchceduleCtrlDlg::CSchceduleCtrlDlg(QWidget *parent)
+CScheduleCtrlDlg::CScheduleCtrlDlg(QWidget *parent)
     : DDialog(parent)
 {
     setContentsMargins(0, 0, 0, 0);
@@ -40,7 +40,7 @@ CSchceduleCtrlDlg::CSchceduleCtrlDlg(QWidget *parent)
     setFocusPolicy(Qt::ClickFocus);
 }
 
-void CSchceduleCtrlDlg::initUI()
+void CScheduleCtrlDlg::initUI()
 {
     //在点击任何对话框上的按钮后不关闭对话框，保证关闭子窗口时不被一起关掉
     setOnButtonClickedClose(false);
@@ -95,16 +95,16 @@ void CSchceduleCtrlDlg::initUI()
     setFocus();
 }
 
-void CSchceduleCtrlDlg::initConnection()
+void CScheduleCtrlDlg::initConnection()
 {
     //关联主题信号
     QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged,
                      this,
-                     &CSchceduleCtrlDlg::setTheMe);
-    connect(this, &DDialog::buttonClicked, this, &CSchceduleCtrlDlg::buttonJudge); //连接信号和槽
+                     &CScheduleCtrlDlg::setTheMe);
+    connect(this, &DDialog::buttonClicked, this, &CScheduleCtrlDlg::buttonJudge); //连接信号和槽
 }
 
-void CSchceduleCtrlDlg::setTheMe(const int type)
+void CScheduleCtrlDlg::setTheMe(const int type)
 {
     //标题文字颜色
     QColor titleColor;
@@ -124,7 +124,7 @@ void CSchceduleCtrlDlg::setTheMe(const int type)
     setPaletteTextColor(m_seconLabel,contentColor);
 }
 
-void CSchceduleCtrlDlg::setPaletteTextColor(QWidget *widget, QColor textColor)
+void CScheduleCtrlDlg::setPaletteTextColor(QWidget *widget, QColor textColor)
 {
     //如果为空指针则退出
     if(nullptr == widget)
@@ -135,7 +135,7 @@ void CSchceduleCtrlDlg::setPaletteTextColor(QWidget *widget, QColor textColor)
     widget->setPalette(palette);
 }
 
-void CSchceduleCtrlDlg::changeEvent(QEvent *event)
+void CScheduleCtrlDlg::changeEvent(QEvent *event)
 {
     Q_UNUSED(event)
     QFont font;
@@ -159,13 +159,13 @@ void CSchceduleCtrlDlg::changeEvent(QEvent *event)
     setFixedHeight(36 + 48 + height_firstLabel + height_seconLabel + 30);
 }
 
-void CSchceduleCtrlDlg::buttonJudge(int id)
+void CScheduleCtrlDlg::buttonJudge(int id)
 {
     m_id = id;
     accept();
 }
 
-QAbstractButton *CSchceduleCtrlDlg::addPushButton(QString btName, bool type)
+QAbstractButton *CScheduleCtrlDlg::addPushButton(QString btName, bool type)
 {
     addButton(btName, false, DDialog::ButtonNormal);
     int button_index = getButtonIndexByText(btName);
@@ -185,7 +185,7 @@ QAbstractButton *CSchceduleCtrlDlg::addPushButton(QString btName, bool type)
     return button;
 }
 
-QAbstractButton *CSchceduleCtrlDlg::addsuggestButton(QString btName, bool type)
+QAbstractButton *CScheduleCtrlDlg::addsuggestButton(QString btName, bool type)
 {
     addButton(btName,false,DDialog::ButtonRecommend);
     int button_index = getButtonIndexByText(btName);
@@ -205,7 +205,7 @@ QAbstractButton *CSchceduleCtrlDlg::addsuggestButton(QString btName, bool type)
     return suggestButton;
 }
 
-QAbstractButton *CSchceduleCtrlDlg::addWaringButton(QString btName, bool type)
+QAbstractButton *CScheduleCtrlDlg::addWaringButton(QString btName, bool type)
 {
     addButton(btName,false,DDialog::ButtonWarning);
     int button_index = getButtonIndexByText(btName);
@@ -225,19 +225,19 @@ QAbstractButton *CSchceduleCtrlDlg::addWaringButton(QString btName, bool type)
     return suggestButton;
 }
 
-void CSchceduleCtrlDlg::setText(QString str)
+void CScheduleCtrlDlg::setText(QString str)
 {
     m_firstLabel->setText(str);
     m_firstLabel->setToolTip(str);
 }
 
-void CSchceduleCtrlDlg::setInformativeText(QString str)
+void CScheduleCtrlDlg::setInformativeText(QString str)
 {
     m_seconLabel->setText(str);
     m_seconLabel->setToolTip(str);
 }
 
-int CSchceduleCtrlDlg::clickButton()
+int CScheduleCtrlDlg::clickButton()
 {
     if (m_id < 0 || m_id > buttonCount() - 1) return buttonCount();
     return  m_id;

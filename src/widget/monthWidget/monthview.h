@@ -82,10 +82,10 @@ signals:
      */
     void signalcurrentDateChanged(QDate date);
     /**
-     * @brief signalsSchceduleUpdate 更新日程的信号
+     * @brief signalsScheduleUpdate 更新日程的信号
      * @param id
      */
-    void signalsSchceduleUpdate(int id = 0);
+    void signalsScheduleUpdate(int id = 0);
     /**
      * @brief signalsCurrentScheduleDate
      * @param date
@@ -113,9 +113,9 @@ public slots:
      */
     void setLunarVisible(bool visible);
     /**
-     * @brief slotSchceduleUpdate 更新日程信息
+     * @brief slotScheduleUpdate 更新日程信息
      */
-    void slotSchceduleUpdate();
+    void slotScheduleUpdate();
     /**
      * @brief setSelectSchedule 设置选择的日程
      * @param scheduleInfo 日程信息

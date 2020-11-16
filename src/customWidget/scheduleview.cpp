@@ -19,7 +19,7 @@
 #include "scheduleview.h"
 #include "alldayeventview.h"
 #include "graphicsview.h"
-#include "schceduledlg.h"
+#include "scheduledlg.h"
 #include "schedulecoormanage.h"
 #include "scheduledatamanage.h"
 #include "constants.h"

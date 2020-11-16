@@ -19,10 +19,10 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "monthgraphiview.h"
-#include "../widget/monthWidget/monthschceduleview.h"
-#include "../dialog/schceduledlg.h"
-#include "../dialog/schcedulectrldlg.h"
-#include "../dialog/myschceduleview.h"
+#include "../widget/monthWidget/monthscheduleview.h"
+#include "../dialog/scheduledlg.h"
+#include "../dialog/schedulectrldlg.h"
+#include "../dialog/myscheduleview.h"
 #include "../widget/touchgestureoperation.h"
 #include "constants.h"
 
@@ -43,9 +43,9 @@ CMonthGraphiview::CMonthGraphiview(QWidget *parent)
             &QShortcut::activated, this,
             &CMonthGraphiview::slotDeleteItem);
 
-    m_MonthSchceduleView = new CMonthSchceduleView(this,m_Scene);
+    m_MonthScheduleView = new CMonthScheduleView(this,m_Scene);
     connect(this,&CMonthGraphiview::signalFontChange,
-            m_MonthSchceduleView,&CMonthSchceduleView::slotFontChange);
+            m_MonthScheduleView,&CMonthScheduleView::slotFontChange);
 
     for (int i = 0; i < DDEMonthCalendar::ItemSizeofMonthDay; ++i) {
         CDayGraphicsItem *item = new CDayGraphicsItem();
@@ -59,7 +59,7 @@ CMonthGraphiview::CMonthGraphiview(QWidget *parent)
 
 CMonthGraphiview::~CMonthGraphiview()
 {
-    delete m_MonthSchceduleView;
+    delete m_MonthScheduleView;
 
     for (int i = 0; i < m_DayItem.size(); ++i) {
         CDayGraphicsItem *item = m_DayItem.at(i);
@@ -78,7 +78,7 @@ void CMonthGraphiview::setTheMe(int type)
         m_DayItem.at(i)->setTheMe(type);
     }
 
-    m_MonthSchceduleView->setTheMe(type);
+    m_MonthScheduleView->setTheMe(type);
 }
 
 void CMonthGraphiview::setDate(const QDate date[42])
@@ -118,10 +118,10 @@ void CMonthGraphiview::setScheduleInfo(const QVector<ScheduleDateRangeInfo> &inf
 
 void CMonthGraphiview::setSelectSchedule(const ScheduleDtailInfo &scheduleInfo)
 {
-    QVector<QGraphicsRectItem *> mscheduleShowBtn = m_MonthSchceduleView->getScheduleShowItem();
+    QVector<QGraphicsRectItem *> mscheduleShowBtn = m_MonthScheduleView->getScheduleShowItem();
 
     for (int i = 0; i < mscheduleShowBtn.size(); ++i) {
-        CMonthSchceduleWidgetItem *item = dynamic_cast<CMonthSchceduleWidgetItem *>(mscheduleShowBtn.at(i));
+        CMonthScheduleWidgetItem *item = dynamic_cast<CMonthScheduleWidgetItem *>(mscheduleShowBtn.at(i));
 
         if (item == nullptr) continue;
 
@@ -182,11 +182,11 @@ void CMonthGraphiview::updateLunar()
 
 void CMonthGraphiview::updateInfo()
 {
-    int h = m_MonthSchceduleView->getSchceduleHeight();
-    m_MonthSchceduleView->setallsize(this->viewport()->width(),
+    int h = m_MonthScheduleView->getScheduleHeight();
+    m_MonthScheduleView->setallsize(this->viewport()->width(),
                                      this->viewport()->height(),
                                      0, 0, 0, h);
-    m_MonthSchceduleView->setData(m_shceludelistdata, 1);
+    m_MonthScheduleView->setData(m_shceludelistdata, 1);
 
     switch (m_DragStatus) {
     case IsCreate:
@@ -278,14 +278,14 @@ void CMonthGraphiview::upDateInfoShow(const CMonthGraphiview::DragStatus &status
         break;
     case ChangeBegin:
     case ChangeEnd: {
-        m_MonthSchceduleView->changeDate(info);
+        m_MonthScheduleView->changeDate(info);
     }
     break;
     case ChangeWhole: {
     }
     break;
     case IsCreate:
-        m_MonthSchceduleView->updateDate(info);
+        m_MonthScheduleView->updateDate(info);
         break;
     }
 }
@@ -325,7 +325,7 @@ void CMonthGraphiview::slideEvent(QPointF &startPoint, QPointF &stopPort)
 void CMonthGraphiview::updateScheduleInfo(const ScheduleDtailInfo &info)
 {
     if (info.rpeat >0) {
-        CSchceduleDlg::ChangeRecurInfo(this,info,
+        CScheduleDlg::ChangeRecurInfo(this,info,
                                        m_PressScheduleInfo,m_themetype);
     } else {
         CScheduleDataManage::getScheduleDataManage()->getscheduleDataCtrl()->updateScheduleInfo(
@@ -338,7 +338,7 @@ void CMonthGraphiview::DeleteItem(const ScheduleDtailInfo &info)
     emit signalViewtransparentFrame(1);
 
     if (info.rpeat == 0) {
-        CSchceduleCtrlDlg msgBox(this);
+        CScheduleCtrlDlg msgBox(this);
         msgBox.setText(tr("You are deleting an event."));
         msgBox.setInformativeText(tr("Are you sure you want to delete this event?"));
         msgBox.addPushButton(tr("Cancel"), true);
@@ -353,7 +353,7 @@ void CMonthGraphiview::DeleteItem(const ScheduleDtailInfo &info)
         }
     } else {
         if (info.RecurID == 0) {
-            CSchceduleCtrlDlg msgBox(this);
+            CScheduleCtrlDlg msgBox(this);
             msgBox.setText(tr("You are deleting an event."));
             msgBox.setInformativeText(tr("Do you want to delete all occurrences of this event, or only the selected occurrence?"));
             msgBox.addPushButton(tr("Cancel"));
@@ -374,7 +374,7 @@ void CMonthGraphiview::DeleteItem(const ScheduleDtailInfo &info)
                 CScheduleDataManage::getScheduleDataManage()->getscheduleDataCtrl()->updateScheduleInfo(newschedule);
             }
         } else {
-            CSchceduleCtrlDlg msgBox(this);
+            CScheduleCtrlDlg msgBox(this);
             msgBox.setText(tr("You are deleting an event."));
             msgBox.setInformativeText(tr("Do you want to delete this and all future occurrences of this event, or only the selected occurrence?"));
             msgBox.addPushButton(tr("Cancel"));
@@ -416,7 +416,7 @@ void CMonthGraphiview::mouseDoubleClickEvent(QMouseEvent *event)
     }
 
     QGraphicsItem *listItem =itemAt(event->pos());
-    CMonthSchceduleNumButton *item = dynamic_cast<CMonthSchceduleNumButton *>(listItem);
+    CMonthScheduleNumButton *item = dynamic_cast<CMonthScheduleNumButton *>(listItem);
 
     if (item!= nullptr) {
         //双击切换视图
@@ -426,12 +426,12 @@ void CMonthGraphiview::mouseDoubleClickEvent(QMouseEvent *event)
         return;
     }
 
-    CMonthSchceduleWidgetItem *infoitem = dynamic_cast<CMonthSchceduleWidgetItem *>(listItem);
+    CMonthScheduleWidgetItem *infoitem = dynamic_cast<CMonthScheduleWidgetItem *>(listItem);
 
     if (infoitem != nullptr) {
-        CMySchceduleView dlg(infoitem->getData(), this);
-        connect(&dlg, &CMySchceduleView::signalsEditorDelete, this, &CMonthGraphiview::signalsUpdateShcedule);
-        connect(&dlg, &CMySchceduleView::signalViewtransparentFrame,
+        CMyScheduleView dlg(infoitem->getData(), this);
+        connect(&dlg, &CMyScheduleView::signalsEditorDelete, this, &CMonthGraphiview::signalsUpdateShcedule);
+        connect(&dlg, &CMyScheduleView::signalViewtransparentFrame,
                 this, &CMonthGraphiview::signalViewtransparentFrame);
         dlg.exec();
         return;
@@ -476,7 +476,7 @@ void CMonthGraphiview::wheelEvent(QWheelEvent *e)
 
 void CMonthGraphiview::setDragPixmap(QDrag *drag, DragInfoItem *item)
 {
-    CMonthSchceduleWidgetItem *infoitem = dynamic_cast<CMonthSchceduleWidgetItem *>(item);
+    CMonthScheduleWidgetItem *infoitem = dynamic_cast<CMonthScheduleWidgetItem *>(item);
     drag->setPixmap(infoitem->getPixmap());
 }
 
@@ -526,7 +526,7 @@ void CMonthGraphiview::MoveInfoProcess(ScheduleDtailInfo &info, const QPointF &p
 
     int yoffset = qFloor(y / (rect.height() / DDEMonthCalendar::LinesNumofMonth)) % DDEMonthCalendar::LinesNumofMonth;
     info.IsMoveInfo = true;
-    m_MonthSchceduleView->updateDate(yoffset,info);
+    m_MonthScheduleView->updateDate(yoffset,info);
 }
 
 QDateTime CMonthGraphiview::getDragScheduleInfoBeginTime(const QDateTime &moveDateTime)
@@ -546,7 +546,7 @@ QDateTime CMonthGraphiview::getDragScheduleInfoEndTime(const QDateTime &moveDate
 void CMonthGraphiview::slotCreate(const QDateTime &date)
 {
     emit signalViewtransparentFrame(1);
-    CSchceduleDlg dlg(1, this);
+    CScheduleDlg dlg(1, this);
     QDateTime tDatatime;
     tDatatime.setDate(date.date());
 
@@ -561,7 +561,7 @@ void CMonthGraphiview::slotCreate(const QDateTime &date)
 
     if (dlg.exec() == DDialog::Accepted) {
         emit signalsUpdateShcedule();
-        emit signalsSchceduleUpdate(0);
+        emit signalsScheduleUpdate(0);
     }
     emit signalViewtransparentFrame(0);
 }
@@ -570,7 +570,7 @@ void CMonthGraphiview::slotCreate(const QDateTime &date)
 void CMonthGraphiview::slotdelete(const int id)
 {
     Q_UNUSED(id);
-    emit signalsSchceduleUpdate(0);
+    emit signalsScheduleUpdate(0);
 }
 
 void CMonthGraphiview::slotDeleteItem()

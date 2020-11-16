@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "yearschceduleview.h"
-#include "schcedulectrldlg.h"
-#include "myschceduleview.h"
-#include "schceduledlg.h"
+#include "yearscheduleview.h"
+#include "schedulectrldlg.h"
+#include "myscheduleview.h"
+#include "scheduledlg.h"
 #include "scheduledatamanage.h"
 #include "constants.h"
 
@@ -41,41 +41,41 @@ DGUI_USE_NAMESPACE
 
 const QString fontfamily = QStringLiteral("SourceHanSansSC-Medium");
 
-CYearSchceduleItem::CYearSchceduleItem(QWidget *parent)
+CYearScheduleItem::CYearScheduleItem(QWidget *parent)
     : DLabel(parent)
 {
 
 }
 
-void CYearSchceduleItem::setBackgroundColor(QColor color1)
+void CYearScheduleItem::setBackgroundColor(QColor color1)
 {
     m_Backgroundcolor = color1;
 }
 
-void CYearSchceduleItem::setStateColor(QColor color1)
+void CYearScheduleItem::setStateColor(QColor color1)
 {
     m_Statecolor = color1;
 }
 
-void CYearSchceduleItem::setText( QColor tcolor, QFont font)
+void CYearScheduleItem::setText( QColor tcolor, QFont font)
 {
     m_ttextcolor = tcolor;
     m_tfont = font;
 }
 
-void CYearSchceduleItem::setTimeC(QColor tcolor, QFont font)
+void CYearScheduleItem::setTimeC(QColor tcolor, QFont font)
 {
     m_timecolor = tcolor;
     m_timefont = font;
 }
 
-void CYearSchceduleItem::setData( ScheduleDtailInfo vScheduleInfo)
+void CYearScheduleItem::setData( ScheduleDtailInfo vScheduleInfo)
 {
     m_ScheduleInfo = vScheduleInfo;
     update();
 }
 
-void CYearSchceduleItem::paintEvent( QPaintEvent *e )
+void CYearScheduleItem::paintEvent( QPaintEvent *e )
 {
     Q_UNUSED(e);
     int labelwidth = width();
@@ -151,7 +151,7 @@ void CYearSchceduleItem::paintEvent( QPaintEvent *e )
     painter.restore();
 }
 
-CYearSchceduleView::CYearSchceduleView(QWidget *parent)
+CYearScheduleView::CYearScheduleView(QWidget *parent)
     : DWidget(parent)
 {
     setContentsMargins(10, 10, 10, 10);
@@ -159,12 +159,12 @@ CYearSchceduleView::CYearSchceduleView(QWidget *parent)
     setAttribute(Qt::WA_TranslucentBackground);
 }
 
-CYearSchceduleView::~CYearSchceduleView()
+CYearScheduleView::~CYearScheduleView()
 {
 
 }
 
-void CYearSchceduleView::setSoloDay(QString soloday)
+void CYearScheduleView::setSoloDay(QString soloday)
 {
     m_soloDay = soloday;
 }
@@ -195,7 +195,7 @@ bool YScheduleDaysThan(const ScheduleDtailInfo &s1, const ScheduleDtailInfo &s2)
     return s1.beginDateTime.date().daysTo(s1.endDateTime.date()) > s2.beginDateTime.date().daysTo(s2.endDateTime.date());
 }
 
-void CYearSchceduleView::setData(QVector<ScheduleDtailInfo> &vListData)
+void CYearScheduleView::setData(QVector<ScheduleDtailInfo> &vListData)
 {
     QVector<ScheduleDtailInfo> valldayListData, vDaylistdata;
 
@@ -244,14 +244,14 @@ void CYearSchceduleView::setData(QVector<ScheduleDtailInfo> &vListData)
     }
 }
 
-void CYearSchceduleView::clearData()
+void CYearScheduleView::clearData()
 {
     m_vlistData.clear();
     m_soloDay.clear();
     return;
 }
 
-int CYearSchceduleView::showWindow()
+int CYearScheduleView::showWindow()
 {
     if (m_soloDay.isEmpty() && m_vlistData.isEmpty()) {
         setFixedSize(130, 45);
@@ -263,7 +263,7 @@ int CYearSchceduleView::showWindow()
     return this->width();
 }
 
-void CYearSchceduleView::setTheMe(int type)
+void CYearScheduleView::setTheMe(int type)
 {
     if (type == 0 || type == 1) {
         m_bBackgroundcolor = "#FFFFFF";
@@ -295,29 +295,29 @@ void CYearSchceduleView::setTheMe(int type)
     }
 }
 
-void CYearSchceduleView::setDtype(int type, int arrowheight)
+void CYearScheduleView::setDtype(int type, int arrowheight)
 {
     m_dtype = type;
     m_arrowheight = arrowheight;
     update();
 }
 
-void CYearSchceduleView::setCurrentDate(QDate cdate)
+void CYearScheduleView::setCurrentDate(QDate cdate)
 {
     m_currentDate = cdate;
 }
 
-QDate CYearSchceduleView::getCurrentDate()
+QDate CYearScheduleView::getCurrentDate()
 {
     return  m_currentDate;
 }
 
-void CYearSchceduleView::adjustPosition(bool ad)
+void CYearScheduleView::adjustPosition(bool ad)
 {
     adjustPos = ad;
 }
 
-void CYearSchceduleView::updateDateShow()
+void CYearScheduleView::updateDateShow()
 {
     int sviewNum = 0;
 
@@ -344,11 +344,11 @@ void CYearSchceduleView::updateDateShow()
     return;
 }
 
-void CYearSchceduleView::createItemWidget(ScheduleDtailInfo info, int type)
+void CYearScheduleView::createItemWidget(ScheduleDtailInfo info, int type)
 {
     ScheduleDtailInfo &gd = info;
     CSchedulesColor gdcolor = CScheduleDataManage::getScheduleDataManage()->getScheduleColorByType(gd.type.ID);
-    CYearSchceduleItem *gwi = new CYearSchceduleItem();
+    CYearScheduleItem *gwi = new CYearScheduleItem();
     QFont font;
 
     font.setWeight(QFont::Medium);
@@ -376,7 +376,7 @@ void CYearSchceduleView::createItemWidget(ScheduleDtailInfo info, int type)
     m_labellist.append(gwi);
 }
 
-void CYearSchceduleView::paintEvent(QPaintEvent *event)
+void CYearScheduleView::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
 
@@ -389,7 +389,7 @@ void CYearSchceduleView::paintEvent(QPaintEvent *event)
     adjustPos = false;
 }
 
-void CYearSchceduleView::paintItem(ScheduleDtailInfo info, int index, int type)
+void CYearScheduleView::paintItem(ScheduleDtailInfo info, int index, int type)
 {
     int labelwidth = width() - 30;
     int bheight = index * 29 + 10;
@@ -510,7 +510,7 @@ void CYearSchceduleView::paintItem(ScheduleDtailInfo info, int index, int type)
     }
 }
 
-void CYearSchceduleView::paintItem()
+void CYearScheduleView::paintItem()
 {
     QFont font;
     font.setPixelSize(DDECalendar::FontSizeTwelve);
@@ -538,58 +538,58 @@ void CYearSchceduleView::paintItem()
     painter.restore();
 }
 
-CYearSchceduleOutView::CYearSchceduleOutView(QWidget *parent)
+CYearScheduleOutView::CYearScheduleOutView(QWidget *parent)
     : DArrowRectangle(DArrowRectangle::ArrowLeft, parent)
 {
-    yearschceduleview = new CYearSchceduleView ();
-    this->setContent(yearschceduleview);
+    yearscheduleview = new CYearScheduleView ();
+    this->setContent(yearscheduleview);
 }
 
-void CYearSchceduleOutView::setSoloDay(QString soloday)
+void CYearScheduleOutView::setSoloDay(QString soloday)
 {
-    yearschceduleview->setSoloDay(soloday);
+    yearscheduleview->setSoloDay(soloday);
 }
 
-void CYearSchceduleOutView::setData(QVector<ScheduleDtailInfo> &vListData)
+void CYearScheduleOutView::setData(QVector<ScheduleDtailInfo> &vListData)
 {
     list_count = vListData.size();
-    yearschceduleview->setData(vListData);
-    scheduleinfoList = yearschceduleview->getlistdate();
+    yearscheduleview->setData(vListData);
+    scheduleinfoList = yearscheduleview->getlistdate();
 }
 
-void CYearSchceduleOutView::clearData()
+void CYearScheduleOutView::clearData()
 {
-    yearschceduleview->clearData();
+    yearscheduleview->clearData();
 }
 
-void CYearSchceduleOutView::showWindow()
+void CYearScheduleOutView::showWindow()
 {
-    int w = yearschceduleview->showWindow();
-    this->setFixedSize(w, yearschceduleview->height());
+    int w = yearscheduleview->showWindow();
+    this->setFixedSize(w, yearscheduleview->height());
 }
 
-void CYearSchceduleOutView::setTheMe(int type)
+void CYearScheduleOutView::setTheMe(int type)
 {
-    yearschceduleview->setTheMe(type);
+    yearscheduleview->setTheMe(type);
 }
 
-void CYearSchceduleOutView::setDtype(int type, int arrowheight)
+void CYearScheduleOutView::setDtype(int type, int arrowheight)
 {
-    yearschceduleview->setDtype(type, arrowheight);
+    yearscheduleview->setDtype(type, arrowheight);
 }
 
-void CYearSchceduleOutView::setCurrentDate(QDate cdate)
+void CYearScheduleOutView::setCurrentDate(QDate cdate)
 {
     currentdate = cdate;
-    yearschceduleview->setCurrentDate(cdate);
+    yearscheduleview->setCurrentDate(cdate);
 }
 
-void CYearSchceduleOutView::adjustPosition(bool ad)
+void CYearScheduleOutView::adjustPosition(bool ad)
 {
-    yearschceduleview->adjustPosition(ad);
+    yearscheduleview->adjustPosition(ad);
 }
 
-void CYearSchceduleOutView::mousePressEvent(QMouseEvent *event)
+void CYearScheduleOutView::mousePressEvent(QMouseEvent *event)
 {
     Q_UNUSED(event);
     QPoint pos = QCursor::pos();
@@ -618,10 +618,10 @@ void CYearSchceduleOutView::mousePressEvent(QMouseEvent *event)
                 //跳转到周视图
             } else {
                 if (scheduleinfoList.at(i).type.ID != DDECalendar::FestivalTypeID) {
-                    CSchceduleDlg dlg(0);
+                    CScheduleDlg dlg(0);
                     dlg.setData(scheduleinfoList.at(i));
                     if (dlg.exec() == DDialog::Accepted)
-                        emit signalupdateschcedule();
+                        emit signalupdateschedule();
                 }
             }
         }

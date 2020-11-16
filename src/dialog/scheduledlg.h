@@ -16,8 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef SCHCEDULEDLG_H
-#define SCHCEDULEDLG_H
+#ifndef SCHEDULEDLG_H
+#define SCHEDULEDLG_H
 
 #include "schedulestructs.h"
 
@@ -44,12 +44,12 @@
 
 DWIDGET_USE_NAMESPACE
 class CTimeEdit;
-class CSchceduleDlg : public DDialog
+class CScheduleDlg : public DDialog
 {
     Q_OBJECT
 public:
-    CSchceduleDlg(int type, QWidget *parent = nullptr, const bool isAllDay = true);
-    ~CSchceduleDlg() override;
+    CScheduleDlg(int type, QWidget *parent = nullptr, const bool isAllDay = true);
+    ~CScheduleDlg() override;
     void setData(const ScheduleDtailInfo &info);
     void setDate(const QDateTime &date);
     ScheduleDtailInfo getScheduleData();
@@ -123,4 +123,4 @@ private:
     QDateTime m_EndDate;
 };
 
-#endif  // SHCEDULEDLG_H
+#endif  // SCHEDULEDLG_H

@@ -18,7 +18,7 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "todybutton.h"
+#include "todaybutton.h"
 #include "constants.h"
 
 #include <DPalette>
@@ -26,14 +26,14 @@
 #include <QPainter>
 
 DGUI_USE_NAMESPACE
-CTodyButton::CTodyButton(QWidget *parent)
+CTodayButton::CTodayButton(QWidget *parent)
     : DPushButton(parent)
 {
     m_font.setWeight(QFont::Medium);
     m_font.setPixelSize(DDECalendar::FontSizeFourteen);
 }
 
-void CTodyButton::setBColor(QColor normalC, QColor hoverC, QColor pressc, QColor normalC1, QColor hoverC1, QColor pressc1)
+void CTodayButton::setBColor(QColor normalC, QColor hoverC, QColor pressc, QColor normalC1, QColor hoverC1, QColor pressc1)
 {
     m_bnormalColor = normalC;
     m_bhoverColor = hoverC;
@@ -44,19 +44,19 @@ void CTodyButton::setBColor(QColor normalC, QColor hoverC, QColor pressc, QColor
     m_shadowColor = m_bnormalColor;
 }
 
-void CTodyButton::setTColor(QColor normalC, QColor hoverC, QColor pressc)
+void CTodayButton::setTColor(QColor normalC, QColor hoverC, QColor pressc)
 {
     m_tnormalColor = normalC;
     m_thoverColor = hoverC;
     m_tPressColor = pressc;
 }
 
-void CTodyButton::setshadowColor(QColor sc)
+void CTodayButton::setshadowColor(QColor sc)
 {
     m_shadowColor = sc;
 }
 
-void CTodyButton::mousePressEvent(QMouseEvent *event)
+void CTodayButton::mousePressEvent(QMouseEvent *event)
 {
     DPalette todaypa = palette();
     todaypa.setColor(DPalette::ButtonText, m_tPressColor);
@@ -67,7 +67,7 @@ void CTodyButton::mousePressEvent(QMouseEvent *event)
     DPushButton::mousePressEvent(event);
 }
 
-void CTodyButton::mouseReleaseEvent(QMouseEvent *event)
+void CTodayButton::mouseReleaseEvent(QMouseEvent *event)
 {
     DPalette todaypa = palette();
     todaypa.setColor(DPalette::ButtonText, m_tnormalColor);
@@ -78,7 +78,7 @@ void CTodyButton::mouseReleaseEvent(QMouseEvent *event)
     DPushButton::mouseReleaseEvent(event);
 }
 
-void CTodyButton::focusOutEvent(QFocusEvent *event)
+void CTodayButton::focusOutEvent(QFocusEvent *event)
 {
     DPalette todaypa = palette();
     todaypa.setColor(DPalette::ButtonText, m_tnormalColor);
@@ -89,7 +89,7 @@ void CTodyButton::focusOutEvent(QFocusEvent *event)
     DPushButton::focusOutEvent(event);
 }
 
-void CTodyButton::enterEvent(QEvent *event)
+void CTodayButton::enterEvent(QEvent *event)
 {
     DPalette todaypa = palette();
     todaypa.setColor(DPalette::ButtonText, m_thoverColor);
@@ -100,7 +100,7 @@ void CTodyButton::enterEvent(QEvent *event)
     DPushButton::enterEvent(event);
 }
 
-void CTodyButton::leaveEvent(QEvent *event)
+void CTodayButton::leaveEvent(QEvent *event)
 {
     DPalette todaypa = palette();
     todaypa.setColor(DPalette::ButtonText, m_tnormalColor);

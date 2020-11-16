@@ -20,7 +20,7 @@
 
 #include "calendardbus.h"
 #include "scheduledatamanage.h"
-#include "yearschceduleview.h"
+#include "yearscheduleview.h"
 #include "yearview.h"
 #include "constants.h"
 
@@ -43,7 +43,7 @@
 #include <QMouseEvent>
 
 DGUI_USE_NAMESPACE
-CYearSchceduleOutView      *CYearView::m_Scheduleview = nullptr;
+CYearScheduleOutView      *CYearView::m_Scheduleview = nullptr;
 CMonthDayRect               *CMonthDayRect::m_CurrentRect =nullptr;
 qreal                       CMonthDayRect::m_DevicePixelRatio = 0;
 QColor                      CMonthDayRect::m_ceventColor("#FF5D00");
@@ -94,7 +94,7 @@ CYearView::CYearView(QWidget *parent)
     m_hhLayout->setContentsMargins(13, 10, 10, 10);
 
     setLayout(m_hhLayout);
-    createYearSchceduleView(parent);
+    createYearScheduleView(parent);
 }
 
 void CYearView::slotupdateSchedule(const int id)
@@ -106,7 +106,7 @@ void CYearView::slotDoubleClickDate(const QDate &date)
 {
     if (date.year() < DDECalendar::QueryEarliestYear)
         return;
-    SchceduleViewHide();
+    ScheduleViewHide();
     emit signaldoubleclickDate(date);
 }
 
@@ -179,7 +179,7 @@ void CYearView::setTheMe(int type)
     m_Scheduleview->setTheMe(type);
 }
 
-void CYearView::SchceduleViewHide()
+void CYearView::ScheduleViewHide()
 {
     m_Scheduleview->hide();
     m_Scheduleview->clearData();
@@ -259,12 +259,12 @@ void CYearView::updateDate()
     update();
 }
 
-void CYearView::createYearSchceduleView(QWidget *parent)
+void CYearView::createYearScheduleView(QWidget *parent)
 {
     if (m_Scheduleview == nullptr) {
-        m_Scheduleview = new CYearSchceduleOutView(parent);
-        connect(m_Scheduleview, &CYearSchceduleOutView::signalsViewSelectDate, this, &CYearView::signalselectWeekwindow);
-        connect(m_Scheduleview, &CYearSchceduleOutView::signalupdateschcedule, this, &CYearView::signalupdateschcedule);
+        m_Scheduleview = new CYearScheduleOutView(parent);
+        connect(m_Scheduleview, &CYearScheduleOutView::signalsViewSelectDate, this, &CYearView::signalselectWeekwindow);
+        connect(m_Scheduleview, &CYearScheduleOutView::signalupdateschedule, this, &CYearView::signalupdateschedule);
     }
 }
 

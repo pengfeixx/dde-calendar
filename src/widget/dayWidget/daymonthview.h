@@ -37,7 +37,7 @@
 DWIDGET_USE_NAMESPACE
 class QLabel;
 class CDayHuangLiLabel;
-class CTodyButton;
+class CTodayButton;
 class CDayMonthView: public CustomFrame
 {
     Q_OBJECT
@@ -102,7 +102,7 @@ protected:
 private:
     DIconButton      *m_prevButton = nullptr;
     DIconButton      *m_nextButton = nullptr;
-    CTodyButton *m_today = nullptr;
+    CTodayButton *m_today = nullptr;
     CustomFrame *m_currentMouth = nullptr;
     CustomFrame *m_currentDay = nullptr;
     CustomFrame *m_currentYear = nullptr;

@@ -19,9 +19,9 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "draginfographicsview.h"
-#include "schceduledlg.h"
-#include "schcedulectrldlg.h"
-#include "myschceduleview.h"
+#include "scheduledlg.h"
+#include "schedulectrldlg.h"
+#include "myscheduleview.h"
 #include "constants.h"
 
 #include <DMenu>
@@ -300,7 +300,7 @@ void DragInfoGraphicsView::contextMenuEvent(QContextMenuEvent *event)
 
             if (action_t == m_editAction) {
                 emit signalViewtransparentFrame(1);
-                CSchceduleDlg dlg(0, this);
+                CScheduleDlg dlg(0, this);
                 dlg.setData(infoitem->getData());
                 if (dlg.exec() == DDialog::Accepted) {
                     emit signalsUpdateShcedule();
@@ -311,7 +311,7 @@ void DragInfoGraphicsView::contextMenuEvent(QContextMenuEvent *event)
             }
         } else {
             emit signalViewtransparentFrame(1);
-            CMySchceduleView dlg(infoitem->getData(), this);
+            CMyScheduleView dlg(infoitem->getData(), this);
             dlg.exec();
             emit signalViewtransparentFrame(0);
         }
@@ -420,7 +420,7 @@ void DragInfoGraphicsView::updateScheduleInfo(const ScheduleDtailInfo &info)
     emit signalViewtransparentFrame(1);
 
     if (info.rpeat >0) {
-        CSchceduleDlg::ChangeRecurInfo(this,info,
+        CScheduleDlg::ChangeRecurInfo(this,info,
                                        m_PressScheduleInfo,m_themetype);
     } else {
         CScheduleDataManage::getScheduleDataManage()->getscheduleDataCtrl()->updateScheduleInfo(
@@ -499,7 +499,7 @@ void DragInfoGraphicsView::mouseReleaseScheduleUpdate()
             m_DragStatus = NONE;
 
             emit signalViewtransparentFrame(1);
-            CSchceduleDlg dlg(1, this);
+            CScheduleDlg dlg(1, this);
             dlg.setData(m_DragScheduleInfo);
             if (dlg.exec() == DDialog::Accepted) {
             } else {
@@ -574,7 +574,7 @@ void DragInfoGraphicsView::DeleteItem(const ScheduleDtailInfo &info)
     emit signalViewtransparentFrame(1);
 
     if (info.rpeat == 0) {
-        CSchceduleCtrlDlg msgBox(this);
+        CScheduleCtrlDlg msgBox(this);
         msgBox.setText(tr("You are deleting an event."));
         msgBox.setInformativeText(tr("Are you sure you want to delete this event?"));
         msgBox.addPushButton(tr("Cancel"), true);
@@ -589,7 +589,7 @@ void DragInfoGraphicsView::DeleteItem(const ScheduleDtailInfo &info)
         }
     } else {
         if (info.RecurID == 0) {
-            CSchceduleCtrlDlg msgBox(this);
+            CScheduleCtrlDlg msgBox(this);
             msgBox.setText(tr("You are deleting an event."));
             msgBox.setInformativeText(tr("Do you want to delete all occurrences of this event, or only the selected occurrence?"));
             msgBox.addPushButton(tr("Cancel"));
@@ -610,7 +610,7 @@ void DragInfoGraphicsView::DeleteItem(const ScheduleDtailInfo &info)
                 CScheduleDataManage::getScheduleDataManage()->getscheduleDataCtrl()->updateScheduleInfo(newschedule);
             }
         } else {
-            CSchceduleCtrlDlg msgBox(this);
+            CScheduleCtrlDlg msgBox(this);
             msgBox.setText(tr("You are deleting an event."));
             msgBox.setInformativeText(tr("Do you want to delete this and all future occurrences of this event, or only the selected occurrence?"));
             msgBox.addPushButton(tr("Cancel"));
@@ -653,7 +653,7 @@ void DragInfoGraphicsView::setDragPixmap(QDrag *drag, DragInfoItem *item)
 void DragInfoGraphicsView::slotCreate(const QDateTime &date)
 {
     emit signalViewtransparentFrame(1);
-    CSchceduleDlg dlg(1, this);
+    CScheduleDlg dlg(1, this);
     QDateTime tDatatime;
     tDatatime.setDate(date.date());
 

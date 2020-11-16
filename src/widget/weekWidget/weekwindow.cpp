@@ -22,8 +22,8 @@
 #include "calendardbus.h"
 #include "weekheadview.h"
 #include "weekview.h"
-#include "schcedulesearchview.h"
-#include "todybutton.h"
+#include "schedulesearchview.h"
+#include "todaybutton.h"
 #include <scheduledatamanage.h>
 
 #include <DPalette>
@@ -85,7 +85,7 @@ void CWeekWindow::initUI()
     m_contentBackground->setPalette(anipa);
     m_contentBackground->setContentsMargins(0, 0, 0, 0);
 
-    m_today = new CTodyButton;
+    m_today = new CTodayButton;
     m_today->setText(QCoreApplication::translate("today", "Today", "Today"));
     m_today->setFixedSize(DDEWeekCalendar::WTodayWindth, DDEWeekCalendar::WTodayHeight);
     DPalette todaypa = m_today->palette();
@@ -208,7 +208,7 @@ void CWeekWindow::initUI()
 
 void CWeekWindow::initConnection()
 {
-    connect(m_today, &CTodyButton::clicked, this, &CWeekWindow::slottoday);
+    connect(m_today, &CTodayButton::clicked, this, &CWeekWindow::slottoday);
     //周数信息区域前按钮点击事件关联触发前一周
     connect(m_weekview, &CWeekView::signalBtnPrev, this, &CWeekWindow::slotprev);
     //周数信息区域后按钮点击事件关联触发后一周

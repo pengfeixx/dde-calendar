@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "schcedulesearchview.h"
-#include "schcedulectrldlg.h"
-#include "myschceduleview.h"
-#include "schceduledlg.h"
+#include "schedulesearchview.h"
+#include "schedulectrldlg.h"
+#include "myscheduleview.h"
+#include "scheduledlg.h"
 #include "scheduledatamanage.h"
 #include "constants.h"
 
@@ -39,7 +39,7 @@
 #include <QRect>
 
 DGUI_USE_NAMESPACE
-CSchceduleSearchItem::CSchceduleSearchItem(QWidget *parent)
+CScheduleSearchItem::CScheduleSearchItem(QWidget *parent)
     : DLabel(parent)
     , m_rightMenu(new DMenu(this))
 {
@@ -53,47 +53,47 @@ CSchceduleSearchItem::CSchceduleSearchItem(QWidget *parent)
     setTheMe(DGuiApplicationHelper::instance()->themeType());
     QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::paletteTypeChanged,
                      this,
-                     &CSchceduleSearchItem::setTheMe);
+                     &CScheduleSearchItem::setTheMe);
     m_mouseStatus = M_NONE;
     installEventFilter(this);
 }
 
-void CSchceduleSearchItem::setBackgroundColor(QColor color1)
+void CScheduleSearchItem::setBackgroundColor(QColor color1)
 {
     m_Backgroundcolor = color1;
 }
 
-void CSchceduleSearchItem::setSplitLineColor(QColor color1)
+void CScheduleSearchItem::setSplitLineColor(QColor color1)
 {
     m_splitlinecolor = color1;
 }
 
-void CSchceduleSearchItem::setText( QColor tcolor, QFont font)
+void CScheduleSearchItem::setText( QColor tcolor, QFont font)
 {
     m_ttextcolor = tcolor;
     m_tfont = font;
 }
 
-void CSchceduleSearchItem::setTimeC(QColor tcolor, QFont font)
+void CScheduleSearchItem::setTimeC(QColor tcolor, QFont font)
 {
     m_timecolor = tcolor;
     m_timefont = font;
 }
 
-void CSchceduleSearchItem::setData( ScheduleDtailInfo vScheduleInfo, QDate date)
+void CScheduleSearchItem::setData( ScheduleDtailInfo vScheduleInfo, QDate date)
 {
     m_ScheduleInfo = vScheduleInfo;
     m_date = date;
     update();
 }
 
-void CSchceduleSearchItem::setRoundtype(int rtype)
+void CScheduleSearchItem::setRoundtype(int rtype)
 {
     m_roundtype = rtype;
     update();
 }
 
-void CSchceduleSearchItem::setTheMe(int type)
+void CScheduleSearchItem::setTheMe(int type)
 {
     if (type == 2) {
         m_presscolor.background = CScheduleDataManage::getScheduleDataManage()->getSystemActiveColor();
@@ -125,10 +125,10 @@ void CSchceduleSearchItem::setTheMe(int type)
         m_hovercolor.textColor.setAlphaF(1);
     }
 }
-void CSchceduleSearchItem::slotEdit()
+void CScheduleSearchItem::slotEdit()
 {
     emit signalViewtransparentFrame(1);
-    CSchceduleDlg dlg(0, this);
+    CScheduleDlg dlg(0, this);
     dlg.setData(m_ScheduleInfo);
 
     if (dlg.exec() == DDialog::Accepted) {
@@ -137,12 +137,12 @@ void CSchceduleSearchItem::slotEdit()
     emit signalViewtransparentFrame(0);
 }
 
-void CSchceduleSearchItem::slotDelete()
+void CScheduleSearchItem::slotDelete()
 {
     emit signalViewtransparentFrame(1);
 
     if (m_ScheduleInfo.rpeat == 0) {
-        CSchceduleCtrlDlg msgBox;
+        CScheduleCtrlDlg msgBox;
 
         msgBox.setText(tr("You are deleting an event."));
         msgBox.setInformativeText(tr("Are you sure you want to delete this event?"));
@@ -158,7 +158,7 @@ void CSchceduleSearchItem::slotDelete()
         }
     } else {
         if (m_ScheduleInfo.RecurID == 0) {
-            CSchceduleCtrlDlg msgBox;
+            CScheduleCtrlDlg msgBox;
 
             msgBox.setText(tr("You are deleting an event."));
             msgBox.setInformativeText(tr("Do you want to delete all occurrences of this event, or only the selected occurrence?"));
@@ -180,7 +180,7 @@ void CSchceduleSearchItem::slotDelete()
                 CScheduleDataManage::getScheduleDataManage()->getscheduleDataCtrl()->updateScheduleInfo(newschedule);
             }
         } else {
-            CSchceduleCtrlDlg msgBox;
+            CScheduleCtrlDlg msgBox;
             msgBox.setText(tr("You are deleting an event."));
             msgBox.setInformativeText(tr("Do you want to delete this and all future occurrences of this event, or only the selected occurrence?"));
             msgBox.addPushButton(tr("Cancel"));
@@ -211,13 +211,13 @@ void CSchceduleSearchItem::slotDelete()
     emit signalsDelete(this);
 }
 
-void CSchceduleSearchItem::slotDoubleEvent(int type)
+void CScheduleSearchItem::slotDoubleEvent(int type)
 {
     Q_UNUSED(type);
     emit signalsDelete(this);
 }
 
-void CSchceduleSearchItem::paintEvent( QPaintEvent *e )
+void CScheduleSearchItem::paintEvent( QPaintEvent *e )
 {
     Q_UNUSED(e);
     int labelwidth = width();
@@ -350,7 +350,7 @@ void CSchceduleSearchItem::paintEvent( QPaintEvent *e )
     painter.drawText(QRect(durationSize + 17 + 9, 6, tilenameW, labelheight), Qt::AlignLeft, tstr);
     painter.end();
 }
-void CSchceduleSearchItem::contextMenuEvent( QContextMenuEvent *event )
+void CScheduleSearchItem::contextMenuEvent( QContextMenuEvent *event )
 {
     Q_UNUSED(event);
 
@@ -362,19 +362,19 @@ void CSchceduleSearchItem::contextMenuEvent( QContextMenuEvent *event )
     m_rightMenu->exec(QCursor::pos());
 }
 
-void CSchceduleSearchItem::mouseDoubleClickEvent(QMouseEvent *event)
+void CScheduleSearchItem::mouseDoubleClickEvent(QMouseEvent *event)
 {
     Q_UNUSED(event);
     emit signalViewtransparentFrame(1);
-    CMySchceduleView dlg(m_ScheduleInfo, this);
-    connect(&dlg, &CMySchceduleView::signalsEditorDelete, this, &CSchceduleSearchItem::slotDoubleEvent);
+    CMyScheduleView dlg(m_ScheduleInfo, this);
+    connect(&dlg, &CMyScheduleView::signalsEditorDelete, this, &CScheduleSearchItem::slotDoubleEvent);
     dlg.exec();
-    disconnect(&dlg, &CMySchceduleView::signalsEditorDelete, this, &CSchceduleSearchItem::slotDoubleEvent);
+    disconnect(&dlg, &CMyScheduleView::signalsEditorDelete, this, &CScheduleSearchItem::slotDoubleEvent);
     emit signalViewtransparentFrame(0);
 
 }
 
-void CSchceduleSearchItem::mousePressEvent(QMouseEvent *event)
+void CScheduleSearchItem::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
         emit signalSelectDate(m_date);
@@ -382,7 +382,7 @@ void CSchceduleSearchItem::mousePressEvent(QMouseEvent *event)
     }
 }
 
-void CSchceduleSearchItem::mouseReleaseEvent(QMouseEvent *event)
+void CScheduleSearchItem::mouseReleaseEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
         m_mouseStatus = M_HOVER;
@@ -390,21 +390,21 @@ void CSchceduleSearchItem::mouseReleaseEvent(QMouseEvent *event)
     }
 }
 
-void CSchceduleSearchItem::enterEvent(QEvent *event)
+void CScheduleSearchItem::enterEvent(QEvent *event)
 {
     Q_UNUSED(event);
     m_mouseStatus = M_HOVER;
     update();
 }
 
-void CSchceduleSearchItem::leaveEvent(QEvent *event)
+void CScheduleSearchItem::leaveEvent(QEvent *event)
 {
     Q_UNUSED(event);
     m_mouseStatus = M_NONE;
     update();
 }
 
-bool CSchceduleSearchItem::eventFilter(QObject *o, QEvent *e)
+bool CScheduleSearchItem::eventFilter(QObject *o, QEvent *e)
 {
     Q_UNUSED(o);
 
@@ -417,7 +417,7 @@ bool CSchceduleSearchItem::eventFilter(QObject *o, QEvent *e)
     update();
     return false;
 }
-CSchceduleSearchView::CSchceduleSearchView(QWidget *parent)
+CScheduleSearchView::CScheduleSearchView(QWidget *parent)
     : DWidget(parent)
 {
     QVBoxLayout *layout = new QVBoxLayout;
@@ -439,10 +439,10 @@ CSchceduleSearchView::CSchceduleSearchView(QWidget *parent)
     connect(m_gradientItemList,
             &CScheduleListWidget::signalListWidgetScheduleHide,
             this,
-            &CSchceduleSearchView::signalScheduleHide);
+            &CScheduleSearchView::signalScheduleHide);
 }
 
-CSchceduleSearchView::~CSchceduleSearchView()
+CScheduleSearchView::~CScheduleSearchView()
 {
     for (int i = 0; i < m_gradientItemList->count(); i++) {
         QListWidgetItem *item11 = m_gradientItemList->takeItem(i);
@@ -453,7 +453,7 @@ CSchceduleSearchView::~CSchceduleSearchView()
     m_gradientItemList->clear();
 }
 
-void CSchceduleSearchView::setTheMe(int type)
+void CScheduleSearchView::setTheMe(int type)
 {
     if (type == 0 || type == 1) {
         m_bBackgroundcolor = "#000000";
@@ -474,7 +474,7 @@ void CSchceduleSearchView::setTheMe(int type)
     updateDateShow();
 }
 
-void CSchceduleSearchView::clearSearch()
+void CScheduleSearchView::clearSearch()
 {
     m_vlistData.clear();
 
@@ -490,12 +490,12 @@ void CSchceduleSearchView::clearSearch()
     CScheduleDataManage::getScheduleDataManage()->setSearchResult(vScheduleInfo);
 }
 
-void CSchceduleSearchView::setMaxWidth(const int w)
+void CScheduleSearchView::setMaxWidth(const int w)
 {
     m_maxWidth = w;
 }
 
-void CSchceduleSearchView::updateDateShow()
+void CScheduleSearchView::updateDateShow()
 {
     m_currentItem = nullptr;
 
@@ -591,12 +591,12 @@ void CSchceduleSearchView::updateDateShow()
 
 }
 
-void CSchceduleSearchView::createItemWidget(ScheduleDtailInfo info, QDate date, int rtype)
+void CScheduleSearchView::createItemWidget(ScheduleDtailInfo info, QDate date, int rtype)
 {
     ScheduleDtailInfo &gd = info;
     CSchedulesColor gdcolor = CScheduleDataManage::getScheduleDataManage()->getScheduleColorByType(gd.type.ID);
 
-    CSchceduleSearchItem *gwi = new CSchceduleSearchItem();
+    CScheduleSearchItem *gwi = new CScheduleSearchItem();
     QFont font;
     font.setPixelSize(DDECalendar::FontSizeFourteen);
     font.setWeight(QFont::Normal);
@@ -611,11 +611,11 @@ void CSchceduleSearchView::createItemWidget(ScheduleDtailInfo info, QDate date, 
     gwi->setFixedSize(m_maxWidth - 20, 35);
     gwi->setData(gd, date);
     gwi->setRoundtype(rtype);
-    connect(gwi, &CSchceduleSearchItem::signalsDelete, this, &CSchceduleSearchView::slotdeleteitem);
-    connect(gwi, &CSchceduleSearchItem::signalsEdit, this, &CSchceduleSearchView::slotedititem);
-    connect(gwi, &CSchceduleSearchItem::signalSelectDate, this, &CSchceduleSearchView::slotSelectDate);
-    connect(gwi, &CSchceduleSearchItem::signalSelectSchedule, this, &CSchceduleSearchView::slotSelectSchedule);
-    connect(gwi, &CSchceduleSearchItem::signalViewtransparentFrame, this, &CSchceduleSearchView::signalViewtransparentFrame);
+    connect(gwi, &CScheduleSearchItem::signalsDelete, this, &CScheduleSearchView::slotdeleteitem);
+    connect(gwi, &CScheduleSearchItem::signalsEdit, this, &CScheduleSearchView::slotedititem);
+    connect(gwi, &CScheduleSearchItem::signalSelectDate, this, &CScheduleSearchView::slotSelectDate);
+    connect(gwi, &CScheduleSearchItem::signalSelectSchedule, this, &CScheduleSearchView::slotSelectSchedule);
+    connect(gwi, &CScheduleSearchItem::signalViewtransparentFrame, this, &CScheduleSearchView::signalViewtransparentFrame);
 
     QListWidgetItem *listItem = new QListWidgetItem;
     listItem->setSizeHint(QSize(m_maxWidth - 5, 36)); //每次改变Item的高度
@@ -625,9 +625,9 @@ void CSchceduleSearchView::createItemWidget(ScheduleDtailInfo info, QDate date, 
     m_labellist.append(gwi);
 }
 
-QListWidgetItem *CSchceduleSearchView::createItemWidget(QDate date)
+QListWidgetItem *CScheduleSearchView::createItemWidget(QDate date)
 {
-    CSchceduleSearchDateItem *gwi = new CSchceduleSearchDateItem();
+    CScheduleSearchDateItem *gwi = new CScheduleSearchDateItem();
     QFont font;
     font.setWeight(QFont::Medium);
     font.setPixelSize(DDECalendar::FontSizeSixteen);
@@ -646,9 +646,9 @@ QListWidgetItem *CSchceduleSearchView::createItemWidget(QDate date)
     gwi->setFixedSize(m_maxWidth - 20, 35);
     gwi->setDate(date);
     connect(gwi,
-            &CSchceduleSearchDateItem::signalLabelScheduleHide,
+            &CScheduleSearchDateItem::signalLabelScheduleHide,
             this,
-            &CSchceduleSearchView::signalScheduleHide);
+            &CScheduleSearchView::signalScheduleHide);
     QListWidgetItem *listItem = new QListWidgetItem;
     listItem->setSizeHint(QSize(m_maxWidth - 5, 36)); //每次改变Item的高度
     listItem->setFlags(Qt::ItemIsTristate );
@@ -658,19 +658,19 @@ QListWidgetItem *CSchceduleSearchView::createItemWidget(QDate date)
     return listItem;
 }
 
-void CSchceduleSearchView::slotdeleteitem( CSchceduleSearchItem *item )
+void CScheduleSearchView::slotdeleteitem( CScheduleSearchItem *item )
 {
     emit signalsUpdateShcedule(item->getData().id);
     updateDateShow();
     update();
 }
 
-void CSchceduleSearchView::slotedititem(CSchceduleSearchItem *item)
+void CScheduleSearchView::slotedititem(CScheduleSearchItem *item)
 {
     emit signalsUpdateShcedule(item->getData().id);
 }
 
-void CSchceduleSearchView::slotsetSearch(QString str)
+void CScheduleSearchView::slotsetSearch(QString str)
 {
     if (str.isEmpty()) return;
     QDateTime date = QDateTime::currentDateTime();
@@ -699,17 +699,17 @@ void CSchceduleSearchView::slotsetSearch(QString str)
     updateDateShow();
 }
 
-void CSchceduleSearchView::slotSelectDate(QDate date)
+void CScheduleSearchView::slotSelectDate(QDate date)
 {
     emit signalDate(date);
 }
 
-void CSchceduleSearchView::slotSelectSchedule(const ScheduleDtailInfo &scheduleInfo)
+void CScheduleSearchView::slotSelectSchedule(const ScheduleDtailInfo &scheduleInfo)
 {
     emit signalSelectSchedule(scheduleInfo);
 }
 
-void CSchceduleSearchView::resizeEvent(QResizeEvent *event)
+void CScheduleSearchView::resizeEvent(QResizeEvent *event)
 {
     for (int i = 0; i < m_gradientItemList->count(); i++) {
         QListWidgetItem *item11 = m_gradientItemList->item(i);
@@ -733,12 +733,12 @@ void CSchceduleSearchView::resizeEvent(QResizeEvent *event)
     DWidget::resizeEvent(event);
 }
 
-void CSchceduleSearchView::mousePressEvent(QMouseEvent *event)
+void CScheduleSearchView::mousePressEvent(QMouseEvent *event)
 {
     DWidget::mousePressEvent(event);
 }
 
-CSchceduleSearchDateItem::CSchceduleSearchDateItem(QWidget *parent)
+CScheduleSearchDateItem::CScheduleSearchDateItem(QWidget *parent)
     : DLabel(parent)
 {
     //设置对象名称和辅助显示名称
@@ -747,23 +747,23 @@ CSchceduleSearchDateItem::CSchceduleSearchDateItem(QWidget *parent)
     setAutoFillBackground(true);
 }
 
-void CSchceduleSearchDateItem::setBackgroundColor(QColor color1)
+void CScheduleSearchDateItem::setBackgroundColor(QColor color1)
 {
     m_Backgroundcolor = color1;
 }
 
-void CSchceduleSearchDateItem::setText(QColor tcolor, QFont font)
+void CScheduleSearchDateItem::setText(QColor tcolor, QFont font)
 {
     m_textcolor = tcolor;
     m_font = font;
 }
 
-void CSchceduleSearchDateItem::setDate(QDate date)
+void CScheduleSearchDateItem::setDate(QDate date)
 {
     m_date = date;
 }
 
-void CSchceduleSearchDateItem::paintEvent(QPaintEvent *e)
+void CScheduleSearchDateItem::paintEvent(QPaintEvent *e)
 {
     Q_UNUSED(e);
     int labelwidth = width();
@@ -791,7 +791,7 @@ void CSchceduleSearchDateItem::paintEvent(QPaintEvent *e)
     painter.end();
 }
 
-void CSchceduleSearchDateItem::mousePressEvent(QMouseEvent *event)
+void CScheduleSearchDateItem::mousePressEvent(QMouseEvent *event)
 {
     Q_UNUSED(event);
     emit signalLabelScheduleHide();

@@ -19,7 +19,7 @@
 
 #include "monthview.h"
 #include "calendardbus.h"
-#include "schceduledlg.h"
+#include "scheduledlg.h"
 #include "scheduledatamanage.h"
 
 #include <DHiDPIHelper>
@@ -62,11 +62,11 @@ CMonthView::CMonthView(QWidget *parent) : DWidget(parent)
     connect(m_MonthGraphicsView,
             &CMonthGraphiview::signalsUpdateShcedule,
             this,
-            &CMonthView::slotSchceduleUpdate);
+            &CMonthView::slotScheduleUpdate);
     connect(m_MonthGraphicsView,
-            &CMonthGraphiview::signalsSchceduleUpdate,
+            &CMonthGraphiview::signalsScheduleUpdate,
             this,
-            &CMonthView::signalsSchceduleUpdate);
+            &CMonthView::signalsScheduleUpdate);
     connect(m_MonthGraphicsView,
             &CMonthGraphiview::signalViewtransparentFrame,
             this,
@@ -107,9 +107,9 @@ CMonthView::~CMonthView()
     }
 }
 
-void CMonthView::slotSchceduleUpdate()
+void CMonthView::slotScheduleUpdate()
 {
-    emit signalsSchceduleUpdate(0);
+    emit signalsScheduleUpdate(0);
     emit signalsupdatescheduleD(this, m_days[0], m_days[41]);
 }
 
@@ -130,7 +130,7 @@ void CMonthView::slotsupdatescheduleD(QWidget *w, QVector<ScheduleDateRangeInfo>
 void CMonthView::slotdelete(int id)
 {
     Q_UNUSED(id);
-    emit signalsSchceduleUpdate(0);
+    emit signalsScheduleUpdate(0);
 }
 
 void CMonthView::slotScheduleRemindWidget(const bool isShow, const ScheduleDtailInfo &out)

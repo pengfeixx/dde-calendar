@@ -24,11 +24,11 @@
 #include <DPushButton>
 
 DWIDGET_USE_NAMESPACE
-class CTodyButton : public DPushButton
+class CTodayButton : public DPushButton
 {
     Q_OBJECT
 public:
-    CTodyButton(QWidget *parent = nullptr);
+    CTodayButton(QWidget *parent = nullptr);
     void setBColor(QColor normalC, QColor hoverC, QColor pressc, QColor normalC1, QColor hoverC1, QColor pressc1);
     void setTColor(QColor normalC, QColor hoverC, QColor pressc);
     void setshadowColor(QColor sc);

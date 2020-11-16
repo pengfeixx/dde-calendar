@@ -19,7 +19,7 @@
 #include "yearwindow.h"
 #include "yearview.h"
 #include "constants.h"
-#include "schcedulesearchview.h"
+#include "schedulesearchview.h"
 #include "calendardbus.h"
 
 #include <DPalette>
@@ -397,9 +397,9 @@ void CYearWindow::initConnection()
             this,
             &CYearWindow::slotUpdateCurrentDate);
     connect(YearWidget_First,
-            &YearFrame::signalupdateschcedule,
+            &YearFrame::signalupdateschedule,
             this,
-            &CYearWindow::signalupdateschcedule);
+            &CYearWindow::signalupdateschedule);
 
     connect(m_StackedWidget,
             &AnimationStackedWidget::signalIsFinished,
@@ -498,7 +498,7 @@ void CYearWindow::slotTransitSearchSchedule(int id)
     emit signalsWUpdateShcedule(this, id);
 }
 
-void CYearWindow::slotSetSchceduleHide()
+void CYearWindow::slotSetScheduleHide()
 {
     m_YearWidget->slotHideInfo();
 }
@@ -623,7 +623,7 @@ YearFrame::YearFrame(DWidget *parent)
             connect(view, &CYearView::signalcurrentDateChanged, this, &YearFrame::slotcurrentDateChanged);
             connect(view, &CYearView::signaldoubleclickDate, this, &YearFrame::signaldoubleclickDate);
             connect(view, &CYearView::signalselectWeekwindow, this, &YearFrame::signalselectWeekwindow);
-            connect(view, &CYearView::signalupdateschcedule, this, &YearFrame::signalupdateschcedule);
+            connect(view, &CYearView::signalupdateschedule, this, &YearFrame::signalupdateschedule);
             connect(view, &CYearView::signalselectMonth, this, &YearFrame::signalselectMonth);
             connect(view, &CYearView::signalHideInfo, this, &YearFrame::slotHideInfo);
             connect(view, &CYearView::signalSelectInfo, this, &YearFrame::slotSelectInfo);
@@ -786,7 +786,7 @@ void YearFrame::slotcurrentDateChanged(QDate date)
 
 void YearFrame::slotHideInfo()
 {
-    CYearView::SchceduleViewHide();
+    CYearView::ScheduleViewHide();
 }
 
 void YearFrame::slotSelectInfo(bool flag)
@@ -801,7 +801,7 @@ void YearFrame::slotupdateSchedule(const int id)
     }
 }
 
-void YearFrame::slotSetSchceduleHide()
+void YearFrame::slotSetScheduleHide()
 {
-    CYearView::SchceduleViewHide();
+    CYearView::ScheduleViewHide();
 }
