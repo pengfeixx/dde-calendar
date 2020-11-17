@@ -679,11 +679,14 @@ void CWeekScheduleView::sortAndFilter(QVector<MScheduleDateRangeInfo> &vMDaySche
     int end = 0;
     mScheduleClear();
     for (int i = 0 ; i < vMDaySchedule.size(); ++i) {
+        //获取起始位置
         postion = static_cast<int>(beginDate.daysTo(vMDaySchedule.at(i).bdate));
+        //获取结束位置
         end     = static_cast<int>(beginDate.daysTo(vMDaySchedule.at(i).edate));
         //初始化当前行
         int row = 0;
         int pos = postion;
+        //日程长度
         int count = 0;
         int scheduleRow = row;
 
@@ -708,12 +711,7 @@ void CWeekScheduleView::sortAndFilter(QVector<MScheduleDateRangeInfo> &vMDaySche
                         scheduleFill[row][postion] = true;
                         //如果该位置不为起始位置
                         if (pos !=postion) {
-                            MScheduleDateRangeInfo scheduleInfo;
-                            scheduleInfo.bdate = beginDate.addDays(pos);
-                            scheduleInfo.edate = beginDate.addDays(postion -1);
-                            scheduleInfo.state = false;
-                            scheduleInfo.tData = vMDaySchedule.at(i).tData;
-                            m_MScheduleInfo[row].append(scheduleInfo);
+                            addShowSchedule(pos,postion-1,row,vMDaySchedule.at(i).tData);
                         }
                         //设置还有xxx项
                         MScheduleDateRangeInfo info;
@@ -722,7 +720,10 @@ void CWeekScheduleView::sortAndFilter(QVector<MScheduleDateRangeInfo> &vMDaySche
                         info.num = m_ColumnScheduleCount[postion] -m_MaxNum +1;
                         info.state = true;
                         m_MScheduleInfo[row].append(info);
-                        pos = postion +1;
+                        //将该位置设为日程新的起始位置
+                        pos = postion;
+                        //从该列0行开始继续，因为for循环最后会跳转到下一列，所以在这里--以保证下次循环还在该列
+                        --postion;
                         row = 0;
                         count = 0;
                     } else {
@@ -732,18 +733,37 @@ void CWeekScheduleView::sortAndFilter(QVector<MScheduleDateRangeInfo> &vMDaySche
                     }
                     break;
                 } else {
+                    //如果有显示的日程
+                    if(count >0){
+                        //如果该位置不为起始位置
+                        if (pos !=postion) {
+                            addShowSchedule(pos,postion-1,scheduleRow,vMDaySchedule.at(i).tData);
+                        }
+                    }
                     ++row;
                 }
             }
         }
-        if (pos>6||count==0) {
-        } else {
-            MScheduleDateRangeInfo scheduleInfo;
-            scheduleInfo.bdate = beginDate.addDays(pos);
-            scheduleInfo.edate = beginDate.addDays(postion -1);
-            scheduleInfo.state = false;
-            scheduleInfo.tData = vMDaySchedule.at(i).tData;
-            m_MScheduleInfo[scheduleRow].append(scheduleInfo);
+        //如果开始位置小于7并且长度大于0,则添加显示日程
+        //开始位置0-6,显示长度1-7
+        if(pos<7 &&count >0){
+            addShowSchedule(pos,postion-1,scheduleRow,vMDaySchedule.at(i).tData);
         }
     }
+}
+
+void CWeekScheduleView::addShowSchedule(const int &startPos, const int &endPos, const int &addRow, const ScheduleDtailInfo &addInfo)
+{
+    MScheduleDateRangeInfo scheduleInfo;
+    //设置显示的开始日期
+    scheduleInfo.bdate = beginDate.addDays(startPos);
+    //设置显示的结束日期
+    scheduleInfo.edate = beginDate.addDays(endPos);
+    //false表示该信息为正常日程信息
+    scheduleInfo.state = false;
+    scheduleInfo.num = 0;
+    //设置需要显示的日程
+    scheduleInfo.tData = addInfo;
+    //添加需要显示的日程
+    m_MScheduleInfo[addRow].append(scheduleInfo);
 }

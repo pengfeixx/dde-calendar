@@ -119,6 +119,14 @@ private:
     void setMaxNum();
     void mScheduleClear();
     void sortAndFilter(QVector<MScheduleDateRangeInfo> &vMDaySchedule);
+    /**
+     * @brief addShowSchedule       添加显示的日程
+     * @param startPos              其实位置
+     * @param endPos                结束位置
+     * @param addRow                需要添加的行
+     * @param addInfo               添加的日程
+     */
+    void addShowSchedule(const int &startPos,const int &endPos,const int &addRow,const ScheduleDtailInfo &addInfo);
 private:
     QVector<QGraphicsRectItem *>            m_scheduleShowItem;
     QVector<RowScheduleInfo>                m_MScheduleInfo;
