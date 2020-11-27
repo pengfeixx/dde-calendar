@@ -36,7 +36,7 @@ DWIDGET_USE_NAMESPACE
 
 CWeekView::CWeekView(QWidget *parent)
     : QWidget(parent)
-    ,m_touchGesture(this)
+    , m_touchGesture(this)
 {
     m_dayNumFont.setPixelSize(DDECalendar::FontSizeSixteen);
     m_dayNumFont.setWeight(QFont::Light);
@@ -52,11 +52,11 @@ CWeekView::CWeekView(QWidget *parent)
     //上一周按钮
     m_prevButton = new DIconButton(DStyle::SP_ArrowLeft, this);
     m_prevButton->setFixedSize(36, 36);
-    connect(m_prevButton,&DIconButton::clicked,this,&CWeekView::signalBtnPrev);
+    connect(m_prevButton, &DIconButton::clicked, this, &CWeekView::signalBtnPrev);
     //下一周按钮
     m_nextButton = new DIconButton(DStyle::SP_ArrowRight, this);
     m_nextButton->setFixedSize(36, 36);
-    connect(m_nextButton,&DIconButton::clicked,this,&CWeekView::signalBtnNext);
+    connect(m_nextButton, &DIconButton::clicked, this, &CWeekView::signalBtnNext);
 
     hboxLayout->addWidget(m_prevButton);
     //显示周数的widget
@@ -199,7 +199,7 @@ bool CWeekView::eventFilter(QObject *o, QEvent *e)
             paintCell(cell);
         } else if (e->type() == QEvent::MouseButtonPress) {
             QMouseEvent *mouseEvent = dynamic_cast<QMouseEvent *>(e);
-            if (mouseEvent->button() ==Qt::LeftButton) {
+            if (mouseEvent->button() == Qt::LeftButton) {
                 cellClicked(cell);
             }
         }
@@ -268,7 +268,7 @@ void CWeekView::wheelEvent(QWheelEvent *event)
     //判断是否是拖拽状态
     if (!isDragging) {
         //如果滚动为水平方向则修改周数
-        if(event->orientation() == Qt::Orientation::Horizontal){
+        if (event->orientation() == Qt::Orientation::Horizontal) {
             if (event->delta() < 0) {
                 //上一周
                 slotnext();
@@ -282,12 +282,12 @@ void CWeekView::wheelEvent(QWheelEvent *event)
 
 bool CWeekView::event(QEvent *e)
 {
-    if(m_touchGesture.event(e)){
+    if (m_touchGesture.event(e)) {
         //获取触摸状态
         switch (m_touchGesture.getTouchState()) {
-        case touchGestureOperation::T_SLIDE:{
-             //在滑动状态如果可以更新数据则切换月份
-            if(m_touchGesture.isUpdate()){
+        case touchGestureOperation::T_SLIDE: {
+            //在滑动状态如果可以更新数据则切换月份
+            if (m_touchGesture.isUpdate()) {
                 m_touchGesture.setUpdate(false);
                 switch (m_touchGesture.getMovingDir()) {
                 case touchGestureOperation::T_LEFT:
@@ -306,7 +306,35 @@ bool CWeekView::event(QEvent *e)
             break;
         }
         return true;
-    }else{
+    } else {
         return DWidget::event(e);
     }
+}
+
+void CWeekView::resizeEvent(QResizeEvent *event)
+{
+    //获取当前所有cell的宽度
+    const int _allCellWidth = width() - 36 * 2;
+    //获取当前cell的宽度
+    int w = _allCellWidth / DDEWeekCalendar::NumWeeksDisplayed;
+    //最小显示的宽度
+    const int _minWidget = 36;
+    //默认都显示
+    QVector<bool> vindex(10, true);
+    //cell的宽度小于最小宽度则隐藏部分显示
+    if (w < _minWidget) {
+        //计算前后需要隐藏的个数
+        int t_num = qRound((_minWidget * DDEWeekCalendar::NumWeeksDisplayed - _allCellWidth) / _minWidget / 2.0);
+        for (int i = 0; i < t_num; i++) {
+            vindex[i] = false;
+            vindex[9 - i] = false;
+        }
+    }
+    //设置是否显示
+    for (int i = 0; i < DDEWeekCalendar::NumWeeksDisplayed; i++) {
+        m_cellList[i]->setVisible(vindex[i]);
+    }
+    QWidget::resizeEvent(event);
+    //更新显示
+    update();
 }
