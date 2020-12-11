@@ -495,16 +495,24 @@ void CMonthGraphiview::MoveInfoProcess(ScheduleDtailInfo &info, const QPointF &p
 
 QDateTime CMonthGraphiview::getDragScheduleInfoBeginTime(const QDateTime &moveDateTime)
 {
-    return moveDateTime.daysTo(m_InfoEndTime)<0 ?
-           QDateTime(m_InfoEndTime.date(),m_InfoBeginTime.time()):
-           QDateTime(moveDateTime.date(),m_InfoBeginTime.time());
+    //获取移动开始时间
+    QDateTime _beginTime = moveDateTime.daysTo(m_InfoEndTime) < 0 ?
+                           QDateTime(m_InfoEndTime.date(), m_InfoBeginTime.time()) :
+                           QDateTime(moveDateTime.date(), m_InfoBeginTime.time());
+    //如果开始时间晚与结束时间则减少一天
+    _beginTime = _beginTime > m_InfoEndTime ? _beginTime.addDays(-1) : _beginTime;
+    return _beginTime;
 }
 
 QDateTime CMonthGraphiview::getDragScheduleInfoEndTime(const QDateTime &moveDateTime)
 {
-    return m_InfoBeginTime.daysTo(moveDateTime)<0 ?
-           QDateTime(m_InfoBeginTime.date(),m_InfoEndTime.time()):
-           QDateTime(moveDateTime.date(),m_InfoEndTime.time());
+    //获取结束时间
+    QDateTime _endTime = m_InfoBeginTime.daysTo(moveDateTime) < 0 ?
+                         QDateTime(m_InfoBeginTime.date(), m_InfoEndTime.time()) :
+                         QDateTime(moveDateTime.date(), m_InfoEndTime.time());
+    //如果结束时间小于开始时间则添加一天
+    _endTime = _endTime < m_InfoBeginTime ? _endTime.addDays(1)  : _endTime;
+    return _endTime;
 }
 
 void CMonthGraphiview::slotCreate(const QDateTime &date)
