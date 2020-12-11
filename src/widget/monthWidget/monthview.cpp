@@ -185,8 +185,8 @@ void CMonthView::setCurrentDate(const QDate date)
 
     if (date.year() < DDECalendar::QueryEarliestYear)
         return;
-
-    if (date.month() != m_currentDate.month()) {
+    //当月份或年份变化时更新班休信息
+    if (date.month() != m_currentDate.month() || date.year() != m_currentDate.year() ) {
         m_festivallist.clear();
         m_DBusInter->GetFestivalMonth(date.addMonths(-1).year(), date.addMonths(-1).month(), m_festivallist);
         m_DBusInter->GetFestivalMonth(date.year(), date.month(), m_festivallist);
