@@ -50,7 +50,6 @@ protected:
     void showPopup() override;
     void focusInEvent(QFocusEvent *event) override;
     void paintEvent(QPaintEvent *e) override;
-
 private:
     QString m_timeFormat = "hh:mm";
     int m_timeFormatValue = 0;

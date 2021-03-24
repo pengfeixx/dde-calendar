@@ -21,9 +21,9 @@
 
 #include "src/scheduledatainfo.h"
 #include "dcalendarddialog.h"
+#include "cdateedit.h"
 
 #include <DCheckBox>
-#include <DDateEdit>
 #include <DFrame>
 #include <DLineEdit>
 #include <DTextEdit>
@@ -83,10 +83,10 @@ private:
     QLabel *m_contentLabel = nullptr;
     DTextEdit *m_textEdit = nullptr;
     QLabel *m_beginTimeLabel = nullptr;
-    DDateEdit *m_beginDateEdit = nullptr;
+    CDateEdit *m_beginDateEdit = nullptr;
     CTimeEdit *m_beginTimeEdit = nullptr;
     QLabel *m_endTimeLabel = nullptr;
-    DDateEdit *m_endDateEdit = nullptr;
+    CDateEdit *m_endDateEdit = nullptr;
     CTimeEdit *m_endTimeEdit = nullptr;
 
     QLabel *m_adllDayLabel = nullptr;
@@ -100,7 +100,7 @@ private:
     DLineEdit *m_endrepeattimes = nullptr;
     QLabel *m_endrepeattimesLabel = nullptr;
     DWidget *m_endrepeattimesWidget;
-    DDateEdit *m_endRepeatDate = nullptr;
+    CDateEdit *m_endRepeatDate = nullptr;
     DWidget *m_endrepeatWidget = nullptr;
     DFrame *m_gwi = nullptr;
     QLabel *m_titleLabel = nullptr;

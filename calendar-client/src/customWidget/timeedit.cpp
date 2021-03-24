@@ -38,6 +38,7 @@ CTimeEdit::CTimeEdit(QWidget *parent)
 {
     initUI();
     initConnection();
+    this->lineEdit()->setReadOnly(true);
 }
 
 CTimeEdit::~CTimeEdit()

@@ -13,7 +13,7 @@ set(HUANGLIDB "${APP_RES_DIR}/data/huangli.db")
 
 # Find the library
 find_package(PkgConfig REQUIRED)
-find_package(DtkCore REQUIRED)
+find_package(DtkCore5.5 REQUIRED)
 find_package(Qt5 COMPONENTS
     Core
     DBus
@@ -24,7 +24,7 @@ set(LINK_LIBS
     Qt5::Core
     Qt5::DBus
     Qt5::Sql
-    ${DtkCore_LIBRARIES}
+    ${DtkCore5.5_LIBRARIES}
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)

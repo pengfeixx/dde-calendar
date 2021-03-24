@@ -57,14 +57,14 @@ endforeach()
 file(GLOB_RECURSE Calendar_SRC ${CMAKE_CURRENT_LIST_DIR}/src/*.cpp)
 
 find_package(PkgConfig REQUIRED)
-find_package(DtkCore REQUIRED)
+find_package(DtkCore5.5 REQUIRED)
 find_package(Qt5Gui REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Svg REQUIRED)
 find_package(Qt5DBus REQUIRED)
 find_package(Qt5Svg REQUIRED)
-find_package(DtkWidget REQUIRED)
-find_package(DtkGui REQUIRED)
+find_package(DtkWidget5.5 REQUIRED)
+find_package(DtkGui5.5 REQUIRED)
 find_package(DFrameworkdbus REQUIRED)
 
 include_directories(${Qt5Gui_PRIVATE_INCLUDE_DIRS})
@@ -72,11 +72,11 @@ include_directories(../calendar-basicstruct/)
 # Tell CMake to create the executable
 add_executable(${PROJECT_NAME} ${Calendar_SRC} ${APP_QRC})
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${DtkWidget_INCLUDE_DIRS} ${OBJECT_BINARY_DIR})
+target_include_directories(${PROJECT_NAME} PUBLIC ${DtkWidget5.5_INCLUDE_DIRS} ${OBJECT_BINARY_DIR})
 target_link_libraries(${PROJECT_NAME}
-    ${DtkWidget_LIBRARIES}
-    ${DtkCore_LIBRARIES}
-    ${DtkGui_LIBRARIES}
+    ${DtkWidget5.5_LIBRARIES}
+    ${DtkCore5.5_LIBRARIES}
+    ${DtkGui5.5_LIBRARIES}
     ${Qt5Widgets_LIBRARIES}
     ${Qt5Svg_LIBRARIES}
     ${Qt5DBus_LIBRARIES}

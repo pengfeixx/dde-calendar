@@ -29,8 +29,9 @@ endmacro()
 ADD_SUBDIRECTORY(calendar-basicstruct)
 ADD_SUBDIRECTORY(calendar-client)
 ADD_SUBDIRECTORY(calendar-service)
-ADD_SUBDIRECTORY(schedule-plugin)
-ADD_SUBDIRECTORY(tests)
+#平板模式暂时去除插件和ut测试
+#ADD_SUBDIRECTORY(schedule-plugin)
+#ADD_SUBDIRECTORY(tests)
 
 #前后端都有翻译所以将翻译放到更高层级
 find_package(Qt5LinguistTools REQUIRED)

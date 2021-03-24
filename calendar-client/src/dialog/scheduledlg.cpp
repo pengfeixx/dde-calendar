@@ -631,7 +631,7 @@ void CScheduleDlg::initUI()
     m_beginTimeLabel->setFont(mlabelF);
     m_beginTimeLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     m_beginTimeLabel->setFixedSize(78, 36);
-    m_beginDateEdit = new QDateEdit(this);
+    m_beginDateEdit = new CDateEdit(this);
     //设置对象名称和辅助显示名称
     m_beginDateEdit->setObjectName("ScheduleBeginDateEdit");
     m_beginDateEdit->setAccessibleName("ScheduleBeginDateEdit");
@@ -663,7 +663,7 @@ void CScheduleDlg::initUI()
     m_endTimeLabel->setFont(mlabelF);
     m_endTimeLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     m_endTimeLabel->setFixedSize(78, 36);
-    m_endDateEdit = new QDateEdit(this);
+    m_endDateEdit = new CDateEdit(this);
     //设置对象名称和辅助显示名称
     m_endDateEdit->setObjectName("ScheduleEndDateEdit");
     m_endDateEdit->setAccessibleName("ScheduleEndDateEdit");
@@ -787,7 +787,7 @@ void CScheduleDlg::initUI()
     m_endrepeattimesWidget->setVisible(false);
     endrepeatLabellayout->addWidget(m_endrepeattimesWidget);
 
-    m_endRepeatDate = new DDateEdit;
+    m_endRepeatDate = new CDateEdit;
     //设置对象名称和辅助显示名称
     m_endRepeatDate->setObjectName("EndRepeatDateEdit");
     m_endRepeatDate->setAccessibleName("EndRepeatDateEdit");
