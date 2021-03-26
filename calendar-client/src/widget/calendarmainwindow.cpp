@@ -103,6 +103,8 @@ Calendarmainwindow::Calendarmainwindow(int index, QWidget *w)
                 restoreGeometry(arrybyte);
             }
         }
+    } else {
+        setWindowFlags(windowFlags() & ~(Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint));
     }
     Dtk::Widget::moveToCenter(this);
 }
