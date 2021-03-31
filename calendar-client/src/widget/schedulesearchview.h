@@ -60,10 +60,14 @@ public slots:
     //更新搜索信息
     void updateSearch();
     void slotSelectCurrentItem(CScheduleSearchItem *item, bool itemFocusOut);
+    void slotListWidgetClicked();
+
 protected:
     void resizeEvent(QResizeEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
+    void focusInEvent(QFocusEvent *e) override;
+
 private:
     void updateDateShow();
     void createItemWidget(ScheduleDataInfo info, QDate date, int rtype);
@@ -97,7 +101,7 @@ public:
     explicit CScheduleListWidget(QWidget *parent = nullptr);
     ~CScheduleListWidget() override;
 signals:
-    void signalListWidgetScheduleHide();
+    void signalListWidgetClicked();
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;

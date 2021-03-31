@@ -184,7 +184,6 @@ void Calendarmainwindow::viewWindow(int type, const bool showAnimation)
     if (m_buttonBox->checkedId() != type) {
         //设置选中
         m_buttonBox->button(type)->setChecked(true);
-        m_buttonBox->button(type)->setFocus();
     }
     switch (type) {
     case DDECalendar::CalendarYearWindow: {
@@ -325,6 +324,10 @@ void Calendarmainwindow::initUI()
     setTabOrder(this->titlebar(), titleWidget);
     //设置状态栏焦点代理为标题窗口
     this->titlebar()->setFocusProxy(titleWidget);
+    //接收设置按键焦点
+    connect(titleWidget, &CTitleWidget::signalSetButtonFocus, [=] {
+        m_setButtonFocus = true;
+    });
 
     m_searchEdit = titleWidget->searchEdit();
     m_buttonBox = titleWidget->buttonBox();
@@ -508,9 +511,6 @@ void Calendarmainwindow::slotSreturnPressed()
         m_contentBackground->setVisible(true);
     }
     m_scheduleSearchView->slotsetSearch(m_searchEdit->text());
-    //有日程展示,设置搜索列表焦点
-    if (m_scheduleSearchView->getHasScheduleShow())
-        m_scheduleSearchView->setFocus(Qt::TabFocusReason);
     updateHigh();
 }
 
@@ -608,6 +608,12 @@ void Calendarmainwindow::slotViewtransparentFrame(const bool isShow)
 void Calendarmainwindow::slotSetButtonBox()
 {
     m_buttonBox->setEnabled(true);
+    //如果为键盘操作则切换后设置焦点
+    if (m_setButtonFocus) {
+        //获取焦点
+        m_buttonBox->button(m_buttonBox->checkedId())->setFocus();
+    }
+    m_setButtonFocus = false;
 }
 
 /**
@@ -652,7 +658,9 @@ void Calendarmainwindow::slotNewSchedule()
     CScheduleDlg _scheduleDig(1, this, false);
     //设置开始时间
     _scheduleDig.setDate(_beginTime);
+    slotViewtransparentFrame(true);
     _scheduleDig.exec();
+    slotViewtransparentFrame(false);
 }
 
 void Calendarmainwindow::slotDeleteitem()
@@ -709,4 +717,3 @@ void Calendarmainwindow::mousePressEvent(QMouseEvent *event)
     Q_UNUSED(event);
     setScheduleHide();
 }
-

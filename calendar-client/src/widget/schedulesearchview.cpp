@@ -162,10 +162,14 @@ void CScheduleSearchItem::slotDelete()
     emit signalViewtransparentFrame(1);
     //删除日程
     CScheduleOperation _scheduleOperation(this);
-    _scheduleOperation.deleteSchedule(m_ScheduleInfo);
+    bool _isDelete = _scheduleOperation.deleteSchedule(m_ScheduleInfo);
     emit signalViewtransparentFrame(0);
     //删除日程后，将焦点设置给父类
-    parentWidget()->setFocus(Qt::TabFocusReason);
+    if (_isDelete) {
+        parentWidget()->setFocus(Qt::TabFocusReason);
+    } else {
+        this->setFocus();
+    }
 }
 
 /**
@@ -399,12 +403,12 @@ bool CScheduleSearchItem::eventFilter(QObject *o, QEvent *e)
 
 void CScheduleSearchItem::focusInEvent(QFocusEvent *e)
 {
-    if (e->reason() == Qt::TabFocusReason || e->reason() == Qt::PopupFocusReason) {
+    if (e->reason() == Qt::TabFocusReason) {
         emit signalSelectSchedule(m_ScheduleInfo);
         emit signalSelectCurrentItem(this, false);
         m_tabFocus = true;
     }
-    if (e->reason() == Qt::ActiveWindowFocusReason) {
+    if (e->reason() == Qt::ActiveWindowFocusReason || e->reason() == Qt::PopupFocusReason) {
         m_tabFocus = m_tabFocusBeforeActive;
     }
     DLabel::focusInEvent(e);
@@ -452,7 +456,7 @@ CScheduleSearchView::CScheduleSearchView(QWidget *parent)
     m_gradientItemList->setLineWidth(0);
     m_labellist.clear();
 
-    connect(m_gradientItemList, &CScheduleListWidget::signalListWidgetScheduleHide, this, &CScheduleSearchView::signalScheduleHide);
+    connect(m_gradientItemList, &CScheduleListWidget::signalListWidgetClicked, this, &CScheduleSearchView::slotListWidgetClicked);
     CScheduleTask *_scheduleTask = CalendarManager::getInstance()->getScheduleTask();
     connect(_scheduleTask, &CScheduleTask::jobsUpdate, this, &CScheduleSearchView::updateSearch);
 }
@@ -496,6 +500,10 @@ void CScheduleSearchView::clearSearch()
 {
     m_searchStr.clear();
     m_vlistData.clear();
+    m_scheduleSearchItem.clear();
+    //窗口隐藏后初始化对应的状态
+    hasScheduleShow = false;
+    m_selectItem = nullptr;
     for (int i = 0; i < m_gradientItemList->count(); i++) {
         QListWidgetItem *item11 = m_gradientItemList->takeItem(i);
         m_gradientItemList->removeItemWidget(item11);
@@ -535,10 +543,10 @@ bool CScheduleSearchView::getScheduleStatus()
 void CScheduleSearchView::deleteSchedule()
 {
     currentDItemIndex = m_scheduleSearchItem.indexOf(m_selectItem);
-    //节日日程不可操作
-    if (m_selectItem->getData().getType() == DDECalendar::FestivalTypeID)
-        return;
-    m_selectItem->slotDelete();
+    //如果存在该item且为节日日程不可操作
+    if (currentDItemIndex >= 0 && m_selectItem->getData().getType() != DDECalendar::FestivalTypeID) {
+        m_selectItem->slotDelete();
+    }
 }
 
 /**
@@ -776,6 +784,17 @@ void CScheduleSearchView::slotSelectCurrentItem(CScheduleSearchItem *item, bool 
     keyPressUP = false;
 }
 
+/**
+ * @brief CScheduleSearchView::slotListWidgetClicked
+ * 根据listwidget点击事件对当前tab焦点item做对应的处理
+ */
+void CScheduleSearchView::slotListWidgetClicked()
+{
+    //取消当前tab选中item
+    m_selectItem = nullptr;
+    emit signalScheduleHide();
+}
+
 void CScheduleSearchView::resizeEvent(QResizeEvent *event)
 {
     for (int i = 0; i < m_gradientItemList->count(); i++) {
@@ -821,6 +840,15 @@ void CScheduleSearchView::keyPressEvent(QKeyEvent *event)
             m_scheduleSearchItem.at(selectNum + 1)->setFocus(Qt::TabFocusReason);
     }
     DWidget::keyPressEvent(event);
+}
+
+void CScheduleSearchView::focusInEvent(QFocusEvent *e)
+{
+    if (e->reason() == Qt::TabFocusReason) {
+        if (m_scheduleSearchItem.size() > 0) {
+            m_scheduleSearchItem.first()->setFocus(Qt::TabFocusReason);
+        }
+    }
 }
 
 CScheduleSearchDateItem::CScheduleSearchDateItem(QWidget *parent)
@@ -902,7 +930,7 @@ CScheduleListWidget::~CScheduleListWidget()
 void CScheduleListWidget::mousePressEvent(QMouseEvent *event)
 {
     DListWidget::mousePressEvent(event);
-    emit signalListWidgetScheduleHide();
+    emit signalListWidgetClicked();
 }
 
 void CScheduleListWidget::paintEvent(QPaintEvent *e)
