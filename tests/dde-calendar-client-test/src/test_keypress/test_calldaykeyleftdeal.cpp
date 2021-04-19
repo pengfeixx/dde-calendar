@@ -1,9 +1,9 @@
 /*
 * Copyright (C) 2019 ~ 2020 Uniontech Software Technology Co.,Ltd.
 *
-* Author:     hejinghai <hejinghai@uniontech.com>
+* Author:     chenhaifeng  <chenhaifeng@uniontech.com>
 *
-* Maintainer: hejinghai <hejinghai@uniontech.com>
+* Maintainer: chenhaifeng  <chenhaifeng@uniontech.com>
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -18,20 +18,25 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef TEST_MONTHGRAPHVIEW_H
-#define TEST_MONTHGRAPHVIEW_H
+#include "test_calldaykeyleftdeal.h"
 
-#include "monthgraphiview.h"
+#include "../third-party_stub/stub.h"
 #include "gtest/gtest.h"
-#include <QObject>
+#include "view/cgraphicsscene.h"
+#include "KeyPress/calldaykeyleftdeal.h"
+#include "view/graphicsItem/cweekdaybackgrounditem.h"
+#include "keypressstub.h"
 
-class test_monthgraphiview : public QObject, public::testing::Test
+test_CAllDayKeyLeftDeal::test_CAllDayKeyLeftDeal(QObject *parent)
+    : QObject(parent)
 {
-public:
-    test_monthgraphiview();
-    ~test_monthgraphiview();
-protected:
-    CMonthGraphicsview *cMonthGraphiview = nullptr;
-};
+}
 
-#endif // TEST_MONTHGRAPHVIEW_H
+TEST(LeftHandle_test, test_CAllDayKeyLeftDeal)
+{
+    KeyPressStub stub;
+    CGraphicsScene *scene = new CGraphicsScene();
+    CAllDayKeyLeftDeal alldayLeftDeal(scene);
+    alldayLeftDeal.dealEvent();
+    delete scene;
+}

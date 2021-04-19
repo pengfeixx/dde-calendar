@@ -1,9 +1,9 @@
 /*
 * Copyright (C) 2019 ~ 2020 Uniontech Software Technology Co.,Ltd.
 *
-* Author:     hejinghai <hejinghai@uniontech.com>
+* Author:     chenhaifeng  <chenhaifeng@uniontech.com>
 *
-* Maintainer: hejinghai <hejinghai@uniontech.com>
+* Maintainer: chenhaifeng  <chenhaifeng@uniontech.com>
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -18,20 +18,29 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef TEST_MONTHGRAPHVIEW_H
-#define TEST_MONTHGRAPHVIEW_H
+#ifndef TEST_CKEYPRESSPRXY_H
+#define TEST_CKEYPRESSPRXY_H
 
-#include "monthgraphiview.h"
+#include "configsettings.h"
 #include "gtest/gtest.h"
-#include <QObject>
+#include "ckeypressprxy.h"
 
-class test_monthgraphiview : public QObject, public::testing::Test
+#include <QObject>
+#include <QSharedPointer>
+
+class test_CKeyPressPrxy : public QObject
+    , public ::testing::Test
 {
+    Q_OBJECT
 public:
-    test_monthgraphiview();
-    ~test_monthgraphiview();
-protected:
-    CMonthGraphicsview *cMonthGraphiview = nullptr;
+    test_CKeyPressPrxy();
+
+signals:
+
+public slots:
+
+public:
+    QSharedPointer<CKeyPressPrxy> keyPressPrxy;
 };
 
-#endif // TEST_MONTHGRAPHVIEW_H
+#endif // TEST_CKEYPRESSPRXY_H

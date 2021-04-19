@@ -1,9 +1,9 @@
 /*
 * Copyright (C) 2019 ~ 2020 Uniontech Software Technology Co.,Ltd.
 *
-* Author:     hejinghai <hejinghai@uniontech.com>
+* Author:     chenhaifeng  <chenhaifeng@uniontech.com>
 *
-* Maintainer: hejinghai <hejinghai@uniontech.com>
+* Maintainer: chenhaifeng  <chenhaifeng@uniontech.com>
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -18,20 +18,20 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef TEST_MONTHGRAPHVIEW_H
-#define TEST_MONTHGRAPHVIEW_H
+#ifndef TEST_CKEYUPDEAL_H
+#define TEST_CKEYUPDEAL_H
 
-#include "monthgraphiview.h"
-#include "gtest/gtest.h"
 #include <QObject>
 
-class test_monthgraphiview : public QObject, public::testing::Test
+class test_CKeyUpDeal : public QObject
 {
+    Q_OBJECT
 public:
-    test_monthgraphiview();
-    ~test_monthgraphiview();
-protected:
-    CMonthGraphicsview *cMonthGraphiview = nullptr;
+    explicit test_CKeyUpDeal(QObject *parent = nullptr);
+
+signals:
+
+public slots:
 };
 
-#endif // TEST_MONTHGRAPHVIEW_H
+#endif // TEST_CKEYUPDEAL_H

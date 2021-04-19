@@ -1,9 +1,9 @@
 /*
 * Copyright (C) 2019 ~ 2020 Uniontech Software Technology Co.,Ltd.
 *
-* Author:     hejinghai <hejinghai@uniontech.com>
+* Author:     chenhaifeng  <chenhaifeng@uniontech.com>
 *
-* Maintainer: hejinghai <hejinghai@uniontech.com>
+* Maintainer: chenhaifeng  <chenhaifeng@uniontech.com>
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -18,20 +18,16 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef TEST_MONTHGRAPHVIEW_H
-#define TEST_MONTHGRAPHVIEW_H
+#ifndef DIALOG_STUB_H
+#define DIALOG_STUB_H
 
-#include "monthgraphiview.h"
-#include "gtest/gtest.h"
-#include <QObject>
+#include "../third-party_stub/stub.h"
 
-class test_monthgraphiview : public QObject, public::testing::Test
-{
-public:
-    test_monthgraphiview();
-    ~test_monthgraphiview();
-protected:
-    CMonthGraphicsview *cMonthGraphiview = nullptr;
-};
+//DCalendarDDialog
+//对话框 exec 打桩
+int calendar_DDialog_Exec_stub(void *obj);
+void calendarDDialogExecStub(Stub &stub);
 
-#endif // TEST_MONTHGRAPHVIEW_H
+extern int calendarDDialogExecReturn;
+
+#endif // DIALOG_STUB_H

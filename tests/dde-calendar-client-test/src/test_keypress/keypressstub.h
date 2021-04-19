@@ -1,9 +1,9 @@
 /*
 * Copyright (C) 2019 ~ 2020 Uniontech Software Technology Co.,Ltd.
 *
-* Author:     hejinghai <hejinghai@uniontech.com>
+* Author:     chenhaifeng  <chenhaifeng@uniontech.com>
 *
-* Maintainer: hejinghai <hejinghai@uniontech.com>
+* Maintainer: chenhaifeng  <chenhaifeng@uniontech.com>
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -18,20 +18,32 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef TEST_MONTHGRAPHVIEW_H
-#define TEST_MONTHGRAPHVIEW_H
+#ifndef KEYPRESSSTUB_H
+#define KEYPRESSSTUB_H
 
-#include "monthgraphiview.h"
-#include "gtest/gtest.h"
+#include "../third-party_stub/stub.h"
+#include "view/graphicsItem/cfocusitem.h"
+
 #include <QObject>
 
-class test_monthgraphiview : public QObject, public::testing::Test
+class QGraphicsItem;
+class KeyPressStub
 {
 public:
-    test_monthgraphiview();
-    ~test_monthgraphiview();
-protected:
-    CMonthGraphicsview *cMonthGraphiview = nullptr;
+    KeyPressStub();
+    ~KeyPressStub();
+    Stub &getStub();
+
+private:
+    Stub stub;
 };
 
-#endif // TEST_MONTHGRAPHVIEW_H
+extern bool itemFocus;
+extern bool scene_activeSwitching;
+extern bool WeekDayBackgroundItem_hasNextItem;
+extern bool WeekDayBackgroundItem_showFocus;
+extern QGraphicsItem *SceneCurrentItem;
+extern CFocusItem::CItemType focusItemType;
+extern QDate itemDate;
+
+#endif // KEYPRESSSTUB_H

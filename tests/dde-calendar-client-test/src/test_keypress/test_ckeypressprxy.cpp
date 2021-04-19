@@ -18,29 +18,29 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef TEST_CSCHEDULEOPERATION_H
-#define TEST_CSCHEDULEOPERATION_H
+#include "test_ckeypressprxy.h"
+#include "ckeyleftdeal.h"
 
-#include "../third-party_stub/stub.h"
-#include "scheduleTask/cscheduleoperation.h"
-#include "gtest/gtest.h"
-
-#include <QObject>
-
-class test_cscheduleoperation : public QObject
-    , public ::testing::Test
+test_CKeyPressPrxy::test_CKeyPressPrxy()
 {
-public:
-    test_cscheduleoperation();
-    ~test_cscheduleoperation();
-    void SetUp() override;
-    void TearDown() override;
+    keyPressPrxy = QSharedPointer<CKeyPressPrxy>(new CKeyPressPrxy);
+}
 
-public:
-    CScheduleOperation operation;
+TEST_F(test_CKeyPressPrxy, keyPressDeal_NoEvent)
+{
+    ASSERT_FALSE(keyPressPrxy->keyPressDeal(Qt::Key_Tab));
+}
 
-public:
-    Stub stub;
-};
+TEST_F(test_CKeyPressPrxy, keyPressDeal)
+{
+    keyPressPrxy->addkeyPressDeal(new CKeyLeftDeal());
+    ASSERT_FALSE(keyPressPrxy->keyPressDeal(Qt::Key_Left));
+}
 
-#endif // TEST_CSCHEDULEOPERATION_H
+TEST_F(test_CKeyPressPrxy, removeDeal)
+{
+    CKeyLeftDeal *leftDeal = new CKeyLeftDeal();
+    keyPressPrxy->addkeyPressDeal(leftDeal);
+    keyPressPrxy->removeDeal(leftDeal);
+    ASSERT_FALSE(keyPressPrxy->keyPressDeal(Qt::Key_Left));
+}
