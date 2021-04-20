@@ -53,4 +53,7 @@ popd
 /etc/xdg/autostart/dde-calendar-service.desktop
 %{_datadir}/dde-calendar/data/*
 
+%changelog
+* Tue Apr 20 2021 zhangdingwen <zhangdingwen@uniontech.com> - 5.8.1.1-1
+- init spec for euler
 
