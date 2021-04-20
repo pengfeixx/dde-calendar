@@ -45,11 +45,9 @@ popd
 %license LICENSE
 %{_bindir}/%{name}
 %{_datadir}/applications/%{name}.desktop
-%{_datadir}/icons/hicolor/scalable/apps/%{name}.svg
 %{_datadir}/%{name}/translations/*.qm
 %{_datadir}/deepin-manual/manual-assets/application/dde-calendar/calendar/*
 %{_datadir}/dbus-1/services/*.service
-/lib/deepin-daemon/dde-calendar-service
 /etc/xdg/autostart/dde-calendar-service.desktop
 %{_datadir}/dde-calendar/data/*
 
