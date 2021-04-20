@@ -24,6 +24,7 @@
 #include "scheduledatamanage.h"
 #include "constants.h"
 #include "scheduledaterangeinfo.h"
+#include "tabletconfig.h"
 
 #include <DHiDPIHelper>
 #include <DPalette>
@@ -393,7 +394,8 @@ void CAllDayEventWeekView::updateItemHeightByFontSize()
         static_cast<quint16>(DFontSizeManager::instance()->fontPixelSize(qGuiApp->font())));
     font = DFontSizeManager::instance()->t8(font);
     QFontMetrics fm(font);
-    int h = fm.height();
+    //根据缩放比设置日程标签大小
+    int h = qRound(fm.height() * TabletConfig::getHeightScale());
     if (itemHeight != h) {
         itemHeight = h;
     }

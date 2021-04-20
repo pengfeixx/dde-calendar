@@ -22,6 +22,7 @@
 #include "scheduledlg.h"
 #include "myscheduleview.h"
 #include "graphicsItem/cmonthschedulenumitem.h"
+#include "tabletconfig.h"
 
 #include <DHiDPIHelper>
 
@@ -73,7 +74,8 @@ void CMonthScheduleView::slotFontChange()
         static_cast<quint16>(DFontSizeManager::instance()->fontPixelSize(qGuiApp->font())));
     font = DFontSizeManager::instance()->t8(font);
     QFontMetrics fm(font);
-    int h = fm.height();
+    //根据缩放比设置日程标签大小
+    int h = qRound(fm.height() * TabletConfig::getHeightScale());
 
     if (m_ItemHeight != h) {
         m_ItemHeight = h;

@@ -39,6 +39,11 @@ public:
     static void setVirtualKeyboard(bool isShow);
     //判断虚拟键盘是否显示
     static bool isShowVirtualKeyboard();
+    //获取虚拟键盘大小
+    static QRectF getKeyboardRectangle();
+    //获取屏幕高度缩放比
+    static qreal getHeightScale();
+
 signals:
 
 public slots:

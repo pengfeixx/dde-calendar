@@ -26,6 +26,8 @@
 
 #include <DHiDPIHelper>
 #include <DFontSizeManager>
+#include <DApplication>
+#include <QDesktopWidget>
 
 #include <QHBoxLayout>
 #include <QIcon>
@@ -436,13 +438,19 @@ bool CScheduleDlg::eventFilter(QObject *obj, QEvent *pEvent)
             }
         }
         if (pEvent->type() == QEvent::FocusIn) {
-            //显示虚拟键盘
-            TabletConfig::setVirtualKeyboard(true);
+            setVirtualKeyboard(true);
         }
-
         if (pEvent->type() == QEvent::FocusOut) {
-            //隐藏虚拟键盘
-            TabletConfig::setVirtualKeyboard(false);
+            setVirtualKeyboard(false);
+        }
+    }
+
+    if (m_endrepeattimes != nullptr && obj == m_endrepeattimes->lineEdit()) {
+        if (pEvent->type() == QEvent::FocusIn) {
+            setVirtualKeyboard(true);
+        }
+        if (pEvent->type() == QEvent::FocusOut) {
+            setVirtualKeyboard(false);
         }
     }
     return DCalendarDDialog::eventFilter(obj, pEvent);
@@ -513,6 +521,32 @@ void CScheduleDlg::updateDateTimeFormat()
     m_beginDateEdit->setDisplayFormat(m_dateFormat);
     m_endDateEdit->setDisplayFormat(m_dateFormat);
     m_endRepeatDate->setDisplayFormat(m_dateFormat);
+}
+
+/**
+ * @brief CScheduleDlg::getMoveYOffset  根据虚拟键盘获取对话框Y坐标偏移量
+ * @return
+ */
+int CScheduleDlg::getMoveYOffset()
+{
+    QRectF keyboardRectF = TabletConfig::getKeyboardRectangle();
+    int keyboardY = qRound(QApplication::desktop()->availableGeometry().height() - keyboardRectF.height());
+    return this->geometry().bottom() - keyboardY;
+}
+
+void CScheduleDlg::setVirtualKeyboard(bool isShow)
+{
+    //是否显示虚拟键盘
+    TabletConfig::setVirtualKeyboard(isShow);
+    if (isShow) {
+        //如果虚拟键盘会遮挡对话框则调整Y坐标
+        if (getMoveYOffset() > 0) {
+            move(this->x(), this->y() - getMoveYOffset());
+        }
+    } else {
+        //隐藏虚拟键盘，界面调整到屏幕中央
+        moveToCenter();
+    }
 }
 
 void CScheduleDlg::initUI()
@@ -781,6 +815,7 @@ void CScheduleDlg::initUI()
     m_endrepeattimes->setFixedSize(71, 36);
     m_endrepeattimes->setText(QString::number(10));
     m_endrepeattimes->setClearButtonEnabled(false);
+    m_endrepeattimes->lineEdit()->installEventFilter(this);
     QRegExp rx("^[1-9]\\d{0,2}$");
     QValidator *validator = new QRegExpValidator(rx, this);
     m_endrepeattimes->lineEdit()->setValidator(validator);

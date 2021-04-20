@@ -21,6 +21,7 @@
 #include "tabletconfig.h"
 
 #include <DApplication>
+#include <QDesktopWidget>
 
 DWIDGET_USE_NAMESPACE
 
@@ -63,4 +64,24 @@ void TabletConfig::setVirtualKeyboard(bool isShow)
 bool TabletConfig::isShowVirtualKeyboard()
 {
     return DApplication::inputMethod()->isVisible();
+}
+
+/**
+ * @brief TabletConfig::getKeyboardRectangle    获取键盘矩阵
+ * @return
+ */
+QRectF TabletConfig::getKeyboardRectangle()
+{
+    return DApplication::inputMethod()->keyboardRectangle();
+}
+
+/**
+ * @brief TabletConfig::getHeightScale      获取屏幕高度缩放比
+ * @return
+ */
+qreal TabletConfig::getHeightScale()
+{
+    //获取可用桌面大小
+    QRect deskTopRect = QApplication::desktop()->availableGeometry();
+    return deskTopRect.height() / 1080.0;
 }

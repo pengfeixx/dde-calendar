@@ -63,6 +63,10 @@ protected:
     void closeEvent(QCloseEvent *event) override;
     void changeEvent(QEvent *event) override;
     void updateDateTimeFormat() override;
+    //根据虚拟键盘获取对话框Y坐标偏移量
+    int getMoveYOffset();
+    //显示虚拟键盘
+    void setVirtualKeyboard(bool isShow);
 
 private:
     void initUI();
