@@ -20,6 +20,10 @@
 */
 #include "tabletconfig.h"
 
+#include <DApplication>
+
+DWIDGET_USE_NAMESPACE
+
 //默认不为平板模式
 bool TabletConfig::m_isTablet = false;
 TabletConfig::TabletConfig(QObject *parent)
@@ -35,4 +39,28 @@ bool TabletConfig::isTablet()
 void TabletConfig::setIsTablet(bool isTablet)
 {
     m_isTablet = isTablet;
+}
+
+/**
+ * @brief TabletConfig::setVirtualKeyboard      设置显示或隐藏虚拟键盘
+ * @param isShow
+ */
+void TabletConfig::setVirtualKeyboard(bool isShow)
+{
+    if (isShow) {
+        if (!TabletConfig::isShowVirtualKeyboard())
+            DApplication::inputMethod()->show();
+    } else {
+        if (TabletConfig::isShowVirtualKeyboard())
+            DApplication::inputMethod()->hide();
+    }
+}
+
+/**
+ * @brief TabletConfig::isShowVirtualKeyboard   获取虚拟键盘是否显示
+ * @return
+ */
+bool TabletConfig::isShowVirtualKeyboard()
+{
+    return DApplication::inputMethod()->isVisible();
 }

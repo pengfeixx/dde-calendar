@@ -35,7 +35,10 @@ public:
 
     static bool isTablet();
     static void setIsTablet(bool isTablet);
-
+    //设置显示或隐藏虚拟键盘
+    static void setVirtualKeyboard(bool isShow);
+    //判断虚拟键盘是否显示
+    static bool isShowVirtualKeyboard();
 signals:
 
 public slots:

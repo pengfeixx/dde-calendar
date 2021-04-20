@@ -22,6 +22,7 @@
 #include "timeedit.h"
 #include "constants.h"
 #include "cscheduleoperation.h"
+#include "tabletconfig.h"
 
 #include <DHiDPIHelper>
 #include <DFontSizeManager>
@@ -433,6 +434,15 @@ bool CScheduleDlg::eventFilter(QObject *obj, QEvent *pEvent)
                 m_allDayCheckbox->setFocus(Qt::TabFocusReason);
                 return true;
             }
+        }
+        if (pEvent->type() == QEvent::FocusIn) {
+            //显示虚拟键盘
+            TabletConfig::setVirtualKeyboard(true);
+        }
+
+        if (pEvent->type() == QEvent::FocusOut) {
+            //隐藏虚拟键盘
+            TabletConfig::setVirtualKeyboard(false);
         }
     }
     return DCalendarDDialog::eventFilter(obj, pEvent);

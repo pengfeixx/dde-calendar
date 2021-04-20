@@ -21,6 +21,7 @@
 #include "ctitlewidget.h"
 
 #include "constants.h"
+#include "tabletconfig.h"
 
 #include <DFontSizeManager>
 
@@ -163,11 +164,18 @@ bool CTitleWidget::eventFilter(QObject *o, QEvent *e)
 
     if (m_searchEdit != nullptr && m_searchEdit->lineEdit() == o) {
         if (e->type() == QEvent::FocusOut) {
+            //隐藏虚拟键盘
+            TabletConfig::setVirtualKeyboard(false);
             QFocusEvent *focusOutEvent = dynamic_cast<QFocusEvent *>(e);
             //如果为tab切换焦点则发送焦点切换信号
             if (focusOutEvent->reason() == Qt::TabFocusReason) {
                 emit signalSearchFocusSwitch();
             }
+        }
+
+        if (e->type() == QEvent::FocusIn) {
+            //显示虚拟键盘
+            TabletConfig::setVirtualKeyboard(true);
         }
     }
     return QWidget::eventFilter(o, e);
