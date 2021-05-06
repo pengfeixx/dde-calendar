@@ -85,3 +85,14 @@ qreal TabletConfig::getHeightScale()
     QRect deskTopRect = QApplication::desktop()->availableGeometry();
     return deskTopRect.height() / 1080.0;
 }
+
+/**
+ * @brief TabletConfig::getWidthScale     获取屏幕宽度缩放比
+ * @return
+ */
+qreal TabletConfig::getWidthScale()
+{
+    //获取可用桌面大小
+    QRect deskTopRect = QApplication::desktop()->availableGeometry();
+    return deskTopRect.width() / 1920.0;
+}

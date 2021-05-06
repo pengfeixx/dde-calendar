@@ -25,6 +25,7 @@
 #include "constants.h"
 #include "cscheduleoperation.h"
 #include "graphicsItem/cscenebackgrounditem.h"
+#include "tabletconfig.h"
 
 #include <DMenu>
 
@@ -42,6 +43,7 @@
 #include <QtMath>
 #include <QPainter>
 #include <QPainterPath>
+#include <QtGlobal>
 
 //定义拖拽日程
 ScheduleDataInfo DragInfoGraphicsView::m_DragScheduleInfo;
@@ -164,8 +166,9 @@ void DragInfoGraphicsView::mouseReleaseEvent(QMouseEvent *event)
 
 void DragInfoGraphicsView::mouseMoveEvent(QMouseEvent *event)
 {
-    //移动偏移
-    const int lengthOffset = 5;
+    //移动偏移 ,平板根据分辨率调整移动偏移量
+    qreal scale = qMax(TabletConfig::getHeightScale(), TabletConfig::getWidthScale());
+    const int lengthOffset = qRound(5 * scale);
     if (event->source() == Qt::MouseEventSynthesizedByQt) {
         m_touchMovingDir = touchGestureOperation::T_MOVE_NONE;
         switch (m_touchState) {

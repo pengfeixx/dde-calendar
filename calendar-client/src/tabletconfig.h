@@ -43,7 +43,8 @@ public:
     static QRectF getKeyboardRectangle();
     //获取屏幕高度缩放比
     static qreal getHeightScale();
-
+    //获取屏幕宽度缩放比
+    static qreal getWidthScale();
 signals:
 
 public slots:
