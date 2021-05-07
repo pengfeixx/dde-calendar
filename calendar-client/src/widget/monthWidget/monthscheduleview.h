@@ -76,7 +76,7 @@ private:
     int m_topMagin = 0;
     int m_buttommagin = 0;
     QVector<CWeekScheduleView *> m_weekSchedule;
-    int m_ItemHeight = 22;
+    int m_ItemHeight = 42;
     QGraphicsScene *m_Scene = nullptr;
 };
 

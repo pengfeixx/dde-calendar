@@ -35,6 +35,8 @@ bool CAllDayScheduleItem::hasSelectSchedule(const ScheduleDataInfo &info)
 void CAllDayScheduleItem::paintBackground(QPainter *painter, const QRectF &rect, const bool isPixMap)
 {
     Q_UNUSED(isPixMap);
+    //item圆角
+    const qreal radius = rect.height() / 5;
     m_font = DFontSizeManager::instance()->get(m_sizeType, m_font);
     painter->setRenderHints(QPainter::Antialiasing);
     CSchedulesColor gdcolor = CScheduleDataManage::getScheduleDataManage()->getScheduleColorByType(m_vScheduleInfo.getType());
@@ -85,7 +87,7 @@ void CAllDayScheduleItem::paintBackground(QPainter *painter, const QRectF &rect,
     } else {
         painter->setPen(Qt::NoPen);
     }
-    painter->drawRoundedRect(fillRect, rect.height() / 3, rect.height() / 3);
+    painter->drawRoundedRect(fillRect, radius, radius);
     painter->setFont(m_font);
     painter->setPen(textcolor);
     QFontMetrics fm = painter->fontMetrics();
@@ -117,6 +119,7 @@ void CAllDayScheduleItem::paintBackground(QPainter *painter, const QRectF &rect,
 
     painter->drawText(QRectF(fillRect.topLeft().x() + 13, fillRect.y(), fillRect.width(), fillRect.height()),
                       Qt::AlignLeft | Qt::AlignVCenter, tstr);
+
     if (m_vHoverflag && !m_vSelectflag) {
         QRectF trect = QRectF(fillRect.x() + 0.5, fillRect.y() + 0.5, fillRect.width() - 1, fillRect.height() - 1);
         painter->save();
@@ -135,7 +138,7 @@ void CAllDayScheduleItem::paintBackground(QPainter *painter, const QRectF &rect,
         pen.setStyle(Qt::SolidLine);
         painter->setBrush(Qt::NoBrush);
         painter->setPen(pen);
-        painter->drawRoundedRect(trect, rect.height() / 3, rect.height() / 3);
+        painter->drawRoundedRect(trect, radius, radius);
         painter->restore();
     }
     if (m_vSelectflag) {
@@ -143,6 +146,6 @@ void CAllDayScheduleItem::paintBackground(QPainter *painter, const QRectF &rect,
         selcolor.setAlphaF(0.05);
         painter->setBrush(selcolor);
         painter->setPen(Qt::NoPen);
-        painter->drawRoundedRect(fillRect, rect.height() / 3, rect.height() / 3);
+        painter->drawRoundedRect(fillRect, radius, radius);
     }
 }

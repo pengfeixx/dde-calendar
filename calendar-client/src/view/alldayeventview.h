@@ -82,7 +82,7 @@ private:
     void createItemWidget(int index, bool average = false);
     void updateItemHeightByFontSize();
 private:
-    int itemHeight = 22;
+    int itemHeight = 42; //平板设置日程标签最小高度为42
     QVector<QVector<ScheduleDataInfo>> m_vlistData;
     QVector<ScheduleDataInfo> m_scheduleInfo;
     QVector<CAllDayScheduleItem *> m_baseShowItem;

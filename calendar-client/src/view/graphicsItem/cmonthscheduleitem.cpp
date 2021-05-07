@@ -53,6 +53,8 @@ void CMonthScheduleItem::paintBackground(QPainter *painter, const QRectF &rect, 
     QColor color1 = gdcolor.gradientFromC;
     QColor color2 = gdcolor.gradientToC;
     QColor textcolor = gdcolor.textColor;
+    //item圆角
+    const qreal radius = rect.height() / 5;
 
     //判断是否为选中日程
     if (m_vScheduleInfo == m_pressInfo) {
@@ -101,9 +103,7 @@ void CMonthScheduleItem::paintBackground(QPainter *painter, const QRectF &rect, 
     } else {
         painter->setPen(Qt::NoPen);
     }
-    painter->drawRoundedRect(fillRect,
-                             rect.height() / 3,
-                             rect.height() / 3);
+    painter->drawRoundedRect(fillRect, radius, radius);
     painter->restore();
     painter->setFont(m_font);
     painter->setPen(textcolor);
@@ -163,7 +163,7 @@ void CMonthScheduleItem::paintBackground(QPainter *painter, const QRectF &rect, 
         pen.setStyle(Qt::SolidLine);
         painter->setBrush(Qt::NoBrush);
         painter->setPen(pen);
-        painter->drawRoundedRect(trect, rect.height() / 3, rect.height() / 3);
+        painter->drawRoundedRect(trect, radius, radius);
         painter->restore();
     }
 
@@ -172,6 +172,6 @@ void CMonthScheduleItem::paintBackground(QPainter *painter, const QRectF &rect, 
         selcolor.setAlphaF(0.05);
         painter->setBrush(selcolor);
         painter->setPen(Qt::NoPen);
-        painter->drawRoundedRect(fillRect, rect.height() / 3, rect.height() / 3);
+        painter->drawRoundedRect(fillRect, radius, radius);
     }
 }

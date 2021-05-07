@@ -274,14 +274,15 @@ void CAllDayEventWeekView::upDateInfoShow(const DragStatus &status, const Schedu
     }
 
     int m_topMagin;
-    if (vResultData.count() < 2) {
-        m_topMagin = 32;
-    } else if (vResultData.count() < 6) {
-        m_topMagin = 31 + (vResultData.count() - 1) * (itemHeight + 1);
+    int itemsHeight = vResultData.count() * (itemHeight + 1);
+    if (itemsHeight < 100) {
+        m_topMagin = 100;
+    } else if (itemsHeight > 200) {
+        m_topMagin = 200;
     } else {
-        m_topMagin = 123;
+        m_topMagin = itemsHeight;
     }
-    setFixedHeight(m_topMagin - 3);
+    setFixedHeight(m_topMagin + 8);
     setDayData(vResultData);
     update();
     emit signalUpdatePaint(m_topMagin);
@@ -396,8 +397,10 @@ void CAllDayEventWeekView::updateItemHeightByFontSize()
     QFontMetrics fm(font);
     //根据缩放比设置日程标签大小
     int h = qRound(fm.height() * TabletConfig::getHeightScale());
-    if (itemHeight != h) {
+    if (itemHeight < h) {
         itemHeight = h;
+    } else {
+        itemHeight = 42;
     }
 }
 

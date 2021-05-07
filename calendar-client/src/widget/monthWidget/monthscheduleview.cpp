@@ -77,10 +77,12 @@ void CMonthScheduleView::slotFontChange()
     //根据缩放比设置日程标签大小
     int h = qRound(fm.height() * TabletConfig::getHeightScale());
 
-    if (m_ItemHeight != h) {
+    if (m_ItemHeight < h) {
         m_ItemHeight = h;
-        updateData();
+    } else {
+        m_ItemHeight = 42;
     }
+    updateData();
 }
 
 /**

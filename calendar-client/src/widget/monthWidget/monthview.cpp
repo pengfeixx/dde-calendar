@@ -20,6 +20,7 @@
 #include "monthview.h"
 #include "scheduledlg.h"
 #include "scheduledatamanage.h"
+#include "tabletconfig.h"
 
 #include <DHiDPIHelper>
 #include <DPalette>
@@ -104,13 +105,15 @@ void CMonthView::slotScheduleRemindWidget(const bool isShow, const ScheduleDataI
 
 void CMonthView::resizeEvent(QResizeEvent *event)
 {
+    //设置周显示高度
+    const int weekHeight = qRound(70 * TabletConfig::getHeightScale());
     DWidget::resizeEvent(event);
     int leftmagin = 10;
     int topmagin = 10;
     m_leftmaagin = leftmagin;
     m_topmagin = topmagin;
     m_mainLayout->setContentsMargins(leftmagin, topmagin, 0, 10);
-    m_weekIndicator->setFixedSize(width() - leftmagin, static_cast<int>(height() * 0.1042 + 0.5));
+    m_weekIndicator->setFixedSize(width() - leftmagin, weekHeight);
 }
 
 void CMonthView::mousePressEvent(QMouseEvent *event)
