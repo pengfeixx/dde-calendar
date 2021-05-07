@@ -725,9 +725,11 @@ void CYearWindow::wheelEvent(QWheelEvent *event)
 YearFrame::YearFrame(DWidget *parent)
     : DFrame(parent)
 {
+    //间距
+    const int spacing = 20;
     QGridLayout *gridLayout = new QGridLayout;
     gridLayout->setMargin(0);
-    gridLayout->setSpacing(8);
+    gridLayout->setSpacing(spacing);
     gridLayout->setContentsMargins(0, 0, 0, 0);
 
     for (int i = 0; i < 3; i++) {
