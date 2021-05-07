@@ -23,7 +23,8 @@
 #include "weekview.h"
 #include "schedulesearchview.h"
 #include "todaybutton.h"
-#include <scheduledatamanage.h>
+#include "scheduledatamanage.h"
+#include "tabletconfig.h"
 
 #include <DPalette>
 #include <DHiDPIHelper>
@@ -154,6 +155,8 @@ void CWeekWindow::initUI()
 
     m_weekHeadView = new CWeekHeadView(this);
     m_scheduleView = new CScheduleView(this);
+    //设置周显示为固定高度
+    m_weekHeadView->setFixedHeight(qRound(70 * TabletConfig::getHeightScale()));
     m_scheduleView->setviewMagin(73, 109 + 30, 0, 0);
     m_scheduleView->setRange(763, 1032, QDate(2019, 8, 12), QDate(2019, 8, 18));
 
@@ -508,7 +511,6 @@ void CWeekWindow::slotScheduleHide()
  */
 void CWeekWindow::resizeEvent(QResizeEvent *event)
 {
-    qreal headh = height() * 0.0924 + 0.5;
     qreal dw = width() * 0.4186 + 0.5;
     int dh = 36;
     int winframe = 10;
@@ -527,7 +529,6 @@ void CWeekWindow::resizeEvent(QResizeEvent *event)
     } else {
         m_weekview->setFixedSize(qRound(dw - 100 + 72), dh);
     }
-    m_weekHeadView->setFixedSize(width() - winframe, qRound(headh));
     QWidget::resizeEvent(event);
 }
 
