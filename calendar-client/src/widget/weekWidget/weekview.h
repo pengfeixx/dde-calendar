@@ -130,7 +130,7 @@ private:
     QList<QWidget *> m_cellList;
     //选择的日期
     QDate m_selectDate;
-    QDate m_days[10];
+    QDate m_days[14]; //平板显示14个周数
     int m_selectedCell = 0;
     QFont m_dayNumFont;
 

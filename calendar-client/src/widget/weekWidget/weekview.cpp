@@ -219,7 +219,7 @@ void CWeekNumWidget::resizeEvent(QResizeEvent *event)
     //最小显示的宽度
     const int _minWidget = 36;
     //默认都显示
-    QVector<bool> vindex(10, true);
+    QVector<bool> vindex(DDEWeekCalendar::NumWeeksDisplayed, true);
     //cell的宽度小于最小宽度则隐藏部分显示
     if (w < _minWidget) {
         //计算前后需要隐藏的个数
@@ -369,7 +369,7 @@ void CWeekNumWidget::setSelectedCell(int index)
 void CWeekNumWidget::updateDate()
 {
     for (int i = 0 ; i < DDEWeekCalendar::NumWeeksDisplayed; ++i) {
-        m_days[i]  = m_selectDate.addDays((i - 4) * DDEWeekCalendar::AFewDaysofWeek);
+        m_days[i] = m_selectDate.addDays((i - 6) * DDEWeekCalendar::AFewDaysofWeek);
         if (m_days[i] == m_selectDate)
             m_selectedCell = i;
     }

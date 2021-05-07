@@ -126,7 +126,7 @@ namespace DDEWeekCalendar {
 static const int FirstDayofWeekend = 6;
 static const int AFewDaysofWeek = 7;
 
-static const int NumWeeksDisplayed = 10;
+static const int NumWeeksDisplayed = 14;
 
 static const int WCellHeaderItemWidth = 109;
 static const int WCellHeaderItemHeight = 54;
