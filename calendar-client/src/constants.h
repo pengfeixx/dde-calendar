@@ -39,6 +39,7 @@ static const int FontSizeEleven = 11;
 static const int FontSizeTwelve = 12;
 static const int FontSizeFourteen = 14;
 static const int FontSizeSixteen = 16;
+static const int FontSizeEighteen = 18;
 static const int FontSizeTwentyfour = 24;
 static const int FontSizeTwenty = 20;
 static const int FontSizeTen = 10;

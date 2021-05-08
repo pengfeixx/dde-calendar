@@ -284,8 +284,8 @@ void MonthBrefWidget::mousePress(const QPoint &point)
 CMonthDayRect::CMonthDayRect()
     : m_rect(0, 0, 0, 0)
 {
-    m_dayNumFont.setPixelSize(DDECalendar::FontSizeTwelve);
-    m_hightFont.setPixelSize(DDECalendar::FontSizeTwelve);
+    m_dayNumFont.setPixelSize(DDECalendar::FontSizeEighteen);
+    m_hightFont.setPixelSize(DDECalendar::FontSizeEighteen);
 }
 
 /**
@@ -412,13 +412,6 @@ void CMonthDayRect::paintItem(QPainter *painter, const QRectF &rect)
     }
 
     const qreal r = rect.width() > rect.height() ? rect.height() * 0.9 : rect.width() * 0.9 ;
-    int fontsize = qRound(DDECalendar::FontSizeTwelve + (r - 18) * 6 / 17);
-
-    if (fontsize < DDECalendar::FontSizeTwelve) {
-        fontsize = DDECalendar::FontSizeTwelve;
-    }
-    m_dayNumFont.setPixelSize(fontsize);
-    m_hightFont.setPixelSize(fontsize);
     const qreal x = rect.x() + (rect.width() - r) / 2;
     const qreal y = rect.y() + (rect.height() - r) / 2;
     QRectF fillRect = QRectF(x, y, r, r);

@@ -491,7 +491,7 @@ CDayMonthWidget::CDayMonthWidget(QWidget *parent)
     m_gridLayout = new QGridLayout;
     m_gridLayout->setMargin(0);
     m_gridLayout->setSpacing(0);
-    m_dayNumFont.setPixelSize(DDECalendar::FontSizeTwelve);
+    m_dayNumFont.setPixelSize(DDECalendar::FontSizeEighteen);
     for (int r = 0; r != 6; ++r) {
         for (int c = 0; c != 7; ++c) {
             QWidget *cell = new QWidget;
@@ -656,12 +656,6 @@ bool CDayMonthWidget::eventFilter(QObject *o, QEvent *e)
 
 void CDayMonthWidget::resizeEvent(QResizeEvent *event)
 {
-    //获取每个时间widget的高度和宽度
-    qreal width = this->width() / 7;
-    qreal height = this->height() / 6;
-    const qreal r = width > height ? height * 0.9 : width * 0.9;
-    //根据高度和宽度设置时间字体的大小
-    m_dayNumFont.setPixelSize(qRound(12 + (r - 18) * 6 / 17.0));
     QWidget::resizeEvent(event);
 }
 
