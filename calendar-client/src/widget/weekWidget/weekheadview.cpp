@@ -284,25 +284,7 @@ void CWeekHeadView::paintCell(QWidget *cell)
     if (bh < 0) {
         bh = 2;
     }
-    if (isSelectedCell) {
-        if (m_showState & ShowLunar) {
-            QRect fillRect(bw - 2, bh, 26, 26);
-            painter.save();
-            painter.setRenderHint(QPainter::Antialiasing);
-            painter.setBrush(QBrush(CScheduleDataManage::getScheduleDataManage()->getSystemActiveColor()));
-            painter.setPen(Qt::NoPen);
-            painter.drawEllipse(fillRect);
-            painter.restore();
-        } else {
-            QRect fillRect(cell->width() - (cell->width() / 2) + 1, bh - 1, 26, 26);
-            painter.save();
-            painter.setRenderHint(QPainter::Antialiasing);
-            painter.setBrush(QBrush(CScheduleDataManage::getScheduleDataManage()->getSystemActiveColor()));
-            painter.setPen(Qt::NoPen);
-            painter.drawEllipse(fillRect);
-            painter.restore();
-        }
-    }
+
     QLocale locale;
     const QString dayNum = getCellDayNum(pos);
     const QString dayLunar = getLunar(pos);
@@ -323,32 +305,11 @@ void CWeekHeadView::paintCell(QWidget *cell)
     }
 
     painter.setFont(m_dayNumFont);
-
+    //如果为中文环境
     if (m_showState & ShowLunar) {
-        painter.drawText(QRect(bw - 1, bh, 24, 24), Qt::AlignCenter, dayNum);
-        if (d == DDEWeekCalendar::FirstDayofWeekend || d == DDEWeekCalendar::AFewDaysofWeek)
-            painter.setPen(m_weekendsTextColor);
-        else
-            painter.setPen(m_defaultTextColor);
-        painter.drawText(QRect(bw + 24, bh, 30, 25), Qt::AlignCenter, dayWeek);
-    } else {
-        QFontMetrics fm1 = painter.fontMetrics();
-        painter.drawText(QRect(cell->width() - (cell->width() / 2) - 4, bh - 1, 36, 26), Qt::AlignCenter, dayNum);
-        if (d == DDEWeekCalendar::FirstDayofWeekend || d == DDEWeekCalendar::AFewDaysofWeek)
-            painter.setPen(m_weekendsTextColor);
-        else
-            painter.setPen(m_defaultTextColor);
-
-        QFontMetrics fm = painter.fontMetrics();
-
-        while (fm.width(dayWeek) > cell->width() / 2)
-            dayWeek.chop(1);
-
-        painter.drawText(QRect(0, bh, (cell->width() / 2), 26), Qt::AlignRight, dayWeek);
-    }
-    // draw text of day type
-    if (m_showState & ShowLunar) {
+        //如果宽度
         if (cell->width() > 100) {
+            painter.save();
             if (d == DDEWeekCalendar::FirstDayofWeekend || d == DDEWeekCalendar::AFewDaysofWeek)
                 painter.setPen(m_weekendsTextColor);
             else
@@ -368,7 +329,52 @@ void CWeekHeadView::paintCell(QWidget *cell)
             } else {
                 painter.drawText(QRect(bw + 52 + 10, bh, 50, 25), Qt::AlignLeft, dayLunar);
             }
+            painter.restore();
+        } else {
+            //如果宽度无法显示农历信息，则调整x坐标使其居中对齐
+            bw = (cell->width() - 24 - 30) / 2;
         }
+
+        //如果为当前时间则绘制日期背景
+        if (isSelectedCell) {
+            QRect fillRect(bw - 2, bh, 26, 26);
+            painter.save();
+            painter.setRenderHint(QPainter::Antialiasing);
+            painter.setBrush(QBrush(CScheduleDataManage::getScheduleDataManage()->getSystemActiveColor()));
+            painter.setPen(Qt::NoPen);
+            painter.drawEllipse(fillRect);
+            painter.restore();
+        }
+        painter.drawText(QRect(bw - 1, bh, 24, 24), Qt::AlignCenter, dayNum);
+        if (d == DDEWeekCalendar::FirstDayofWeekend || d == DDEWeekCalendar::AFewDaysofWeek)
+            painter.setPen(m_weekendsTextColor);
+        else
+            painter.setPen(m_defaultTextColor);
+        painter.drawText(QRect(bw + 24, bh, 30, 25), Qt::AlignCenter, dayWeek);
+    } else {
+        //如果为当前时间则绘制日期背景
+        if (isCurrentDay) {
+            QRect fillRect(cell->width() - (cell->width() / 2) + 1, bh - 1, 26, 26);
+            painter.save();
+            painter.setRenderHint(QPainter::Antialiasing);
+            painter.setBrush(QBrush(CScheduleDataManage::getScheduleDataManage()->getSystemActiveColor()));
+            painter.setPen(Qt::NoPen);
+            painter.drawEllipse(fillRect);
+            painter.restore();
+        }
+        QFontMetrics fm1 = painter.fontMetrics();
+        painter.drawText(QRect(cell->width() - (cell->width() / 2) - 4, bh - 1, 36, 26), Qt::AlignCenter, dayNum);
+        if (d == DDEWeekCalendar::FirstDayofWeekend || d == DDEWeekCalendar::AFewDaysofWeek)
+            painter.setPen(m_weekendsTextColor);
+        else
+            painter.setPen(m_defaultTextColor);
+
+        QFontMetrics fm = painter.fontMetrics();
+
+        while (fm.width(dayWeek) > cell->width() / 2)
+            dayWeek.chop(1);
+
+        painter.drawText(QRect(0, bh, (cell->width() / 2), 26), Qt::AlignRight, dayWeek);
     }
     painter.restore();
     painter.end();
