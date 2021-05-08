@@ -226,7 +226,8 @@ void CWeekNumWidget::resizeEvent(QResizeEvent *event)
         int t_num = qRound((_minWidget * DDEWeekCalendar::NumWeeksDisplayed - _allCellWidth) / _minWidget / 2.0);
         for (int i = 0; i < t_num; i++) {
             vindex[i] = false;
-            vindex[9 - i] = false;
+            //根据总周数设置需要隐藏的cell
+            vindex[DDEWeekCalendar::NumWeeksDisplayed - 1 - i] = false;
         }
     }
     //设置是否显示
