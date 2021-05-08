@@ -104,7 +104,7 @@ CTitleWidget::CTitleWidget(QWidget *parent)
     m_searchEdit->lineEdit()->installEventFilter(this);
 
     //新建日程快捷按钮
-    m_newScheduleBtn = new DIconButton(this);
+    m_newScheduleBtn = new DToolButton(this);
     DStyle style;
     m_newScheduleBtn->setFixedSize(36, 36);
     //设置+
@@ -132,7 +132,7 @@ DSearchEdit *CTitleWidget::searchEdit() const
     return m_searchEdit;
 }
 
-DIconButton *CTitleWidget::newScheduleBtn() const
+DToolButton *CTitleWidget::newScheduleBtn() const
 {
     return m_newScheduleBtn;
 }
