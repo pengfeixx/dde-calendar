@@ -265,6 +265,8 @@ void CDayMonthView::initUI()
     m_upLayout->setSpacing(0);
     m_upLayout->setContentsMargins(22, 9, 0, 7);
     m_upLayout->addLayout(titleLayout);
+    //根据UI图添加间距
+    m_upLayout->addSpacing(30);
     m_dayMonthWidget = new CDayMonthWidget();
     m_upLayout->addWidget(m_dayMonthWidget);
 

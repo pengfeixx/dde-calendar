@@ -268,6 +268,8 @@ void CDayWindow::initUI()
     m_scheduleView->setviewMagin(72, 109, 20, 0);
     m_scheduleView->setCurrentDate(getCurrendDateTime());
     leftLayout->addLayout(titleLayout);
+    //根据UI图添加间距
+    leftLayout->addSpacing(30);
     leftLayout->addWidget(m_scheduleView);
 
     m_verline = new DVerticalLine;
