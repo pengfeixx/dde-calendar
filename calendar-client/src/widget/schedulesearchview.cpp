@@ -233,52 +233,61 @@ void CScheduleSearchItem::paintEvent(QPaintEvent *e)
     painter.save();
     painter.setRenderHint(QPainter::Antialiasing); // 反锯齿;
     painter.setBrush(QBrush(bcolor));
+    int borderOffset = m_borderframew;
     if (m_tabFocus) {
         //设置焦点绘制的pen
         QPen pen;
         pen.setColor(CScheduleDataManage::getScheduleDataManage()->getSystemActiveColor());
         pen.setWidth(2);
         painter.setPen(pen);
+        borderOffset += 1;
     } else
         painter.setPen(Qt::NoPen);
-    QPainterPath painterPath;
-    painterPath.moveTo(m_radius, m_borderframew);
+    const qreal rect_x = this->rect().x() + borderOffset;
+    const qreal rect_y = this->rect().y() + borderOffset;
+    const qreal rect_w = this->rect().width() - borderOffset * 2;
+    const qreal rect_h = this->rect().height() - borderOffset * 2;
+    //绘制矩形区域
+    const QRectF drawRect(rect_x, rect_y, rect_w, rect_h);
+    //直径
+    qreal diameter = m_radius * 2;
 
-    if (m_roundtype == 1 || m_roundtype == 3) {
-        painterPath.arcTo(QRect(m_borderframew, m_borderframew, m_radius * 2, m_radius * 2), 90, 90);
-    } else {
-        painterPath.lineTo(m_borderframew, m_borderframew);
-        painterPath.lineTo(m_borderframew, m_radius);
+    switch (m_roundtype) {
+    case 3: {
+        //上圆角下直角
+        QPainterPath painterPath;
+        painterPath.moveTo(rect_x, rect_h + rect_y);
+        painterPath.lineTo(rect_w, rect_h);
+        painterPath.lineTo(rect_w, diameter);
+        painterPath.arcTo(QRectF(rect_w - diameter, rect_y, diameter, diameter), 0, 90);
+        painterPath.lineTo(diameter, rect_y);
+        painterPath.arcTo(QRectF(rect_x, rect_y, diameter, diameter), 90, 90);
+        painterPath.lineTo(rect_x, rect_h);
+        painterPath.closeSubpath();
+        painter.drawPath(painterPath);
+    } break;
+    case 1:
+        //圆角
+        painter.drawRoundedRect(drawRect, m_radius, m_radius);
+        break;
+    case 2: {
+        //上直角下圆角
+        QPainterPath painterPath;
+        painterPath.moveTo(rect_x, rect_y);
+        painterPath.lineTo(rect_x, rect_h - diameter);
+        painterPath.arcTo(QRectF(rect_x, rect_h - diameter, diameter, diameter), 180, 90);
+        painterPath.lineTo(rect_w - diameter, rect_h);
+        painterPath.arcTo(QRectF(rect_w - diameter, rect_h - diameter, diameter, diameter), 270, 90);
+        painterPath.lineTo(rect_w, rect_y);
+        painterPath.lineTo(rect_x, rect_y);
+        painterPath.closeSubpath();
+        painter.drawPath(painterPath);
+    } break;
+    default:
+        //默认为直角
+        painter.drawRect(drawRect);
+        break;
     }
-    painterPath.lineTo(1, labelheight - m_radius);
-
-    if (m_roundtype == 1 || m_roundtype == 2) {
-        painterPath.arcTo(QRect(m_borderframew, labelheight - m_radius * 2, m_radius * 2, m_radius * 2), 180, 90);
-    } else {
-        painterPath.lineTo(m_borderframew, labelheight);
-        painterPath.lineTo(m_radius, labelheight);
-    }
-    painterPath.lineTo(labelwidth - m_radius, labelheight);
-
-    if (m_roundtype == 1 || m_roundtype == 2) {
-        painterPath.arcTo(QRect(labelwidth - m_radius * 2, labelheight - m_radius * 2, m_radius * 2, m_radius * 2), 270, 90);
-    } else {
-        painterPath.lineTo(labelwidth, labelheight);
-        painterPath.lineTo(labelwidth, labelheight - m_radius);
-    }
-    painterPath.lineTo(labelwidth, m_radius);
-
-    if (m_roundtype == 1 || m_roundtype == 3) {
-        painterPath.arcTo(QRect(labelwidth - m_radius * 2, m_borderframew, m_radius * 2, m_radius * 2), 0, 90);
-
-    } else {
-        painterPath.lineTo(labelwidth, m_borderframew);
-        painterPath.lineTo(labelwidth - m_radius, m_borderframew);
-    }
-
-    painterPath.lineTo(m_radius, m_borderframew);
-    painterPath.closeSubpath();
-    painter.drawPath(painterPath);
     painter.restore();
 
     painter.setFont(m_timefont);
@@ -692,7 +701,7 @@ void CScheduleSearchView::createItemWidget(ScheduleDataInfo info, QDate date, in
     connect(gwi, &CScheduleSearchItem::signalSelectCurrentItem, this, &CScheduleSearchView::slotSelectCurrentItem);
 
     QListWidgetItem *listItem = new QListWidgetItem;
-    listItem->setSizeHint(QSize(m_maxWidth - 25, 36)); //每次改变Item的高度
+    listItem->setSizeHint(QSize(m_maxWidth - 25, gwi->height())); //每次改变Item的高度
     listItem->setFlags(Qt::ItemIsTristate);
     m_gradientItemList->addItem(listItem);
     m_gradientItemList->setItemWidget(listItem, gwi);
@@ -711,14 +720,16 @@ QListWidgetItem *CScheduleSearchView::createItemWidget(QDate date)
     if (date == QDate::currentDate()) {
         gwi->setText(CScheduleDataManage::getScheduleDataManage()->getSystemActiveColor(), font);
     }
-    gwi->setFixedSize(m_maxWidth - 25, 35);
+    //根据UI图调整高度
+    gwi->setFixedSize(m_maxWidth - 25, 40);
     gwi->setDate(date);
     connect(gwi,
             &CScheduleSearchDateItem::signalLabelScheduleHide,
             this,
             &CScheduleSearchView::signalScheduleHide);
     QListWidgetItem *listItem = new QListWidgetItem;
-    listItem->setSizeHint(QSize(m_maxWidth - 25, 36)); //每次改变Item的高度
+    //根据UI图调整高度
+    listItem->setSizeHint(QSize(m_maxWidth - 25, gwi->height() + 10)); //每次改变Item的高度
     listItem->setFlags(Qt::ItemIsTristate);
     m_gradientItemList->addItem(listItem);
     m_gradientItemList->setItemWidget(listItem, gwi);
@@ -900,7 +911,7 @@ void CScheduleSearchDateItem::paintEvent(QPaintEvent *e)
     } else {
         datestr = m_date.toString("yyyy/M/d");
     }
-    painter.drawText(QRect(12, 8, labelwidth, labelheight - 8), Qt::AlignLeft, datestr);
+    painter.drawText(QRect(12, 8, labelwidth, labelheight - 8), Qt::AlignLeft | Qt::AlignBottom, datestr);
     painter.end();
 }
 

@@ -175,7 +175,7 @@ private:
     DMenu *m_rightMenu = nullptr;
     int m_roundtype = 1;
     const int m_radius = 8;
-    const int m_borderframew = 1;
+    const int m_borderframew = 0;
     QString m_timeFormat = "hh:mm";
     int m_durationSize = 0;
     bool m_tabFocus {false};
