@@ -57,6 +57,9 @@ public slots:
     void slotallDayStateChanged(int state);
     void slotbRpeatactivated(int index);
     void sloteRpeatactivated(int index);
+    //获取虚拟键盘状态
+    void slotVisibleChange();
+
 protected:
     bool eventFilter(QObject *obj, QEvent *pEvent) override;
     void showEvent(QShowEvent *event) override;
@@ -112,6 +115,7 @@ private:
     QString m_context;
     const bool m_createAllDay;
     bool m_setAccept {false}; //是否设置返回代码为Rejected
+    static bool DialogIsClose; //对话框是否关闭
 private:
     //日程
     ScheduleDataInfo m_ScheduleDataInfo;

@@ -27,8 +27,9 @@
 #include <DHiDPIHelper>
 #include <DFontSizeManager>
 #include <DApplication>
-#include <QDesktopWidget>
 
+#include <QDesktopWidget>
+#include <QTimer>
 #include <QHBoxLayout>
 #include <QIcon>
 #include <QShortcut>
@@ -36,6 +37,9 @@
 #include <QKeyEvent>
 
 DGUI_USE_NAMESPACE
+
+bool CScheduleDlg::DialogIsClose = true;
+
 CScheduleDlg::CScheduleDlg(int type, QWidget *parent, const bool isAllDay)
     : DCalendarDDialog(parent)
     , m_createAllDay(isAllDay)
@@ -65,10 +69,12 @@ CScheduleDlg::CScheduleDlg(int type, QWidget *parent, const bool isAllDay)
     setFixedSize(438, 470);
     //焦点设置到输入框
     m_textEdit->setFocus();
+    CScheduleDlg::DialogIsClose = false;
 }
 
 CScheduleDlg::~CScheduleDlg()
 {
+    CScheduleDlg::DialogIsClose = true;
 }
 
 void CScheduleDlg::setData(const ScheduleDataInfo &info)
@@ -423,6 +429,29 @@ void CScheduleDlg::sloteRpeatactivated(int index)
     }
 }
 
+/**
+ * @brief CScheduleDlg::slotVisibleChange
+ * 获取虚拟键盘显示状态
+ */
+void CScheduleDlg::slotVisibleChange()
+{
+    //如果虚拟键盘显示
+    if (TabletConfig::isShowVirtualKeyboard()) {
+        //如果虚拟键盘会遮挡对话框则调整Y坐标
+        if (getMoveYOffset() > 0) {
+            move(this->x(), this->y() - getMoveYOffset());
+        }
+    } else {
+        //隐藏虚拟键盘，界面调整到屏幕中央,延迟300毫秒后隐藏
+        QTimer::singleShot(300, [=] {
+            //如果窗口没有被关闭则调整界面
+            if (!CScheduleDlg::DialogIsClose) {
+                moveToCenter();
+            }
+        });
+    }
+}
+
 bool CScheduleDlg::eventFilter(QObject *obj, QEvent *pEvent)
 {
     if (obj == m_textEdit) {
@@ -538,15 +567,6 @@ void CScheduleDlg::setVirtualKeyboard(bool isShow)
 {
     //是否显示虚拟键盘
     TabletConfig::setVirtualKeyboard(isShow);
-    if (isShow) {
-        //如果虚拟键盘会遮挡对话框则调整Y坐标
-        if (getMoveYOffset() > 0) {
-            move(this->x(), this->y() - getMoveYOffset());
-        }
-    } else {
-        //隐藏虚拟键盘，界面调整到屏幕中央
-        moveToCenter();
-    }
 }
 
 void CScheduleDlg::initUI()
@@ -890,6 +910,8 @@ void CScheduleDlg::initConnection()
     QShortcut *shortcut = new QShortcut(this);
     shortcut->setKey(QKeySequence(QLatin1String("ESC")));
     connect(shortcut, SIGNAL(activated()), this, SLOT(close()));
+    //关联虚拟键盘显示改变信号
+    connect(DApplication::inputMethod(), &QInputMethod::visibleChanged, this, &CScheduleDlg::slotVisibleChange);
 }
 
 void CScheduleDlg::initDateEdit()
