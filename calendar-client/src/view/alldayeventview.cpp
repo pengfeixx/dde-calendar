@@ -410,10 +410,10 @@ CAllDayEventWeekView::PosInItem CAllDayEventWeekView::getPosInItem(const QPoint 
     QPointF itemPos = QPointF(scenePos.x() - itemRect.x(),
                               scenePos.y() - itemRect.y());
     double bottomy = itemRect.width() - itemPos.x();
-    if (itemPos.x() < 5) {
+    if (itemPos.x() < getHorizontalArea()) {
         return LEFT;
     }
-    if (bottomy < 5) {
+    if (bottomy < getHorizontalArea()) {
         return RIGHT;
     }
     return MIDDLE;

@@ -581,10 +581,10 @@ CGraphicsView::PosInItem CGraphicsView::getPosInItem(const QPoint &p, const QRec
                               scenePos.y() - itemRect.y());
     qreal bottomy = itemRect.height() - itemPos.y();
 
-    if (itemPos.y() < 5) {
+    if (itemPos.y() < getVerticalArea()) {
         return TOP;
     }
-    if (bottomy < 5) {
+    if (bottomy < getVerticalArea()) {
         return BOTTOM;
     }
 

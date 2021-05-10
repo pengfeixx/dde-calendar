@@ -168,7 +168,8 @@ void DragInfoGraphicsView::mouseMoveEvent(QMouseEvent *event)
 {
     //移动偏移 ,平板根据分辨率调整移动偏移量
     qreal scale = qMax(TabletConfig::getHeightScale(), TabletConfig::getWidthScale());
-    const int lengthOffset = qRound(5 * scale);
+    //调整移动偏移量使其容易实现拖拽
+    const int lengthOffset = qRound(8 * scale);
     if (event->source() == Qt::MouseEventSynthesizedByQt) {
         m_touchMovingDir = touchGestureOperation::T_MOVE_NONE;
         switch (m_touchState) {
@@ -181,12 +182,12 @@ void DragInfoGraphicsView::mouseMoveEvent(QMouseEvent *event)
             qint64 timeOffset = currentTime - m_TouchBeginTime;
             //获取移动距离
             qreal movingLength = QLineF(m_TouchBeginPoint, event->pos()).length();
-            //如果移动距离小于5且点击时间大于250毫秒小于900毫秒则为拖拽移动状态
+            //如果移动距离小于移动偏移量且点击时间大于250毫秒小于900毫秒则为拖拽移动状态
             if (movingLength < lengthOffset && (timeOffset > 250 && timeOffset < 900)) {
                 m_touchState = TS_DRAG_MOVE;
                 m_touchDragMoveState = 1;
             }
-            //如果移动距离大于5则为滑动状态
+            //如果移动距离大于移动偏移量则为滑动状态
             if (movingLength > lengthOffset) {
                 m_touchState = TS_SLIDE;
             }
@@ -897,6 +898,26 @@ void DragInfoGraphicsView::slotsetNextFoucs()
 void DragInfoGraphicsView::setSceneCurrentItemFocus(const QDate &focusDate)
 {
     Q_UNUSED(focusDate);
+}
+
+/**
+ * @brief DragInfoGraphicsView::getHorizontalArea  获取水平移动区域宽度
+ * @return
+ */
+qreal DragInfoGraphicsView::getHorizontalArea()
+{
+    //默认水平移动区域为5，根据分辨率调整
+    return 5 * TabletConfig::getWidthScale();
+}
+
+/**
+ * @brief DragInfoGraphicsView::getVerticalArea 获取垂直移动区域高度
+ * @return
+ */
+qreal DragInfoGraphicsView::getVerticalArea()
+{
+    //默认垂直移动区域为5，根据分辨率调整
+    return 5 * TabletConfig::getWidthScale();
 }
 
 QDate DragInfoGraphicsView::getCurrentDate() const

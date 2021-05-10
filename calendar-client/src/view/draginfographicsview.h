@@ -185,6 +185,10 @@ public slots:
 protected:
     //设置场景数据切换后当前item焦点
     virtual void setSceneCurrentItemFocus(const QDate &focusDate);
+    //获取水平移动区域宽度
+    qreal getHorizontalArea();
+    //获取垂直移动区域高度
+    qreal getVerticalArea();
 
 protected:
     int                                 m_themetype = 0;
