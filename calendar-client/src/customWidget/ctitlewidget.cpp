@@ -112,6 +112,8 @@ CTitleWidget::CTitleWidget(QWidget *parent)
 
     QHBoxLayout *layout = new QHBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);
+    //根据UI图添加间距
+    layout->addSpacing(20);
     layout->addWidget(m_buttonBox, Qt::AlignLeft);
     layout->addStretch();
     layout->addWidget(m_searchEdit, Qt::AlignCenter);
