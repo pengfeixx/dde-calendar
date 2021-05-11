@@ -113,12 +113,13 @@ void CYearWindow::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event);
     m_topWidget->setGeometry(0, 0, this->width(), DDEMonthCalendar::M_YTopHeight);
+    //根据UI图调整边距
     if (m_searchfalg) {
-        m_tmainLayout->setContentsMargins(10, 0, 2, 0);
-        m_topWidget->setContentsMargins(10, 0, 2, 0);
+        m_tmainLayout->setContentsMargins(20, 0, 2, 20);
+        m_topWidget->setContentsMargins(20, 0, 2, 20);
     } else {
-        m_tmainLayout->setContentsMargins(10, 0, 10, 0);
-        m_topWidget->setContentsMargins(10, 0, 10, 0);
+        m_tmainLayout->setContentsMargins(20, 0, 20, 20);
+        m_topWidget->setContentsMargins(20, 0, 20, 20);
     }
 }
 
@@ -396,7 +397,8 @@ void CYearWindow::initUI()
     m_tmainLayout = new QVBoxLayout;
     m_tmainLayout->setMargin(0);
     m_tmainLayout->setSpacing(0);
-    m_tmainLayout->setContentsMargins(10, 0, 10, 0);
+    //根据UI图调整边距
+    m_tmainLayout->setContentsMargins(20, 0, 20, 20);
     m_tmainLayout->addLayout(hhLayout);
     this->setLayout(m_tmainLayout);
 
