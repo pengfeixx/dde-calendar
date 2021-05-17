@@ -189,6 +189,8 @@ protected:
     qreal getHorizontalArea();
     //获取垂直移动区域高度
     qreal getVerticalArea();
+    //初始化点击日程
+    void pressScheduleInit();
 
 protected:
     int                                 m_themetype = 0;
