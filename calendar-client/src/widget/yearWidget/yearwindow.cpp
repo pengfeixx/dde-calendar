@@ -311,7 +311,8 @@ void CYearWindow::initUI()
     m_nextButton->setFixedHeight(DDEYearCalendar::Y_MLableHeight);
 
     m_yearLabel = new QLabel(this);
-    m_yearLabel->setFixedHeight(DDEYearCalendar::Y_YLableHeight);
+    //设置显示居中对齐
+    m_yearLabel->setAlignment(Qt::AlignVCenter);
 
     QFont t_labelF;
     t_labelF.setWeight(QFont::Medium);
@@ -322,7 +323,7 @@ void CYearWindow::initUI()
     m_yearLabel->setPalette(pa);
 
     m_yearLunarLabel = new QLabel(this);
-    m_yearLunarLabel->setFixedSize(DDEMonthCalendar::M_YLunatLabelWindth, DDEMonthCalendar::M_YLunatLabelHeight);
+    m_yearLunarLabel->setFixedWidth(DDEMonthCalendar::M_YLunatLabelWindth);
 
     QFont ylabelF;
     ylabelF.setWeight(QFont::Medium);
@@ -331,27 +332,26 @@ void CYearWindow::initUI()
     DPalette Lunapa = m_yearLunarLabel->palette();
     Lunapa.setColor(DPalette::WindowText, QColor("#8A8A8A"));
     m_yearLunarLabel->setPalette(Lunapa);
-
+    //设置水平左对齐，上下居中对齐
+    m_yearLunarLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     m_yearLunarDayLabel = new QLabel(this);
-    m_yearLunarDayLabel->setFixedSize(108, DDEMonthCalendar::M_YLunatLabelHeight);
+    m_yearLunarDayLabel->setFixedWidth(108);
     m_yearLunarDayLabel->setFont(ylabelF);
     m_yearLunarDayLabel->setPalette(Lunapa);
-    m_yearLunarDayLabel->setAlignment(Qt::AlignRight);
+    //设置水平右对齐，上下居中对齐
+    m_yearLunarDayLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
     QHBoxLayout *yeartitleLayout = new QHBoxLayout;
     yeartitleLayout->setMargin(0);
     yeartitleLayout->setSpacing(0);
     yeartitleLayout->setContentsMargins(11, 12, 8, 10);
-    yeartitleLayout->addWidget(m_yearLabel);
+    yeartitleLayout->addWidget(m_yearLabel, 0, Qt::AlignLeft);
 
-    QHBoxLayout *yeartitleLayout1 = new QHBoxLayout;
-    yeartitleLayout1->setMargin(0);
-    yeartitleLayout1->setSpacing(0);
-    yeartitleLayout1->setContentsMargins(4, 9, 0, 7);
-    yeartitleLayout1->addWidget(m_yearLunarLabel);
-    yeartitleLayout1->addSpacing(390);
-    yeartitleLayout1->addStretch();
-    yeartitleLayout1->addWidget(m_yearLunarDayLabel, 0, Qt::AlignVCenter);
+    yeartitleLayout->addSpacing(4);
+    yeartitleLayout->addWidget(m_yearLunarLabel, 0, Qt::AlignLeft);
+    yeartitleLayout->addStretch();
+
+    yeartitleLayout->addWidget(m_yearLunarDayLabel, 0, Qt::AlignRight);
 
     m_todayFrame = new CustomFrame(this);
     m_todayFrame->setContentsMargins(0, 0, 0, 0);
@@ -369,9 +369,8 @@ void CYearWindow::initUI()
     todaylayout->addWidget(m_today, 0, Qt::AlignCenter);
     todaylayout->addWidget(m_nextButton);
     m_todayFrame->setLayout(todaylayout);
-    yeartitleLayout1->addSpacing(10);
-    yeartitleLayout1->addWidget(m_todayFrame);
-    yeartitleLayout->addLayout(yeartitleLayout1);
+    yeartitleLayout->addSpacing(10);
+    yeartitleLayout->addWidget(m_todayFrame, 0, Qt::AlignRight);
 
     m_firstYearWidget = new YearFrame();
     m_secondYearWidget = new YearFrame();
