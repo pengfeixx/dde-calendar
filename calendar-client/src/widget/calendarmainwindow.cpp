@@ -308,6 +308,8 @@ void Calendarmainwindow::RaiseWindow()
 }
 void Calendarmainwindow::initUI()
 {
+    //去除圆角
+    setWindowRadius(0);
     //设置主窗口辅助技术显示名称和描述
     this->setObjectName("MainWindow");
     this->setAccessibleName("MainWindow");
