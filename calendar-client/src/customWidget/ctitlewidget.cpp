@@ -114,11 +114,13 @@ CTitleWidget::CTitleWidget(QWidget *parent)
     layout->setContentsMargins(0, 0, 0, 0);
     //根据UI图添加间距
     layout->addSpacing(20);
-    layout->addWidget(m_buttonBox, Qt::AlignLeft);
+    layout->addWidget(m_buttonBox, 0, Qt::AlignLeft);
     layout->addStretch();
-    layout->addWidget(m_searchEdit, Qt::AlignCenter);
+    layout->addWidget(m_searchEdit, 0, Qt::AlignCenter);
     layout->addStretch();
-    layout->addWidget(m_newScheduleBtn, Qt::AlignRight);
+    //添加空间使搜索框居中对齐
+    layout->addSpacing(m_buttonBox->width() - m_newScheduleBtn->width() + 20);
+    layout->addWidget(m_newScheduleBtn, 0, Qt::AlignRight);
     this->setLayout(layout);
     //设置焦点代理为buttonBox
     setFocusProxy(m_buttonBox);
