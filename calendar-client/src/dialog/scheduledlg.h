@@ -46,7 +46,6 @@ private:
     //确定按钮处理
     bool clickOkBtn();
 signals:
-    void signalViewtransparentFrame(int type);
     void signalScheduleUpdate(int id = 0);
 public slots:
     //对话框按钮点击处理
@@ -61,7 +60,6 @@ public slots:
     void slotVisibleChange();
 protected:
     bool eventFilter(QObject *obj, QEvent *pEvent) override;
-    void showEvent(QShowEvent *event) override;
     void closeEvent(QCloseEvent *event) override;
     void changeEvent(QEvent *event) override;
     void updateDateTimeFormat() override;

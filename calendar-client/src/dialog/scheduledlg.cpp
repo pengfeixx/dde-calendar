@@ -490,12 +490,6 @@ bool CScheduleDlg::eventFilter(QObject *obj, QEvent *pEvent)
     return DCalendarDDialog::eventFilter(obj, pEvent);
 }
 
-void CScheduleDlg::showEvent(QShowEvent *event)
-{
-    Q_UNUSED(event);
-    emit signalViewtransparentFrame(1);
-}
-
 void CScheduleDlg::closeEvent(QCloseEvent *event)
 {
     DDialog::closeEvent(event);
@@ -505,7 +499,6 @@ void CScheduleDlg::closeEvent(QCloseEvent *event)
     } else {
         reject();
     }
-    emit signalViewtransparentFrame(0);
 }
 
 void CScheduleDlg::changeEvent(QEvent *event)

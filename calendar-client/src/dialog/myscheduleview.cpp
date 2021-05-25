@@ -57,7 +57,6 @@ CMyScheduleView::CMyScheduleView(const ScheduleDataInfo &schduleInfo, QWidget *p
 
 CMyScheduleView::~CMyScheduleView()
 {
-    emit signalViewtransparentFrame(0);
 }
 
 /**
@@ -155,12 +154,6 @@ void CMyScheduleView::setPaletteTextColor(QWidget *widget, QColor textColor)
     //设置文字显示颜色
     palette.setColor(DPalette::WindowText, textColor);
     widget->setPalette(palette);
-}
-
-void CMyScheduleView::showEvent(QShowEvent *event)
-{
-    Q_UNUSED(event);
-    emit signalViewtransparentFrame(1);
 }
 
 bool CMyScheduleView::eventFilter(QObject *o, QEvent *e)

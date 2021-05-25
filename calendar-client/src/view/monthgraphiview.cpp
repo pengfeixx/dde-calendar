@@ -383,9 +383,9 @@ void CMonthGraphicsview::mouseDoubleClickEvent(QMouseEvent *event)
     if (infoitem != nullptr) {
         CMyScheduleView dlg(infoitem->getData(), this);
         connect(&dlg, &CMyScheduleView::signalsEditorDelete, this, &CMonthGraphicsview::signalsUpdateShcedule);
-        connect(&dlg, &CMyScheduleView::signalViewtransparentFrame,
-                this, &CMonthGraphicsview::signalViewtransparentFrame);
+        emit signalViewtransparentFrame(true);
         dlg.exec();
+        emit signalViewtransparentFrame(false);
         return;
     }
 
