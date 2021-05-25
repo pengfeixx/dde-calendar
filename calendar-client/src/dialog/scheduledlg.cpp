@@ -440,15 +440,20 @@ void CScheduleDlg::slotVisibleChange()
         //如果虚拟键盘会遮挡对话框则调整Y坐标
         if (getMoveYOffset() > 0) {
             move(this->x(), this->y() - getMoveYOffset());
+            //设置未居中显示
+            m_isCenter = false;
         }
     } else {
-        //隐藏虚拟键盘，界面调整到屏幕中央,延迟300毫秒后隐藏
-        QTimer::singleShot(300, [=] {
-            //如果窗口没有被关闭则调整界面
-            if (!CScheduleDlg::DialogIsClose) {
-                moveToCenter();
-            }
-        });
+        //如果没有居中显示则移动到中央
+        if (!m_isCenter) {
+            //隐藏虚拟键盘，界面调整到屏幕中央,延迟300毫秒后隐藏
+            QTimer::singleShot(300, [=] {
+                //如果窗口没有被关闭则调整界面
+                if (!CScheduleDlg::DialogIsClose) {
+                    moveToCenter();
+                }
+            });
+        }
     }
 }
 
@@ -565,6 +570,15 @@ int CScheduleDlg::getMoveYOffset()
 
 void CScheduleDlg::setVirtualKeyboard(bool isShow)
 {
+    if (!isShow) {
+        //如果当前焦点为下拉选择框则立即移动窗口
+        QWidget *currentFocus = focusWidget();
+        QList<QWidget *> cbbList {m_typeComBox, m_rmindCombox, m_beginrepeatCombox, m_endrepeatCombox, m_beginDateEdit, m_beginTimeEdit, m_endDateEdit, m_endTimeEdit, m_endRepeatDate};
+        if (cbbList.contains(currentFocus)) {
+            moveToCenter();
+            m_isCenter = true;
+        }
+    }
     //是否显示虚拟键盘
     TabletConfig::setVirtualKeyboard(isShow);
 }

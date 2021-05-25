@@ -59,7 +59,6 @@ public slots:
     void sloteRpeatactivated(int index);
     //获取虚拟键盘状态
     void slotVisibleChange();
-
 protected:
     bool eventFilter(QObject *obj, QEvent *pEvent) override;
     void showEvent(QShowEvent *event) override;
@@ -122,6 +121,7 @@ private:
     int m_type; // 1新建 0 编辑日程
     QDateTime m_currentDate;
     QDateTime m_EndDate;
+    bool m_isCenter = true; //居中显示标志
 };
 
 #endif // SCHEDULEDLG_H
