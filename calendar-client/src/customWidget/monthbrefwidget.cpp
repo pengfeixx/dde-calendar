@@ -411,7 +411,8 @@ void CMonthDayRect::paintItem(QPainter *painter, const QRectF &rect)
         isSelectedCell = true;
     }
 
-    const qreal r = rect.width() > rect.height() ? rect.height() * 0.9 : rect.width() * 0.9 ;
+    //设置绘制直径
+    const qreal r = rect.width() > rect.height() ? rect.height() - 1 : rect.width() - 1;
     const qreal x = rect.x() + (rect.width() - r) / 2;
     const qreal y = rect.y() + (rect.height() - r) / 2;
     QRectF fillRect = QRectF(x, y, r, r);
