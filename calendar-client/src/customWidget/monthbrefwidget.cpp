@@ -153,8 +153,29 @@ int MonthBrefWidget::getMousePosItem(const QPointF &pos)
  */
 void MonthBrefWidget::resizeEvent(QResizeEvent *event)
 {
-    Q_UNUSED(event);
+    QWidget::resizeEvent(event);
     updateSize();
+    //获取矩阵的大小，根据矩阵大小调整字体的size
+    QRectF itemRect = m_DayItem.at(0)->rect();
+    const qreal r = itemRect.width() > itemRect.height() ? itemRect.height() - 1 : itemRect.width() - 1;
+    QFont font;
+    int fontsize = DDECalendar::FontSizeEighteen;
+    while (fontsize > 0) {
+        font.setPixelSize(fontsize);
+        QFontMetrics fm(font);
+        int fontwidth = fm.width("31");
+        int fontheight = fm.height();
+        int fontR = fontwidth > fontheight ? fontwidth : fontheight;
+        //如果字体宽度或高度小于绘制矩阵直径则退出
+        if (fontR < r) {
+            break;
+        }
+        --fontsize;
+    }
+    //设置每个item字体大小
+    for (int i = 0; i < m_DayItem.size(); ++i) {
+        m_DayItem.at(i)->setFontSize(fontsize);
+    }
 }
 
 /**
@@ -510,6 +531,12 @@ void CMonthDayRect::setLineFlag(const bool flag)
 void CMonthDayRect::setSearchScheduleFlag(const bool flag)
 {
     m_searchScheduleFlag = flag;
+}
+
+void CMonthDayRect::setFontSize(int size)
+{
+    m_dayNumFont.setPixelSize(size);
+    m_hightFont.setPixelSize(size);
 }
 
 /**

@@ -126,6 +126,8 @@ public:
     void setLineFlag(const bool flag);
     //设置是否有搜索日程标志
     void setSearchScheduleFlag(const bool flag);
+    //设置字体大小
+    void setFontSize(int size);
     //根据系统主题类型设置颜色
     static void setTheMe(int type = 0);
     //设置显示缩放比例
