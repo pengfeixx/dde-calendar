@@ -906,8 +906,8 @@ void DragInfoGraphicsView::setSceneCurrentItemFocus(const QDate &focusDate)
  */
 qreal DragInfoGraphicsView::getHorizontalArea()
 {
-    //默认水平移动区域为8，根据分辨率调整
-    return 8 * TabletConfig::getWidthScale();
+    //默认水平移动区域为25，根据分辨率调整
+    return 25 * TabletConfig::getWidthScale();
 }
 
 /**
@@ -916,8 +916,8 @@ qreal DragInfoGraphicsView::getHorizontalArea()
  */
 qreal DragInfoGraphicsView::getVerticalArea()
 {
-    //默认垂直移动区域为8，根据分辨率调整
-    return 8 * TabletConfig::getWidthScale();
+    //默认垂直移动区域为15，根据分辨率调整
+    return 15 * TabletConfig::getWidthScale();
 }
 
 /**
