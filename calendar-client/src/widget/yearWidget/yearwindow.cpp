@@ -115,11 +115,11 @@ void CYearWindow::resizeEvent(QResizeEvent *event)
     m_topWidget->setGeometry(0, 0, this->width(), DDEMonthCalendar::M_YTopHeight);
     //根据UI图调整边距
     if (m_searchfalg) {
-        m_tmainLayout->setContentsMargins(20, 0, 2, 20);
-        m_topWidget->setContentsMargins(20, 0, 2, 20);
+        m_tmainLayout->setContentsMargins(10, 0, 2, 0);
+        m_topWidget->setContentsMargins(10, 0, 2, 10);
     } else {
-        m_tmainLayout->setContentsMargins(20, 0, 20, 20);
-        m_topWidget->setContentsMargins(20, 0, 20, 20);
+        m_tmainLayout->setContentsMargins(20, 0, 20, 0);
+        m_topWidget->setContentsMargins(20, 0, 20, 10);
     }
 }
 
@@ -332,19 +332,16 @@ void CYearWindow::initUI()
     DPalette Lunapa = m_yearLunarLabel->palette();
     Lunapa.setColor(DPalette::WindowText, QColor("#8A8A8A"));
     m_yearLunarLabel->setPalette(Lunapa);
-    //设置水平左对齐，上下居中对齐
-    m_yearLunarLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+
     m_yearLunarDayLabel = new QLabel(this);
     m_yearLunarDayLabel->setFixedWidth(108);
     m_yearLunarDayLabel->setFont(ylabelF);
     m_yearLunarDayLabel->setPalette(Lunapa);
-    //设置水平右对齐，上下居中对齐
-    m_yearLunarDayLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
     QHBoxLayout *yeartitleLayout = new QHBoxLayout;
     yeartitleLayout->setMargin(0);
     yeartitleLayout->setSpacing(0);
-    yeartitleLayout->setContentsMargins(11, 12, 8, 10);
+    yeartitleLayout->setContentsMargins(11, 22, 8, 10);
     yeartitleLayout->addWidget(m_yearLabel, 0, Qt::AlignLeft);
 
     yeartitleLayout->addSpacing(4);
@@ -381,24 +378,18 @@ void CYearWindow::initUI()
     m_StackedWidget = new  AnimationStackedWidget(AnimationStackedWidget::TB);
     m_StackedWidget->addWidget(m_firstYearWidget);
     m_StackedWidget->addWidget(m_secondYearWidget);
-    m_StackedWidget->setContentsMargins(0, 0, 0, 0);
+    //增加底部边距
+    m_StackedWidget->setContentsMargins(0, 0, 0, 10);
     m_StackedWidget->setDuration(600);
     m_StackedWidget->setFrameShape(QFrame::NoFrame);
     m_StackedWidget->setFrameShadow(QFrame::Plain);
 
     m_yearWidget = qobject_cast<YearFrame *>(m_StackedWidget->widget(0));
-    QVBoxLayout *hhLayout = new QVBoxLayout;
-    hhLayout->setMargin(0);
-    hhLayout->setSpacing(0);
-    hhLayout->setContentsMargins(0, 0, 0, 0);
-    hhLayout->addWidget(m_StackedWidget);
 
     m_tmainLayout = new QVBoxLayout;
     m_tmainLayout->setMargin(0);
     m_tmainLayout->setSpacing(0);
-    //根据UI图调整边距
-    m_tmainLayout->setContentsMargins(20, 0, 20, 20);
-    m_tmainLayout->addLayout(hhLayout);
+    m_tmainLayout->addWidget(m_StackedWidget);
     this->setLayout(m_tmainLayout);
 
     m_topWidget = new DWidget(this);
