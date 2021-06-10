@@ -37,13 +37,19 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
 
 private:
+    //根据获取的黄历信息和显示宽度获取每行显示的字符
+    QStringList getShowString(const QStringList &vhuangli, const int maxWidth);
+
+private:
     QStringList m_vHuangli;
     QColor m_backgroundColor;
     QColor m_textcolor;
     QFont m_font;
+    QString m_showStr;
     int m_type = 0;
     int m_leftMagin = 14;
     int m_topMagin = 18;
+    int m_textWidth = 0;
 };
 
 #endif // DAYHUANGLILABEL_H
