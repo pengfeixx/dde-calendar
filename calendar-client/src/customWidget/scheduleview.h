@@ -19,7 +19,6 @@
 #ifndef SCHEDULEVIEW_H
 #define SCHEDULEVIEW_H
 #include "src/scheduledatainfo.h"
-#include "scheduleRemindWidget.h"
 #include "../widget/touchgestureoperation.h"
 #include "graphicsview.h"
 
@@ -49,7 +48,7 @@ public:
     void setCurrentDate(const QDateTime &currentDate);
     //设置显示日程
     void setShowScheduleInfo(const QMap<QDate, QVector<ScheduleDataInfo> > &scheduleInfo);
-    void setTimeFormat(QString timeformat);
+    void setTimeFormat(const QString &timeformat);
 signals:
     void signalsCurrentScheduleDate(QDate date);
     void signalViewtransparentFrame(int type);
@@ -60,6 +59,7 @@ signals:
     void signalAngleDelta(int delta);
     void signalSwitchPrePage();
     void signalSwitchNextPage();
+    void signalScheduleShow(const bool isShow, const ScheduleDataInfo &out = ScheduleDataInfo());
 public slots:
     void slotPosHours(QVector<int> vPos, QVector<int> vHours, int cuttrnttimetype = 0);
     void setDate(QDate date);
@@ -67,12 +67,10 @@ public slots:
     //快捷键删除日程
     void slotDeleteitem();
     void slotCurrentScheduleDate(QDate date);
-    void slotScheduleShow(const bool isShow, const ScheduleDataInfo &out = ScheduleDataInfo());
     void slotUpdatePaint(const int topM);
     void slotUpdateScene();
     //焦点切换到某个视图
     void slotSwitchView(const QDate &focusDate, CWeekDayGraphicsview::ViewType viewtype, bool setItemFocus);
-
 protected:
     void paintEvent(QPaintEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
@@ -108,7 +106,6 @@ private:
     QColor m_currenttimecolor = "#F74444";
     int m_cuttrnttimetype = 0;
     QVBoxLayout *m_layout = nullptr;
-    ScheduleRemindWidget *m_ScheduleRemindWidget = nullptr;
     int m_minTime; //最小高度对应的最小时间
     QFont font;
     const int m_radius = 8;

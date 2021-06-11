@@ -667,14 +667,14 @@ void CYearWindow::slotMousePress(const QDate &selectDate, const int pressType)
         }
         m_Scheduleview->setCurrentDate(selectDate);
         m_Scheduleview->setData(_shceduleInfo);
-        QPoint pos22 = QCursor::pos();
-        QDesktopWidget *w = QApplication::desktop();
-        if (pos22.x() + 10 + m_Scheduleview->width() < w->width()) {
+        QPoint showPoint = this->mapFromGlobal(QCursor::pos());
+        //如果窗口内显示不下，则设置另外一个方向
+        if (showPoint.x() + 10 + m_Scheduleview->width() < this->width()) {
             m_Scheduleview->setDirection(DArrowRectangle::ArrowLeft);
-            m_Scheduleview->show(pos22.x() + 10, pos22.y());
+            m_Scheduleview->show(showPoint.x() + 10, showPoint.y());
         } else {
             m_Scheduleview->setDirection(DArrowRectangle::ArrowRight);
-            m_Scheduleview->show(pos22.x() - 10, pos22.y());
+            m_Scheduleview->show(showPoint.x() - 10, showPoint.y());
         }
         break;
     }

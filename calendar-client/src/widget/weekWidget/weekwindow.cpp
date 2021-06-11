@@ -25,6 +25,7 @@
 #include "todaybutton.h"
 #include "scheduledatamanage.h"
 #include "tabletconfig.h"
+#include "scheduleRemindWidget.h"
 
 #include <DPalette>
 #include <DHiDPIHelper>
@@ -188,6 +189,8 @@ void CWeekWindow::initUI()
 
     setTabOrder(m_weekview, m_today);
     setTabOrder(m_today, m_scheduleView);
+
+    m_ScheduleRemindWidget = new ScheduleRemindWidget(this);
 }
 
 /**
@@ -213,6 +216,7 @@ void CWeekWindow::initConnection()
 
     connect(m_scheduleView, &CScheduleView::signalSwitchPrePage, this, &CWeekWindow::slotSwitchPrePage);
     connect(m_scheduleView, &CScheduleView::signalSwitchNextPage, this, &CWeekWindow::slotSwitchNextPage);
+    connect(m_scheduleView, &CScheduleView::signalScheduleShow, this, &CWeekWindow::slotScheduleShow);
 }
 
 /**
@@ -352,6 +356,7 @@ void CWeekWindow::updateShowDate(const bool isUpdateBar)
     //设置全天和非全天显示时间范围
     m_scheduleView->setRange(m_startDate, m_stopDate);
     m_scheduleView->setTimeFormat(m_calendarManager->getCalendarDateDataManage()->getTimeFormat());
+    m_ScheduleRemindWidget->setTimeFormat(m_calendarManager->getCalendarDateDataManage()->getTimeFormat());
     //是否更新显示周数窗口
     if (isUpdateBar) {
         m_weekview->setCurrent(getCurrendDateTime());
@@ -483,6 +488,29 @@ void CWeekWindow::slotAngleDelta(int delta)
     }
 }
 
+void CWeekWindow::slotScheduleShow(const bool isShow, const ScheduleDataInfo &out)
+{
+    if (isShow) {
+        CSchedulesColor gdcolor = CScheduleDataManage::getScheduleDataManage()->getScheduleColorByType(
+            out.getType());
+        m_ScheduleRemindWidget->setData(out, gdcolor);
+
+        //显示坐标
+        QPoint showPoint = this->mapFromGlobal(QCursor::pos());
+        //如果窗口内显示不下，则设置另外一个方向
+        if (showPoint.x() + 15 + m_ScheduleRemindWidget->width() < this->width()) {
+            m_ScheduleRemindWidget->setDirection(DArrowRectangle::ArrowLeft);
+            m_ScheduleRemindWidget->show(showPoint.x() + 15, showPoint.y() + 10);
+        } else {
+            m_ScheduleRemindWidget->setDirection(DArrowRectangle::ArrowRight);
+            m_ScheduleRemindWidget->show(showPoint.x() - 15, showPoint.y());
+        }
+    } else {
+        qDebug() << "hide";
+        m_ScheduleRemindWidget->hide();
+    }
+}
+
 /**
  * @brief CWeekWindow::switchDate       切换选择时间
  * @param date
@@ -502,7 +530,7 @@ void CWeekWindow::switchDate(const QDate &date)
  */
 void CWeekWindow::slotScheduleHide()
 {
-    m_scheduleView->slotScheduleShow(false);
+    slotScheduleShow(false);
 }
 
 /**

@@ -34,6 +34,7 @@ DWIDGET_USE_NAMESPACE
 class CDayMonthView;
 class CScheduleView;
 class CScheduleSearchView;
+class ScheduleRemindWidget;
 class QHBoxLayout;
 class CustomFrame;
 class CDayWindow: public CScheduleBaseWidget
@@ -80,6 +81,8 @@ private slots:
     void slotSwitchPrePage();
     //切换选择时间
     void slotSwitchNextPage();
+    //接收设置悬浮框是否显示
+    void slotScheduleShow(const bool isShow, const ScheduleDataInfo &out = ScheduleDataInfo());
 
 private:
     CDayMonthView *m_daymonthView = nullptr;
@@ -93,6 +96,7 @@ private:
     bool m_searchfalg = false;
     QHBoxLayout *m_mainLayout = nullptr;
     QTime           m_makeTime{};   //界面显示定位时间位置
+    ScheduleRemindWidget *m_ScheduleRemindWidget = nullptr; //悬浮框
 };
 
 #endif // YEARWINDOW_H

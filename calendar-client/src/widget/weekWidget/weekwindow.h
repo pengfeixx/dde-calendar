@@ -37,6 +37,7 @@ class CaLunarDayInfo;
 class CWeekView;
 class CScheduleView;
 class CScheduleSearchView;
+class ScheduleRemindWidget;
 class CTodayButton;
 class CWeekWindow: public CScheduleBaseWidget
 {
@@ -102,6 +103,9 @@ private slots:
     void slotSelectDate(const QDate &date);
     //接受处理滚动相对量
     void slotAngleDelta(int delta);
+    //接收设置悬浮框是否显示
+    void slotScheduleShow(const bool isShow, const ScheduleDataInfo &out = ScheduleDataInfo());
+
 private:
     //切换选择时间
     void switchDate(const QDate &date);
@@ -126,6 +130,7 @@ private:
     bool m_searchfalg = false;
     QDate       m_startDate;
     QDate       m_stopDate;
+    ScheduleRemindWidget *m_ScheduleRemindWidget = nullptr; //悬浮框
 };
 
 #endif // YEARWINDOW_H

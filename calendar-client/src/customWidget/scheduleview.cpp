@@ -162,10 +162,9 @@ void CScheduleView::setShowScheduleInfo(const QMap<QDate, QVector<ScheduleDataIn
  * @brief CScheduleView::setTimeFormat 设置日期显示格式
  * @param timeformat 日期格式
  */
-void CScheduleView::setTimeFormat(QString timeformat)
+void CScheduleView::setTimeFormat(const QString &timeformat)
 {
     m_timeFormat = timeformat;
-    m_ScheduleRemindWidget->setTimeFormat(timeformat);
 }
 
 void CScheduleView::setDate(QDate date)
@@ -418,7 +417,6 @@ void CScheduleView::initUI()
     setLayout(m_layout);
     m_graphicsView->scrollBarValueChangedSlot();
 
-    m_ScheduleRemindWidget = new ScheduleRemindWidget(this);
     // move focus to m_graphicsView
     setFocusProxy(m_graphicsView);
 }
@@ -442,17 +440,15 @@ void CScheduleView::initConnection()
     connect(m_graphicsView, &CAllDayEventWeekView::signalAngleDelta, this, &CScheduleView::signalAngleDelta);
     connect(m_alldaylist, &CAllDayEventWeekView::signalAngleDelta, this, &CScheduleView::signalAngleDelta);
 
-    connect(m_graphicsView, &CGraphicsView::signalScheduleShow, this, &CScheduleView::slotScheduleShow);
+    connect(m_graphicsView, &CGraphicsView::signalScheduleShow, this, &CScheduleView::signalScheduleShow);
 
-    connect(m_alldaylist, &CAllDayEventWeekView::signalScheduleShow, this, &CScheduleView::slotScheduleShow);
+    connect(m_alldaylist, &CAllDayEventWeekView::signalScheduleShow, this, &CScheduleView::signalScheduleShow);
 
     connect(m_alldaylist, &CAllDayEventWeekView::signalUpdatePaint,
             this, &CScheduleView::slotUpdatePaint);
-    connect(m_alldaylist, &CAllDayEventWeekView::signalSceneUpdate,
-            this, &CScheduleView::slotUpdateScene);
-    connect(m_graphicsView, &CGraphicsView::signalSceneUpdate,
-            this, &CScheduleView::slotUpdateScene);
-
+    //点击全天或非全天视图更新另外一个视图上的日程标签显示
+    connect(m_alldaylist, &CAllDayEventWeekView::signalSceneUpdate, this, &CScheduleView::slotUpdateScene);
+    connect(m_graphicsView, &CGraphicsView::signalSceneUpdate, this, &CScheduleView::slotUpdateScene);
 
     connect(m_alldaylist, &CAllDayEventWeekView::signaleSwitchToView, this, &CScheduleView::slotSwitchView);
     connect(m_graphicsView, &CGraphicsView::signaleSwitchToView, this, &CScheduleView::slotSwitchView);
@@ -481,27 +477,6 @@ void CScheduleView::slotCurrentScheduleDate(QDate date)
     if (m_viewPos == ScheduleViewPos::DayPos)
         return;
     emit signalsCurrentScheduleDate(date);
-}
-
-void CScheduleView::slotScheduleShow(const bool isShow, const ScheduleDataInfo &out)
-{
-    if (isShow) {
-        QPoint pos22 = QCursor::pos();
-        CSchedulesColor gdcolor = CScheduleDataManage::getScheduleDataManage()->getScheduleColorByType(
-                                      out.getType());
-        QDesktopWidget *w = QApplication::desktop();
-        m_ScheduleRemindWidget->setData(out, gdcolor);
-
-        if ((pos22.x() + m_ScheduleRemindWidget->width() + 15) > w->width()) {
-            m_ScheduleRemindWidget->setDirection(DArrowRectangle::ArrowRight);
-            m_ScheduleRemindWidget->show(pos22.x() - 15, pos22.y());
-        } else {
-            m_ScheduleRemindWidget->setDirection(DArrowRectangle::ArrowLeft);
-            m_ScheduleRemindWidget->show(pos22.x() + 15, pos22.y());
-        }
-    } else {
-        m_ScheduleRemindWidget->hide();
-    }
 }
 
 void CScheduleView::slotUpdatePaint(const int topM)

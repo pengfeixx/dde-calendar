@@ -451,6 +451,7 @@ void CGraphicsView::slotUpdateScene()
 {
     pressScheduleInit();
     this->scene()->update();
+    this->viewport()->update();
 }
 
 #ifndef QT_NO_WHEELEVENT

@@ -22,6 +22,7 @@
 #include "daymonthview.h"
 #include "schedulesearchview.h"
 #include "scheduleview.h"
+#include "scheduleRemindWidget.h"
 
 #include <DPalette>
 
@@ -297,6 +298,8 @@ void CDayWindow::initUI()
     m_mainLayout->addWidget(m_leftground);
 
     this->setLayout(m_mainLayout);
+
+    m_ScheduleRemindWidget = new ScheduleRemindWidget(this);
 }
 
 void CDayWindow::initConnection()
@@ -306,6 +309,7 @@ void CDayWindow::initConnection()
     connect(m_scheduleView, &CScheduleView::signalViewtransparentFrame, this, &CDayWindow::signalViewtransparentFrame);
     connect(m_scheduleView, &CScheduleView::signalSwitchPrePage, this, &CDayWindow::slotSwitchPrePage);
     connect(m_scheduleView, &CScheduleView::signalSwitchNextPage, this, &CDayWindow::slotSwitchNextPage);
+    connect(m_scheduleView, &CScheduleView::signalScheduleShow, this, &CDayWindow::slotScheduleShow);
 }
 
 /**
@@ -350,7 +354,7 @@ void CDayWindow::setMakeTime(QMap<QDate, QVector<ScheduleDataInfo> > &info)
 
 void CDayWindow::slotScheduleHide()
 {
-    m_scheduleView->slotScheduleShow(false);
+    slotScheduleShow(false);
 }
 
 /**
@@ -400,4 +404,27 @@ void CDayWindow::slotSwitchPrePage()
 void CDayWindow::slotSwitchNextPage()
 {
     slotChangeSelectDate(getSelectDate().addDays(1));
+}
+
+void CDayWindow::slotScheduleShow(const bool isShow, const ScheduleDataInfo &out)
+{
+    if (isShow) {
+        CSchedulesColor gdcolor = CScheduleDataManage::getScheduleDataManage()->getScheduleColorByType(
+            out.getType());
+        m_ScheduleRemindWidget->setData(out, gdcolor);
+
+        //显示坐标
+        QPoint showPoint = this->mapFromGlobal(QCursor::pos());
+        //如果窗口内显示不下，则设置另外一个方向
+        if (showPoint.x() + 15 + m_ScheduleRemindWidget->width() < this->width()) {
+            m_ScheduleRemindWidget->setDirection(DArrowRectangle::ArrowLeft);
+            showPoint.setX(showPoint.x() + 15);
+        } else {
+            m_ScheduleRemindWidget->setDirection(DArrowRectangle::ArrowRight);
+            showPoint.setX(showPoint.x() - 15);
+        }
+        m_ScheduleRemindWidget->show(showPoint.x(), showPoint.y());
+    } else {
+        m_ScheduleRemindWidget->hide();
+    }
 }

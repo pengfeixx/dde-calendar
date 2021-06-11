@@ -82,22 +82,20 @@ void CMonthView::setSelectSchedule(const ScheduleDataInfo &scheduleInfo)
 void CMonthView::slotScheduleRemindWidget(const bool isShow, const ScheduleDataInfo &out)
 {
     if (isShow) {
-        //获取当前鼠标位置
-        QPoint remindPos = QCursor::pos();
         CSchedulesColor gdcolor = CScheduleDataManage::getScheduleDataManage()->getScheduleColorByType(
                                       out.getType());
         m_remindWidget->setData(out, gdcolor);
-        //获取屏幕大小
-        QRect desktopRect = QApplication::desktop()->rect();
-        //根据提示框在屏幕的位置设置箭头方向
-        if ((remindPos.x() + m_remindWidget->width() + 10) > desktopRect.width()) {
-            m_remindWidget->setDirection(DArrowRectangle::ArrowRight);
-            remindPos.setX(remindPos.x() - 5);
-        } else {
+
+        //显示坐标
+        QPoint showPoint = this->mapFromGlobal(QCursor::pos());
+        //如果窗口内显示不下，则设置另外一个方向
+        if (showPoint.x() + 10 + m_remindWidget->width() < this->width()) {
             m_remindWidget->setDirection(DArrowRectangle::ArrowLeft);
-            remindPos.setX(remindPos.x() + 5);
+            m_remindWidget->show(showPoint.x() + 5, showPoint.y());
+        } else {
+            m_remindWidget->setDirection(DArrowRectangle::ArrowRight);
+            m_remindWidget->show(showPoint.x() - 5, showPoint.y());
         }
-        m_remindWidget->show(remindPos.x(), remindPos.y());
     } else {
         m_remindWidget->hide();
     }

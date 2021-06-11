@@ -52,7 +52,6 @@ public:
     void updateInfo() override;
 signals:
     void signalUpdatePaint(const int topM);
-    void signalSceneUpdate();
 public slots:
     void slotUpdateScene();
 private slots:

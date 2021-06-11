@@ -429,4 +429,5 @@ void CAllDayEventWeekView::slotUpdateScene()
 {
     pressScheduleInit();
     this->scene()->update();
+    this->viewport()->update();
 }
