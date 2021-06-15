@@ -111,4 +111,5 @@ file(GLOB APP_QM_FILES "translations/*.qm")
 install(FILES ${APP_QM_FILES} DESTINATION share/dde-calendar/translations)
 install(FILES ${APP_DESKTOP} DESTINATION share/applications)
 install(FILES ${APP_SERVICE} DESTINATION share/dbus-1/services)
-add_subdirectory(schedule-plugin)
+#取消助手插件
+#add_subdirectory(schedule-plugin)
