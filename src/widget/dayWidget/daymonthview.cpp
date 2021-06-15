@@ -37,6 +37,9 @@
 #include <QTime>
 #include <QQueue>
 #include <QSpacerItem>
+#include <QPainterPath>
+#include <QMouseEvent>
+#include <QWheelEvent>
 
 DGUI_USE_NAMESPACE
 CDayMonthView::CDayMonthView(QWidget *parent)

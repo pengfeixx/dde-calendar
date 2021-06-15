@@ -30,6 +30,8 @@
 #include <QJsonParseError>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QMouseEvent>
+#include <QWheelEvent>
 
 DragInfoGraphicsView::DragInfoGraphicsView(DWidget *parent)
     : DGraphicsView(parent)
