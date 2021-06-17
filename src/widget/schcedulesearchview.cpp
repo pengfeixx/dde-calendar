@@ -70,7 +70,7 @@ void CSchceduleSearchItem::setSplitLineColor(QColor color1)
     m_splitlinecolor = color1;
 }
 
-void CSchceduleSearchItem::setText( QColor tcolor, QFont font)
+void CSchceduleSearchItem::setText(QColor tcolor, QFont font)
 {
     m_ttextcolor = tcolor;
     m_tfont = font;
@@ -82,7 +82,7 @@ void CSchceduleSearchItem::setTimeC(QColor tcolor, QFont font)
     m_timefont = font;
 }
 
-void CSchceduleSearchItem::setData( ScheduleDtailInfo vScheduleInfo, QDate date)
+void CSchceduleSearchItem::setData(ScheduleDtailInfo vScheduleInfo, QDate date)
 {
     m_ScheduleInfo = vScheduleInfo;
     m_date = date;
@@ -105,7 +105,7 @@ void CSchceduleSearchItem::setTheMe(int type)
         m_presscolor.textColor = "#FFFFFF";
         m_presscolor.textColor.setAlphaF(1);
 
-        m_hovercolor.background= "#FFFFFF";
+        m_hovercolor.background = "#FFFFFF";
         m_hovercolor.background.setAlphaF(0.2);
         m_hovercolor.timeColor = "#6D7C88";
         m_hovercolor.timeColor.setAlphaF(1);
@@ -119,7 +119,7 @@ void CSchceduleSearchItem::setTheMe(int type)
         m_presscolor.textColor = "#FFFFFF";
         m_presscolor.textColor.setAlphaF(1);
 
-        m_hovercolor.background= "#000000";
+        m_hovercolor.background = "#000000";
         m_hovercolor.background.setAlphaF(0.2);
         m_hovercolor.timeColor = "#526A7F";
         m_hovercolor.timeColor.setAlphaF(1);
@@ -219,7 +219,7 @@ void CSchceduleSearchItem::slotDoubleEvent(int type)
     emit signalsDelete(this);
 }
 
-void CSchceduleSearchItem::paintEvent( QPaintEvent *e )
+void CSchceduleSearchItem::paintEvent(QPaintEvent *e)
 {
     Q_UNUSED(e);
     int labelwidth = width();
@@ -352,7 +352,7 @@ void CSchceduleSearchItem::paintEvent( QPaintEvent *e )
     painter.drawText(QRect(durationSize + 17 + 9, 6, tilenameW, labelheight), Qt::AlignLeft, tstr);
     painter.end();
 }
-void CSchceduleSearchItem::contextMenuEvent( QContextMenuEvent *event )
+void CSchceduleSearchItem::contextMenuEvent(QContextMenuEvent *event)
 {
     Q_UNUSED(event);
 
@@ -522,15 +522,18 @@ void CSchceduleSearchView::updateDateShow()
         showData.date = m_vlistData.at(i).date;
 
         for (int j = 0 ; j < m_vlistData.at(i).vData.size(); ++j) {
-            if (m_vlistData.at(i).vData.at(j).beginDateTime.date() == m_vlistData.at(i).date) {
+            //如果开始时间日期为显示日期则显示,跨天日程只显示一个
+            if (m_vlistData.at(i).vData.at(j).beginDateTime.date() == m_vlistData.at(i).date || 0 == j) {
                 showData.vData.append(m_vlistData.at(i).vData.at(j));
             }
         }
         if (showData.vData.count() > 0) {
-            if ( d<offset) {
+            if (d < offset) {
                 offset = d;
                 topdate = showData.date;
             }
+            //排序
+            std::sort(showData.vData.begin(), showData.vData.end());
             m_showData.append(showData);
         }
         showData.vData.clear();
@@ -562,7 +565,7 @@ void CSchceduleSearchView::updateDateShow()
         DLabel *gwi = new DLabel();
         QFont font;
         font.setPixelSize(DDECalendar::FontSizeTwenty);
-        gwi->setAlignment(Qt::AlignCenter );
+        gwi->setAlignment(Qt::AlignCenter);
         DPalette daypa = gwi->palette();
         QColor textcolor = DPalette::ToolTipText;
         int themtype = CScheduleDataManage::getScheduleDataManage()->getTheme();
@@ -582,7 +585,7 @@ void CSchceduleSearchView::updateDateShow()
         gwi->setText(tr("No search results"));
         gwi->setFixedSize(m_maxWidth - 20, 450);
         listItem->setSizeHint(QSize(m_maxWidth, 450)); //每次改变Item的高度
-        listItem->setFlags(Qt::ItemIsTristate );
+        listItem->setFlags(Qt::ItemIsTristate);
         m_gradientItemList->addItem(listItem);
         m_gradientItemList->setItemWidget(listItem, gwi);
         m_labellist.append(gwi);
@@ -621,7 +624,7 @@ void CSchceduleSearchView::createItemWidget(ScheduleDtailInfo info, QDate date, 
 
     QListWidgetItem *listItem = new QListWidgetItem;
     listItem->setSizeHint(QSize(m_maxWidth - 5, 36)); //每次改变Item的高度
-    listItem->setFlags(Qt::ItemIsTristate );
+    listItem->setFlags(Qt::ItemIsTristate);
     m_gradientItemList->addItem(listItem);
     m_gradientItemList->setItemWidget(listItem, gwi);
     m_labellist.append(gwi);
@@ -653,14 +656,14 @@ QListWidgetItem *CSchceduleSearchView::createItemWidget(QDate date)
             &CSchceduleSearchView::signalScheduleHide);
     QListWidgetItem *listItem = new QListWidgetItem;
     listItem->setSizeHint(QSize(m_maxWidth - 5, 36)); //每次改变Item的高度
-    listItem->setFlags(Qt::ItemIsTristate );
+    listItem->setFlags(Qt::ItemIsTristate);
     m_gradientItemList->addItem(listItem);
     m_gradientItemList->setItemWidget(listItem, gwi);
     m_labellist.append(gwi);
     return listItem;
 }
 
-void CSchceduleSearchView::slotdeleteitem( CSchceduleSearchItem *item )
+void CSchceduleSearchView::slotdeleteitem(CSchceduleSearchItem *item)
 {
     emit signalsUpdateShcedule(item->getData().id);
     updateDateShow();
@@ -727,7 +730,7 @@ void CSchceduleSearchView::resizeEvent(QResizeEvent *event)
         m_labellist.at(0)->setFixedSize(m_maxWidth, qRound(height() * 0.7978));
         m_labellist.at(0)->update();
     }
-    if (m_gradientItemList->count() >1) {
+    if (m_gradientItemList->count() > 1) {
         if (m_currentItem != nullptr) {
             m_gradientItemList->scrollToItem(m_currentItem, QAbstractItemView::PositionAtTop);
         }
@@ -800,7 +803,7 @@ void CSchceduleSearchDateItem::mousePressEvent(QMouseEvent *event)
 }
 
 CScheduleListWidget::CScheduleListWidget(QWidget *parent)
-    : DListWidget (parent)
+    : DListWidget(parent)
 {
     //设置对象名称和辅助显示名称
     this->setObjectName("CScheduleListWidget");
