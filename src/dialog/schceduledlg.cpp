@@ -288,7 +288,7 @@ void CSchceduleDlg::slotOkBt(int buttonIndex, QString buttonName)
                     ->updateScheduleInfo(scheduleDtailInfo);
                 }
             } else {
-                ChangeRecurInfo(this,scheduleDtailInfo,m_scheduleDtailInfo,themetype);
+                ChangeRecurInfo(this, scheduleDtailInfo, m_scheduleDtailInfo, themetype);
             }
         }
     }
@@ -404,9 +404,17 @@ void CSchceduleDlg::slotbRpeatactivated(int index)
     if (index > 0) {
         m_endrepeatWidget->setVisible(true);
         setFixedSize(438, 506);
+        if (m_endrepeatCombox->currentIndex() == 1) {
+            //如果结束重复于次数，判断次数是否为空
+            slotendrepeatTextchange();
+        }
+
     } else {
         m_endrepeatWidget->setVisible(false);
         setFixedSize(438, 470);
+        //重复类型为“从不”时，使能保存按钮
+        QAbstractButton *m_OkBt = getButton(1);
+        m_OkBt->setEnabled(true);
     }
 }
 
@@ -418,9 +426,17 @@ void CSchceduleDlg::sloteRpeatactivated(int index)
     } else if (index == 1) {
         m_endrepeattimesWidget->setVisible(true);
         m_endRepeatDate->setVisible(false);
+        //重复结束于次数，判断次数是否为空
+        slotendrepeatTextchange();
+
     } else {
         m_endrepeattimesWidget->setVisible(false);
         m_endRepeatDate->setVisible(true);
+    }
+    if (index != 1) {
+        //只要不是结束重复于次数，使能保存按钮
+        QAbstractButton *m_OkBt = getButton(1);
+        m_OkBt->setEnabled(true);
     }
 }
 
@@ -522,7 +538,7 @@ void CSchceduleDlg::initUI()
     typelayout->setMargin(0);
     m_typeLabel = new QLabel();
     m_typeLabel->setToolTip(tr("Type"));
-    DFontSizeManager::instance()->bind(m_typeLabel,DFontSizeManager::T6);
+    DFontSizeManager::instance()->bind(m_typeLabel, DFontSizeManager::T6);
     QFontMetrics fontWidth_typeLabel(mlabelF);
     QString str_typelabel = fontWidth_typeLabel.elidedText(tr("Type:"), Qt::ElideRight, DDECalendar::NewSchceduleLabelWidth);
     m_typeLabel->setText(str_typelabel);
@@ -534,7 +550,7 @@ void CSchceduleDlg::initUI()
     m_typeComBox->setObjectName("ScheduleTypeCombobox");
     m_typeComBox->setAccessibleName("ScheduleTypeCombobox");
     m_typeComBox->setFixedSize(319, 36);
-    m_typeComBox->setIconSize(QSize(24,24));
+    m_typeComBox->setIconSize(QSize(24, 24));
     m_typeComBox->insertItem(0,
                              QIcon(DHiDPIHelper::loadNxPixmap(":/resources/icon/icon_type_work.svg")
                                    .scaled(QSize(24, 24) * devicePixelRatioF())),
@@ -559,7 +575,7 @@ void CSchceduleDlg::initUI()
     conttelabellayout->setSpacing(0);
     conttelabellayout->setMargin(0);
     m_contentLabel = new QLabel();
-    DFontSizeManager::instance()->bind(m_contentLabel,DFontSizeManager::T6);
+    DFontSizeManager::instance()->bind(m_contentLabel, DFontSizeManager::T6);
     QFontMetrics fontWidth_contentlabel(mlabelF);
     QString str_contentlabel = fontWidth_contentlabel.elidedText(tr("Description:"), Qt::ElideRight, DDECalendar::NewSchceduleLabelWidth);
     m_contentLabel->setText(str_contentlabel);
@@ -592,7 +608,7 @@ void CSchceduleDlg::initUI()
     alldayLabellayout->setMargin(0);
     m_adllDayLabel = new QLabel();
     m_adllDayLabel->setToolTip(tr("All Day"));
-    DFontSizeManager::instance()->bind(m_adllDayLabel,DFontSizeManager::T6);
+    DFontSizeManager::instance()->bind(m_adllDayLabel, DFontSizeManager::T6);
     QFontMetrics fontWidth_allDayLabel(mlabelF);
     QString str_allDayLabel = fontWidth_allDayLabel.elidedText(tr("All Day:"), Qt::ElideRight, DDECalendar::NewSchceduleLabelWidth);
     m_adllDayLabel->setText(str_allDayLabel);
@@ -612,7 +628,7 @@ void CSchceduleDlg::initUI()
     beginLabellayout->setMargin(0);
     m_beginTimeLabel = new QLabel();
     m_beginTimeLabel->setToolTip(tr("Starts"));
-    DFontSizeManager::instance()->bind(m_beginTimeLabel,DFontSizeManager::T6);
+    DFontSizeManager::instance()->bind(m_beginTimeLabel, DFontSizeManager::T6);
     QFontMetrics fontWidth_beginTimeLabel(mlabelF);
     QString str_beginTimeLabel = fontWidth_beginTimeLabel.elidedText(tr("Starts:"), Qt::ElideRight, DDECalendar::NewSchceduleLabelWidth);
     m_beginTimeLabel->setText(str_beginTimeLabel);
@@ -644,7 +660,7 @@ void CSchceduleDlg::initUI()
     enQLabellayout->setMargin(0);
     m_endTimeLabel = new QLabel();
     m_endTimeLabel->setToolTip(tr("Ends"));
-    DFontSizeManager::instance()->bind(m_endTimeLabel,DFontSizeManager::T6);
+    DFontSizeManager::instance()->bind(m_endTimeLabel, DFontSizeManager::T6);
     QFontMetrics fontWidth_endTimeLabel(mlabelF);
     QString str_endTimeLabel = fontWidth_endTimeLabel.elidedText(tr("Ends:"), Qt::ElideRight, DDECalendar::NewSchceduleLabelWidth);
     m_endTimeLabel->setText(str_endTimeLabel);
@@ -676,7 +692,7 @@ void CSchceduleDlg::initUI()
     rminQLabellayout->setSpacing(0);
     rminQLabellayout->setMargin(0);
     m_remindSetLabel = new QLabel();
-    DFontSizeManager::instance()->bind(m_remindSetLabel,DFontSizeManager::T6);
+    DFontSizeManager::instance()->bind(m_remindSetLabel, DFontSizeManager::T6);
     QFontMetrics fontWidth_remindSetLabel(mlabelF);
     QString str_remindSetLabel = fontWidth_remindSetLabel.elidedText(tr("Remind Me:"), Qt::ElideRight, DDECalendar::NewSchceduleLabelWidth);
     m_remindSetLabel->setToolTip(tr("Remind Me"));
@@ -701,7 +717,7 @@ void CSchceduleDlg::initUI()
     repeatLabellayout->setMargin(0);
     m_beginrepeatLabel = new QLabel();
     m_beginrepeatLabel->setToolTip(tr("Repeat"));
-    DFontSizeManager::instance()->bind(m_beginrepeatLabel,DFontSizeManager::T6);
+    DFontSizeManager::instance()->bind(m_beginrepeatLabel, DFontSizeManager::T6);
     QFontMetrics fontWidth_beginRepeatLabel(mlabelF);
     QString str_beginRepeatLabel = fontWidth_beginRepeatLabel.elidedText(tr("Repeat:"), Qt::ElideRight, DDECalendar::NewSchceduleLabelWidth);
     m_beginrepeatLabel->setText(str_beginRepeatLabel);
@@ -728,7 +744,7 @@ void CSchceduleDlg::initUI()
     endrepeatLabellayout->setSpacing(0);
     endrepeatLabellayout->setMargin(0);
     m_endrepeatLabel = new QLabel();
-    DFontSizeManager::instance()->bind(m_endrepeatLabel,DFontSizeManager::T6);
+    DFontSizeManager::instance()->bind(m_endrepeatLabel, DFontSizeManager::T6);
     QFontMetrics fontWidth_endrepeatLabel(mlabelF);
     QString str_endrepeatLabel = fontWidth_endrepeatLabel.elidedText(tr("End Repeat:"), Qt::ElideRight, DDECalendar::NewSchceduleLabelWidth);
     m_endrepeatLabel->setToolTip(tr("End Repeat"));
@@ -828,7 +844,7 @@ void CSchceduleDlg::initConnection()
     connect(this, &DDialog::buttonClicked, this, &CSchceduleDlg::slotCancelBt);
     connect(this, &DDialog::buttonClicked, this, &CSchceduleDlg::slotOkBt);
     connect(m_textEdit, &DTextEdit::textChanged, this, &CSchceduleDlg::slotTextChange);
-    connect(m_endrepeattimes,&DLineEdit::textChanged, this, &CSchceduleDlg::slotendrepeatTextchange);
+    connect(m_endrepeattimes, &DLineEdit::textChanged, this, &CSchceduleDlg::slotendrepeatTextchange);
 
     connect(m_allDayCheckbox, &DCheckBox::stateChanged, this,
             &CSchceduleDlg::slotallDayStateChanged);
@@ -920,7 +936,7 @@ void CSchceduleDlg::setTheMe(const int type)
     }
     DPalette pa = m_textEdit->palette();
     //设置颜色
-    pa.setColor(DPalette::Text,titleColor);
+    pa.setColor(DPalette::Text, titleColor);
     m_textEdit->setPalette(pa);
 }
 
@@ -944,19 +960,17 @@ void CSchceduleDlg::ChangeRecurInfo(QWidget *parent, const ScheduleDtailInfo &ne
             return;
         } else if (msgBox.clickButton() == 1) {
             ScheduleDtailInfo scheduleDtailInfo = newinfo;
-            if (scheduleDtailInfo.enddata.type ==1 &&scheduleDtailInfo.enddata.tcount<1) {
-                scheduleDtailInfo.enddata.type =0;
-            } else if (scheduleDtailInfo.enddata.type ==2 &&
-                       scheduleDtailInfo.beginDateTime.daysTo(
-                           scheduleDtailInfo.enddata.date)<0) {
-                scheduleDtailInfo.enddata.type =0;
+            if (scheduleDtailInfo.enddata.type == 1 && scheduleDtailInfo.enddata.tcount < 1) {
+                scheduleDtailInfo.enddata.type = 0;
+            } else if (scheduleDtailInfo.enddata.type == 2 && scheduleDtailInfo.beginDateTime.daysTo(scheduleDtailInfo.enddata.date) < 0) {
+                scheduleDtailInfo.enddata.type = 0;
                 scheduleDtailInfo.rpeat = 0;
             }
             CScheduleDataManage::getScheduleDataManage()
             ->getscheduleDataCtrl()
             ->updateScheduleInfo(scheduleDtailInfo);
         } else if (msgBox.clickButton() == 2) {
-            ChangeOnlyInfo(newinfo,oldinfo);
+            ChangeOnlyInfo(newinfo, oldinfo);
         }
     } else {
         CSchceduleCtrlDlg msgBox;
@@ -975,10 +989,10 @@ void CSchceduleDlg::ChangeRecurInfo(QWidget *parent, const ScheduleDtailInfo &ne
             ScheduleDtailInfo newschedule = newinfo;
             newschedule.RecurID = 0;
             newschedule.id = 0;
-            if (newschedule.enddata.type ==1) {
+            if (newschedule.enddata.type == 1) {
                 newschedule.enddata.tcount = qAbs(newinfo.enddata.tcount - newinfo.RecurID);
-                if (newschedule.enddata.tcount <1) {
-                    newschedule.enddata.type =0;
+                if (newschedule.enddata.tcount < 1) {
+                    newschedule.enddata.type = 0;
                     newschedule.rpeat = 0;
                 }
             }
@@ -990,9 +1004,9 @@ void CSchceduleDlg::ChangeRecurInfo(QWidget *parent, const ScheduleDtailInfo &ne
             ->getscheduleDataCtrl()
             ->getScheduleInfoById(oldinfo.id, updatescheduleData);
             if (updatescheduleData.enddata.type == 1) {
-                updatescheduleData.enddata.tcount = newinfo.RecurID -1;
-                if (updatescheduleData.enddata.tcount <1) {
-                    updatescheduleData.enddata.type =0;
+                updatescheduleData.enddata.tcount = newinfo.RecurID - 1;
+                if (updatescheduleData.enddata.tcount < 1) {
+                    updatescheduleData.enddata.type = 0;
                     updatescheduleData.rpeat = 0;
                 }
             } else {
@@ -1006,7 +1020,7 @@ void CSchceduleDlg::ChangeRecurInfo(QWidget *parent, const ScheduleDtailInfo &ne
             ->getscheduleDataCtrl()
             ->updateScheduleInfo(updatescheduleData);
         } else if (msgBox.clickButton() == 2) {
-            ChangeOnlyInfo(newinfo,oldinfo);
+            ChangeOnlyInfo(newinfo, oldinfo);
         }
     }
 }
