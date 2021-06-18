@@ -43,7 +43,7 @@ enum CalendarWeekDayType {
     SO_MDefault,
 };
 class CustomFrame;
-class CWeekHeadView: public DFrame
+class CWeekHeadView : public QWidget
 {
     Q_OBJECT
 public:

@@ -38,7 +38,7 @@
 
 DGUI_USE_NAMESPACE
 CWeekHeadView::CWeekHeadView(QWidget *parent)
-    : DFrame(parent)
+    : QWidget(parent)
 {
     setContentsMargins(0, 0, 0, 0);
     m_DBusInter = new CalendarDBus("com.deepin.api.LunarCalendar",
@@ -85,26 +85,24 @@ CWeekHeadView::CWeekHeadView(QWidget *parent)
     setLayout(hboxLayout);
 
     connect(this, &CWeekHeadView::dateSelected, this, &CWeekHeadView::handleCurrentDateChanged);
-    setFrameRounded(false);
 
-    m_monthList.append( "一月" );
-    m_monthList.append( "二月");
-    m_monthList.append( "三月" );
-    m_monthList.append( "四月" );
-    m_monthList.append( "五月" );
-    m_monthList.append( "六月" );
-    m_monthList.append( "七月" );
-    m_monthList.append( "八月");
-    m_monthList.append( "九月" );
-    m_monthList.append( "十月" );
-    m_monthList.append( "十一月");
-    m_monthList.append( "十二月");
+    m_monthList.append("一月");
+    m_monthList.append("二月");
+    m_monthList.append("三月");
+    m_monthList.append("四月");
+    m_monthList.append("五月");
+    m_monthList.append("六月");
+    m_monthList.append("七月");
+    m_monthList.append("八月");
+    m_monthList.append("九月");
+    m_monthList.append("十月");
+    m_monthList.append("十一月");
+    m_monthList.append("十二月");
 }
 
 CWeekHeadView::~CWeekHeadView()
 {
-
-    if (lunarCache !=nullptr) {
+    if (lunarCache != nullptr) {
         delete lunarCache;
         lunarCache = nullptr;
     }
@@ -471,7 +469,7 @@ void CWeekHeadView::paintCell(QWidget *cell)
             painter.drawEllipse(fillRect);
             painter.restore();
         } else {
-            QRect fillRect(cell->width() - (cell->width()/2) + 1, bh - 1, 26, 26);
+            QRect fillRect(cell->width() - (cell->width() / 2) + 1, bh - 1, 26, 26);
             painter.save();
             painter.setRenderHint(QPainter::Antialiasing);
             painter.setBrush(QBrush(CScheduleDataManage::getScheduleDataManage()->getSystemActiveColor()));
@@ -511,7 +509,7 @@ void CWeekHeadView::paintCell(QWidget *cell)
         painter.drawText(QRect(bw + 24, bh, 30, 25), Qt::AlignCenter, dayWeek);
     } else {
         QFontMetrics fm1 = painter.fontMetrics();
-        painter.drawText(QRect(cell->width() - (cell->width()/2) - 4, bh - 1, 36, 26), Qt::AlignCenter, dayNum);
+        painter.drawText(QRect(cell->width() - (cell->width() / 2) - 4, bh - 1, 36, 26), Qt::AlignCenter, dayNum);
         if (d == DDEWeekCalendar::FirstDayofWeekend || d == DDEWeekCalendar::AFewDaysofWeek)
             painter.setPen(m_weekendsTextColor);
         else
@@ -519,10 +517,10 @@ void CWeekHeadView::paintCell(QWidget *cell)
 
         QFontMetrics fm = painter.fontMetrics();
 
-        while (fm.width(dayWeek) > cell->width()/2)
+        while (fm.width(dayWeek) > cell->width() / 2)
             dayWeek.chop(1);
 
-        painter.drawText(QRect(0, bh, (cell->width()/2), 26), Qt::AlignRight, dayWeek);
+        painter.drawText(QRect(0, bh, (cell->width() / 2), 26), Qt::AlignRight, dayWeek);
     }
     // draw text of day type
     if (m_showState & ShowLunar) {
