@@ -31,13 +31,14 @@ ScheduleRemindWidget::ScheduleRemindWidget(QWidget *parent)
     : DArrowRectangle(DArrowRectangle::ArrowLeft, DArrowRectangle::FloatWidget, parent)
     , m_centerWidget(new CenterWidget(this))
 {
-    //如果dtk版本为5.3以上则使用新接口
-#if (DTK_VERSION > DTK_VERSION_CHECK(5, 3, 0, 0))
-    //设置显示圆角
-    setRadiusArrowStyleEnable(true);
-    //设置圆角
-    setRadius(DARROWRECT::DRADIUS);
-#endif
+    //UI由于圆角显示有问题，暂时使用直角的
+    //    //如果dtk版本为5.3以上则使用新接口
+    //#if (DTK_VERSION > DTK_VERSION_CHECK(5, 3, 0, 0))
+    //    //设置显示圆角
+    //    setRadiusArrowStyleEnable(true);
+    //    //设置圆角
+    //    setRadius(DARROWRECT::DRADIUS);
+    //#endif
     m_centerWidget->setFixedWidth(207);
     m_centerWidget->setFixedHeight(57);
     setContent(m_centerWidget);

@@ -278,13 +278,14 @@ void CYearScheduleView::paintItem(QPainter &painter)
 CYearScheduleOutView::CYearScheduleOutView(QWidget *parent)
     : DArrowRectangle(DArrowRectangle::ArrowLeft, DArrowRectangle::FloatWidget, parent)
 {
-    //如果dtk版本为5.3以上则使用新接口
-#if (DTK_VERSION > DTK_VERSION_CHECK(5, 3, 0, 0))
-    //设置显示圆角
-    setRadiusArrowStyleEnable(true);
-    //设置圆角
-    setRadius(DARROWRECT::DRADIUS);
-#endif
+    //UI由于圆角显示有问题，暂时使用直角的
+    //    //如果dtk版本为5.3以上则使用新接口
+    //#if (DTK_VERSION > DTK_VERSION_CHECK(5, 3, 0, 0))
+    //    //设置显示圆角
+    //    setRadiusArrowStyleEnable(true);
+    //    //设置圆角
+    //    setRadius(DARROWRECT::DRADIUS);
+    //#endif
     yearscheduleview = new CYearScheduleView();
     this->setContent(yearscheduleview);
 }
