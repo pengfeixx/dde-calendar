@@ -77,7 +77,7 @@ void ScheduleRemindWidget::setDirection(DArrowRectangle::ArrowDirection value)
  * @brief ScheduleRemindWidget::setTimeFormat 设置日期显示格式
  * @param timeformat 日期格式
  */
-void ScheduleRemindWidget::setTimeFormat(QString timeformat)
+void ScheduleRemindWidget::setTimeFormat(const QString &timeformat)
 {
     m_centerWidget->setTimeFormat(timeformat);
 }
@@ -124,7 +124,7 @@ void CenterWidget::setTheMe(const int type)
  * @brief CenterWidget::setTimeFormat 设置日期显示格式
  * @param timeFormat 日期格式
  */
-void CenterWidget::setTimeFormat(QString timeFormat)
+void CenterWidget::setTimeFormat(const QString &timeFormat)
 {
     m_timeFormat = timeFormat;
     update();
