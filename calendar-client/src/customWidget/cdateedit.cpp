@@ -21,10 +21,23 @@
 #include "cdateedit.h"
 
 #include <QLineEdit>
+#include <QMouseEvent>
 
 CDateEdit::CDateEdit(QWidget *parent)
     : DDateEdit(parent)
 {
     //平板模式设置不可输入
     lineEdit()->setReadOnly(true);
+}
+
+void CDateEdit::mousePressEvent(QMouseEvent *event)
+{
+    DDateEdit::mousePressEvent(event);
+    //锁屏时窗管是根据窗口的WidgetAttribute为Combo或Menu来关闭窗口
+    //获取下拉日历窗口
+    QWidget *calendarPopup = this->findChild<QWidget *>("qt_datetimedit_calendar");
+    if (nullptr != calendarPopup) {
+        //设置属性
+        calendarPopup->setAttribute(Qt::WA_X11NetWmWindowTypeCombo);
+    }
 }

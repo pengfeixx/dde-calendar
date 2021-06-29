@@ -34,6 +34,9 @@ class CDateEdit : public DDateEdit
     Q_OBJECT
 public:
     explicit CDateEdit(QWidget *parent = nullptr);
+
+protected:
+    void mousePressEvent(QMouseEvent *event) override;
 };
 
 #endif // CDATEEDIT_H
