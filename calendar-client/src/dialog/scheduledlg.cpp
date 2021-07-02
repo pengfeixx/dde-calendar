@@ -890,6 +890,10 @@ void CScheduleDlg::initUI()
     m_gwi->setFrameShape(QFrame::NoFrame);
     m_gwi->setLayout(maintlayout);
     addContent(m_gwi, Qt::AlignCenter);
+
+    //取消DDialog对虚拟键盘遮挡处理
+    qApp->ignoreVirtualKeyboard(m_gwi->parentWidget());
+
     initDateEdit();
     if (m_type == 1)
         slotallDayStateChanged(0);
