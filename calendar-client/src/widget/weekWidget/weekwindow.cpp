@@ -506,7 +506,6 @@ void CWeekWindow::slotScheduleShow(const bool isShow, const ScheduleDataInfo &ou
             m_ScheduleRemindWidget->show(showPoint.x() - 15, showPoint.y());
         }
     } else {
-        qDebug() << "hide";
         m_ScheduleRemindWidget->hide();
     }
 }

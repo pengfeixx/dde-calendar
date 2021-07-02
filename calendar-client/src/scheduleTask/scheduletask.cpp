@@ -53,12 +53,13 @@ CScheduleTask::~CScheduleTask()
  */
 void CScheduleTask::updateInfo(const QDate &startDate, const QDate &stopDate, const bool isGetLunar)
 {
-    m_queryScheduleInfo.clear();
-    m_fullInfo.clear();
-    if (isGetLunar) {
-        m_huangliInfo.clear();
-        m_festivalInfo.clear();
-    }
+    //不提前清空对应的数据，在获取到数据后更新对应的数据,这边清空数据在特定情况下会导致闪退(由于访问了不存在的对象?)
+    //    m_queryScheduleInfo.clear();
+    //    m_fullInfo.clear();
+    //    if (isGetLunar) {
+    //        m_huangliInfo.clear();
+    //        m_festivalInfo.clear();
+    //    }
     addQueryRange(startDate, stopDate, isGetLunar);
 }
 
@@ -70,7 +71,11 @@ void CScheduleTask::updateInfo(const QDate &startDate, const QDate &stopDate, co
  */
 bool CScheduleTask::hasScheduleInfo(const QDate &startDate, const QDate &stopDate)
 {
-    return m_queryScheduleInfo.contains(startDate) && m_queryScheduleInfo.contains(stopDate);
+    bool hasInfo = false;
+    m_lock.lockForRead();
+    hasInfo = m_queryScheduleInfo.contains(startDate) && m_queryScheduleInfo.contains(stopDate);
+    m_lock.unlock();
+    return hasInfo;
 }
 
 /**
@@ -84,12 +89,14 @@ QMap<QDate, QVector<ScheduleDataInfo> > CScheduleTask::getScheduleInfo(const QDa
     QMap<QDate, QVector<ScheduleDataInfo> > _resultInfo{};
     qint64 _offsetDay = startDate.daysTo(stopDate);
     QDate _infoDate = startDate;
+    m_lock.lockForRead();
     for (int i = 0; i <= _offsetDay; ++i) {
         _infoDate = startDate.addDays(i);
         if (m_queryScheduleInfo.contains(_infoDate)) {
             _resultInfo[_infoDate] = m_queryScheduleInfo[_infoDate];
         }
     }
+    m_lock.unlock();
     return _resultInfo;
 }
 
@@ -113,12 +120,14 @@ QMap<QDate, CaHuangLiDayInfo> CScheduleTask::getHuangliInfo(const QDate &startDa
     QMap<QDate, CaHuangLiDayInfo> _resultInfo{};
     qint64 _offsetDay = startDate.daysTo(stopDate);
     QDate _infoDate = startDate;
+    m_lock.lockForRead();
     for (int i = 0; i <= _offsetDay; ++i) {
         _infoDate = startDate.addDays(i);
         if (m_huangliInfo.contains(_infoDate)) {
             _resultInfo[_infoDate] = m_huangliInfo[_infoDate];
         }
     }
+    m_lock.unlock();
     return _resultInfo;
 }
 
@@ -133,12 +142,14 @@ QMap<QDate, int> CScheduleTask::getFestivalInfo(const QDate &startDate, const QD
     QMap<QDate, int> _resultInfo{};
     qint64 _offsetDay = startDate.daysTo(stopDate);
     QDate _infoDate = startDate;
+    m_lock.lockForRead();
     for (int i = 0; i <= _offsetDay; ++i) {
         _infoDate = startDate.addDays(i);
         if (m_festivalInfo.contains(_infoDate)) {
             _resultInfo[_infoDate] = m_festivalInfo[_infoDate];
         }
     }
+    m_lock.unlock();
     return _resultInfo;
 }
 
@@ -214,15 +225,19 @@ void CScheduleTask::addQueryRange(const QDate &startDate, const QDate &stopDate,
  */
 void CScheduleTask::slotGetSchedule(const QMap<QDate, QVector<ScheduleDataInfo> > &scheduleInfo, const QMap<QDate, bool> &hasSchedule)
 {
+    m_lock.lockForWrite();
     m_queryScheduleInfo = scheduleInfo;
     m_fullInfo = hasSchedule;
+    m_lock.unlock();
     emit signalUpdateScheduleShow();
 }
 
 void CScheduleTask::slotGetLunar(const QMap<QDate, CaHuangLiDayInfo> &lunarInfo, const QMap<QDate, int> &festivalInfo)
 {
+    m_lock.lockForWrite();
     m_huangliInfo = lunarInfo;
     m_festivalInfo = festivalInfo;
+    m_lock.unlock();
     emit signalLunarGetSuccess();
 }
 

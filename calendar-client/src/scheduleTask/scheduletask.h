@@ -95,6 +95,7 @@ private:
     //搜索的日程信息
     QMap<QDate, QVector<ScheduleDataInfo> >      m_searchScheduleInfo{};
     QVector<ScheduleDataInfo>           m_searchScheduleInfoVector{};
+    QReadWriteLock m_lock;
 };
 
 
