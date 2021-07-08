@@ -145,9 +145,7 @@ void CAllDayEventWeekView::setSelectSearchSchedule(const ScheduleDataInfo &info)
             QRectF rect = item->rect();
             centerOn(0, rect.y());
             setTransformationAnchor(QGraphicsView::AnchorViewCenter);
-            item->setStartValue(0);
-            item->setEndValue(4);
-            item->startAnimation();
+            item->startAnimation(0, 4);
         }
     }
 }

@@ -223,7 +223,7 @@ void CScheduleTask::addQueryRange(const QDate &startDate, const QDate &stopDate,
  * @param scheduleInfo
  * @param hasSchedule
  */
-void CScheduleTask::slotGetSchedule(const QMap<QDate, QVector<ScheduleDataInfo> > &scheduleInfo, const QMap<QDate, bool> &hasSchedule)
+void CScheduleTask::slotGetSchedule(const QMap<QDate, QVector<ScheduleDataInfo>> scheduleInfo, const QMap<QDate, bool> hasSchedule)
 {
     m_lock.lockForWrite();
     m_queryScheduleInfo = scheduleInfo;
@@ -232,7 +232,7 @@ void CScheduleTask::slotGetSchedule(const QMap<QDate, QVector<ScheduleDataInfo> 
     emit signalUpdateScheduleShow();
 }
 
-void CScheduleTask::slotGetLunar(const QMap<QDate, CaHuangLiDayInfo> &lunarInfo, const QMap<QDate, int> &festivalInfo)
+void CScheduleTask::slotGetLunar(const QMap<QDate, CaHuangLiDayInfo> lunarInfo, const QMap<QDate, int> festivalInfo)
 {
     m_lock.lockForWrite();
     m_huangliInfo = lunarInfo;

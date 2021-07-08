@@ -77,9 +77,10 @@ signals:
     void jobsUpdate();
 public slots:
     //接收查询的日程信息
-    void slotGetSchedule(const QMap<QDate, QVector<ScheduleDataInfo> > &scheduleInfo, const QMap<QDate, bool> &hasSchedule);
+    void slotGetSchedule(const QMap<QDate, QVector<ScheduleDataInfo>> scheduleInfo, const QMap<QDate, bool> hasSchedule);
     //接收农历信息
-    void slotGetLunar(const QMap<QDate, CaHuangLiDayInfo> &lunarInfo, const QMap<QDate, int> &festivalInfo);
+    void slotGetLunar(const QMap<QDate, CaHuangLiDayInfo> lunarInfo, const QMap<QDate, int> festivalInfo);
+
 private:
     QThread                         m_workerThread;
     CScheduleDBus                   *m_DBusManager = nullptr;
@@ -118,8 +119,8 @@ private:
     //根据时间获取班休信息
     char getFestivalInfoByDate(const QDate &date, const QVector<FestivalInfo> &festivalInfo);
 signals:
-    void signalGetSchedule(const QMap<QDate, QVector<ScheduleDataInfo> > &scheduleInfo, const QMap<QDate, bool> &hasSchedule);
-    void signalGetLunar(const QMap<QDate, CaHuangLiDayInfo> &lunarInfo, const QMap<QDate, int> &festivalInfo);
+    void signalGetSchedule(const QMap<QDate, QVector<ScheduleDataInfo>> scheduleInfo, const QMap<QDate, bool> hasSchedule);
+    void signalGetLunar(const QMap<QDate, CaHuangLiDayInfo> lunarInfo, const QMap<QDate, int> festivalInfo);
 public slots:
     // 开始查询
     void startQuery();

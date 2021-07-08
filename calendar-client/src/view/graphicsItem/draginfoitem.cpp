@@ -35,22 +35,6 @@ DragInfoItem::DragInfoItem(QRectF rect, QGraphicsItem *parent)
 {
     setRect(m_rect);
     setAcceptHoverEvents(true);
-    const int duration = 200;
-    m_properAnimationFirst = new QPropertyAnimation(this, "offset", this);
-    m_properAnimationFirst->setObjectName("First");
-    m_properAnimationSecond = new QPropertyAnimation(this, "offset", this);
-    m_properAnimationSecond->setObjectName("Second");
-    m_properAnimationFirst->setDuration(duration);
-    m_properAnimationSecond->setDuration(duration);
-    m_properAnimationFirst->setEasingCurve(QEasingCurve::InOutQuad);
-    m_properAnimationSecond->setEasingCurve(QEasingCurve::InOutQuad);
-    m_Group = new QSequentialAnimationGroup(this);
-    m_Group->addAnimation(m_properAnimationFirst);
-    m_Group->addAnimation(m_properAnimationSecond);
-    connect(m_Group
-            , &QPropertyAnimation::finished
-            , this
-            , &DragInfoItem::animationFinished);
     setItemType(CITEM);
 }
 
@@ -116,24 +100,33 @@ void DragInfoItem::setOffset(const int &offset)
     setZValue(offset);
 }
 
-void DragInfoItem::setStartValue(const int value)
+void DragInfoItem::startAnimation(const int start, const int end)
 {
-    m_properAnimationFirst->setStartValue(value);
-    m_properAnimationSecond->setEndValue(value);
-}
+    //若正在动画则退出
+    if (m_isAnimation)
+        return;
+    const int duration = 200;
+    m_properAnimationFirst = new QPropertyAnimation(this, "offset");
+    m_properAnimationFirst->setObjectName("First");
+    m_properAnimationSecond = new QPropertyAnimation(this, "offset");
+    m_properAnimationSecond->setObjectName("Second");
+    m_properAnimationFirst->setDuration(duration);
+    m_properAnimationSecond->setDuration(duration);
+    m_properAnimationFirst->setEasingCurve(QEasingCurve::InOutQuad);
+    m_properAnimationSecond->setEasingCurve(QEasingCurve::InOutQuad);
+    m_Group = new QSequentialAnimationGroup();
+    m_Group->addAnimation(m_properAnimationFirst);
+    m_Group->addAnimation(m_properAnimationSecond);
+    connect(m_Group, &QPropertyAnimation::finished, this, &DragInfoItem::animationFinished);
 
-void DragInfoItem::setEndValue(const int value)
-{
-    m_properAnimationFirst->setEndValue(value);
-    m_properAnimationSecond->setStartValue(value);
+    m_properAnimationFirst->setStartValue(start);
+    m_properAnimationSecond->setEndValue(start);
 
-}
-
-void DragInfoItem::startAnimation()
-{
-    if (m_Group->state() != QAnimationGroup::Running) {
-        m_Group->start();
-    }
+    m_properAnimationFirst->setEndValue(end);
+    m_properAnimationSecond->setStartValue(end);
+    //停止后自动删除
+    m_Group->start(QAbstractAnimation::DeletionPolicy::DeleteWhenStopped);
+    m_isAnimation = true;
 }
 
 void DragInfoItem::animationFinished()

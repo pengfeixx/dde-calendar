@@ -157,12 +157,11 @@ void CMonthGraphicsview::setSelectSearchSchedule(const ScheduleDataInfo &schedul
     for (int i = 0; i < mscheduleShowBtn.size(); ++i) {
         CMonthScheduleItem *item = dynamic_cast<CMonthScheduleItem *>(mscheduleShowBtn.at(i));
 
-        if (item == nullptr) continue;
+        if (item == nullptr)
+            continue;
 
         if (scheduleInfo == item->getData()) {
-            item->setStartValue(0);
-            item->setEndValue(4);
-            item->startAnimation();
+            item->startAnimation(0, 4);
         }
     }
 }

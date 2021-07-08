@@ -307,9 +307,7 @@ void CGraphicsView::setSelectSearchSchedule(const ScheduleDataInfo &info)
             continue;
         //判断是否为选中日程
         if (m_vScheduleItem.at(i)->hasSelectSchedule(info)) {
-            m_vScheduleItem.at(i)->setStartValue(0);
-            m_vScheduleItem.at(i)->setEndValue(10);
-            m_vScheduleItem.at(i)->startAnimation();
+            m_vScheduleItem.at(i)->startAnimation(0, 10);
         }
     }
 }
@@ -318,8 +316,7 @@ void CGraphicsView::clearSchdule()
 {
     for (int i = 0; i < m_vScheduleItem.size(); i++) {
         m_Scene->removeItem(m_vScheduleItem.at(i));
-        delete m_vScheduleItem[i];
-        m_vScheduleItem[i] = nullptr;
+        m_vScheduleItem[i]->deleteLater();
     }
     m_vScheduleItem.clear();
     m_updateDflag = true;

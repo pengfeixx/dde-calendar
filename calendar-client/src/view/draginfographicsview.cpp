@@ -317,8 +317,8 @@ void DragInfoGraphicsView::wheelEvent(QWheelEvent *event)
 void DragInfoGraphicsView::contextMenuEvent(QContextMenuEvent *event)
 {
     DGraphicsView::contextMenuEvent(event);
-
-    if (m_DragStatus == IsCreate) {
+    //如果不为默认状态则不执行右击事件
+    if (m_DragStatus != NONE) {
         return;
     }
     emit signalScheduleShow(false);

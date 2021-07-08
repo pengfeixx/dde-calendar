@@ -50,9 +50,7 @@ public:
     {
         return m_offset;
     }
-    void setStartValue(const int value);
-    void setEndValue(const int value);
-    void startAnimation();
+    void startAnimation(const int start, const int end);
     bool isRunning()const
     {
         return m_isAnimation;
