@@ -148,7 +148,7 @@ private:
     CYearScheduleOutView *m_Scheduleview{nullptr};
 };
 
-class YearFrame : public DFrame
+class YearFrame : public QWidget
 {
     Q_OBJECT
 public:

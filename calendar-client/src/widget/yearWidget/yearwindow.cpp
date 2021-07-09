@@ -715,7 +715,7 @@ void CYearWindow::wheelEvent(QWheelEvent *event)
 }
 
 YearFrame::YearFrame(DWidget *parent)
-    : DFrame(parent)
+    : QWidget(parent)
 {
     //间距
     const int spacing = 20;
@@ -784,7 +784,6 @@ YearFrame::YearFrame(DWidget *parent)
     hhLayout->addLayout(gridLayout);
     this->setLayout(hhLayout);
     setContentsMargins(0, 0, 0, 10);
-    setFrameRounded(true);
 }
 
 YearFrame::~YearFrame()
