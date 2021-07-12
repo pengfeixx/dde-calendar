@@ -523,7 +523,7 @@ void CSchceduleSearchView::updateDateShow()
 
         for (int j = 0 ; j < m_vlistData.at(i).vData.size(); ++j) {
             //如果开始时间日期为显示日期则显示,跨天日程只显示一个
-            if (m_vlistData.at(i).vData.at(j).beginDateTime.date() == m_vlistData.at(i).date || 0 == j) {
+            if (m_vlistData.at(i).vData.at(j).beginDateTime.date() == m_vlistData.at(i).date || 0 == i) {
                 showData.vData.append(m_vlistData.at(i).vData.at(j));
             }
         }
