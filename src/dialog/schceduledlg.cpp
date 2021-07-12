@@ -305,7 +305,7 @@ void CSchceduleDlg::slotTextChange()
 
     if (tStitlename.contains("\n")) {
         tStitlename.replace("\n", "");
-        m_textEdit->setText(tStitlename);
+        m_textEdit->setPlainText(tStitlename);
         cursor.movePosition(QTextCursor::End);
         m_textEdit->setTextCursor(cursor);
         return;
@@ -314,7 +314,7 @@ void CSchceduleDlg::slotTextChange()
     int maxLength = 256;  // 最大字符数
 
     if (length > maxLength) {
-        m_textEdit->setText(m_context);
+        m_textEdit->setPlainText(m_context);
         cursor.movePosition(QTextCursor::End);
         m_textEdit->setTextCursor(cursor);
     }
