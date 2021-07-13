@@ -324,6 +324,8 @@ void DragInfoGraphicsView::contextMenuEvent(QContextMenuEvent *event)
     emit signalScheduleShow(false);
     m_press = false;
     m_DragStatus = NONE;
+    //触摸状态恢复为默认状态
+    m_touchState = TS_NONE;
     QGraphicsItem *listItem = itemAt(event->pos());
     DragInfoItem *infoitem = dynamic_cast<DragInfoItem *>(listItem);
 
