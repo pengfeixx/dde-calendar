@@ -165,7 +165,7 @@ bool CScheduleDlg::clickOkBtn()
         _newSchedule.setType(m_typeComBox->currentIndex() + 1);
 
     if (beginDateTime > endDateTime) {
-        DCalendarDDialog *prompt = new DCalendarDDialog(this);
+        DCalendarDDialog *prompt = new DCalendarDDialog(this->parentWidget());
         prompt->setIcon(QIcon(":/resources/icon/warning.svg"));
         prompt->setMessage(tr("End time must be greater than start time"));
         prompt->addButton(tr("OK"), true, DDialog::ButtonNormal);
@@ -246,7 +246,7 @@ bool CScheduleDlg::clickOkBtn()
     _newSchedule.setRepetitionRule(_repetitionRule);
     _newSchedule.setBeginDateTime(beginDateTime);
     _newSchedule.setEndDateTime(endDateTime);
-    CScheduleOperation _scheduleOperation(this);
+    CScheduleOperation _scheduleOperation(this->parentWidget());
 
     if (m_type == 1) {
         //创建日程

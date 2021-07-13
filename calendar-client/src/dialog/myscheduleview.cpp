@@ -187,16 +187,16 @@ void CMyScheduleView::slotBtClick(int buttonIndex, const QString &buttonName)
 {
     Q_UNUSED(buttonName);
     if (buttonIndex == 0) {
-        //删除日程
-        CScheduleOperation _scheduleOpertion(this);
+        //删除日程,使其对话框的父窗口为日历窗口
+        CScheduleOperation _scheduleOpertion(this->parentWidget());
         if (_scheduleOpertion.deleteSchedule(m_scheduleInfo)) {
             accept();
         };
         return;
     }
     if (buttonIndex == 1) {
-        //编辑日程
-        CScheduleDlg dlg(0, this);
+        //编辑日程,使其对话框的父窗口为日历窗口
+        CScheduleDlg dlg(0, this->parentWidget());
         dlg.setData(m_scheduleInfo);
         if (dlg.exec() == DDialog::Accepted) {
             accept();
