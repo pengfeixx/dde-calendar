@@ -103,7 +103,6 @@ void CMyScheduleView::AutoFeed(const QString &text)
         area->setFixedHeight(strList.count() * h);
         setFixedHeight(strList.count() * h + 152);
     }
-
     m_scheduleLabel->setText(resultStr);
 }
 
@@ -234,7 +233,7 @@ void CMyScheduleView::initUI()
     mainLayout->setMargin(0);
     mainLayout->setSpacing(0);
 
-    area = new QScrollArea(this);
+    area = new touchScrollArea(this);
     //设置日程显示区域不能选中
     area->setFocusPolicy(Qt::FocusPolicy::NoFocus);
     area->setFrameShape(QFrame::NoFrame);

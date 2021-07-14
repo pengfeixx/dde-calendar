@@ -21,6 +21,7 @@
 
 #include "src/scheduledatainfo.h"
 #include "dcalendarddialog.h"
+#include "touchscrollarea.h"
 
 #include <DTextEdit>
 
@@ -68,7 +69,7 @@ private:
     QLabel *m_timeLabel = nullptr;
     QLabel *m_Title = nullptr;
     ScheduleDataInfo m_scheduleInfo; //日程
-    QScrollArea *area = nullptr;
+    touchScrollArea *area = nullptr;
     QFont labelF;
 };
 
