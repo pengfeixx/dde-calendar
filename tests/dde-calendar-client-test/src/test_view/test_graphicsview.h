@@ -25,11 +25,12 @@
 #include "gtest/gtest.h"
 #include <QObject>
 
-class test_graphicsview : public QObject, public::testing::Test
+class test_graphicsview : public ::testing::Test
 {
 public:
-    test_graphicsview();
-    ~test_graphicsview();
+    void SetUp() override;
+    void TearDown() override;
+
 protected:
     CGraphicsView *cGraphicsView = nullptr;
 };

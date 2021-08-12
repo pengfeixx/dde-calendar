@@ -25,11 +25,12 @@
 #include "gtest/gtest.h"
 #include <QObject>
 
-class test_monthgraphiview : public QObject, public::testing::Test
+class test_monthgraphiview : public ::testing::Test
 {
 public:
-    test_monthgraphiview();
-    ~test_monthgraphiview();
+    void SetUp() override;
+    void TearDown() override;
+
 protected:
     CMonthGraphicsview *cMonthGraphiview = nullptr;
 };

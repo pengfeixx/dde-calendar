@@ -25,14 +25,11 @@
 #include "gtest/gtest.h"
 #include <QObject>
 
-class test_alldayeventview : public QObject, public::testing::Test
+class test_alldayeventview : public testing::Test
 {
 public:
-    test_alldayeventview();
-
     void SetUp() override;
     void TearDown() override;
-
 protected:
     CAllDayEventWeekView *cAllDayEventWeekView = nullptr;
 };

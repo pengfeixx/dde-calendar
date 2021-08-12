@@ -25,14 +25,77 @@
 #include <QEvent>
 #include <QMenu>
 
-test_alldayeventview::test_alldayeventview()
+QVector<ScheduleDataInfo> getTestScheduleDataInfo()
 {
+    QDateTime currentTime = QDateTime::currentDateTime();
+    ScheduleDataInfo info1;
+    info1.setID(1);
+    info1.setType(2);
+    info1.setAllDay(true);
+    info1.setRecurID(2);
+    info1.setTitleName("测试1");
+    QDateTime ignoreDate = currentTime.addDays(2);
+    QVector<QDateTime> ignoreDateList;
+    ignoreDateList.append(ignoreDate);
+    info1.setIgnoreTime(ignoreDateList);
+    QDateTime begindate = currentTime;
+    QDateTime enddate = currentTime.addSecs(60 * 60);
+    info1.setBeginDateTime(begindate);
+    info1.setEndDateTime(enddate);
+
+    ScheduleDataInfo info2;
+    info2.setID(1);
+    info2.setType(2);
+    info2.setAllDay(true);
+    info2.setRecurID(2);
+    info2.setTitleName("测试2");
+    QDateTime ignoreDate2 = currentTime.addDays(3);
+    QVector<QDateTime> ignoreDateList2;
+    ignoreDateList2.append(ignoreDate2);
+    info2.setIgnoreTime(ignoreDateList2);
+    QDateTime begindate2 = currentTime.addSecs(60 * 60);
+    QDateTime enddate2 = currentTime.addSecs(60 * 60 * 2);
+    info2.setBeginDateTime(begindate2);
+    info2.setEndDateTime(enddate2);
+
+    ScheduleDataInfo info3;
+    info3.setID(1);
+    info3.setType(2);
+    info3.setAllDay(true);
+    info3.setRecurID(2);
+    info3.setTitleName("测试3");
+    QDateTime ignoreDate3 = currentTime.addDays(4);
+    QVector<QDateTime> ignoreDateList3;
+    ignoreDateList3.append(ignoreDate3);
+    info3.setIgnoreTime(ignoreDateList3);
+    QDateTime begindate3 = currentTime.addSecs(60 * 60 * 2);
+    QDateTime enddate3 = currentTime.addSecs(60 * 60 * 3);
+    info3.setBeginDateTime(begindate3);
+    info3.setEndDateTime(enddate3);
+
+    QVector<ScheduleDataInfo> infoList;
+    infoList.append(info1);
+    infoList.append(info2);
+    infoList.append(info3);
+
+    return infoList;
 }
 
 void test_alldayeventview::SetUp()
 {
     cAllDayEventWeekView = new CAllDayEventWeekView();
-    cAllDayEventWeekView->setFixedSize(QSize(800, 300));
+    //添加测试数据
+    QVector<QVector<ScheduleDataInfo>> vlistData;
+    QVector<ScheduleDataInfo> infoList1;
+    infoList1.append(getTestScheduleDataInfo().at(0));
+    infoList1.append(getTestScheduleDataInfo().at(1));
+    QVector<ScheduleDataInfo> infoList2;
+    infoList2.append(getTestScheduleDataInfo().at(2));
+    vlistData.append(infoList1);
+    vlistData.append(infoList2);
+    cAllDayEventWeekView->setInfo(getTestScheduleDataInfo());
+    QDate currentdate = QDate::currentDate();
+    cAllDayEventWeekView->setRange(1000, 55, currentdate.addDays(-1), currentdate.addDays(5), 0);
 }
 
 void test_alldayeventview::TearDown()
@@ -82,70 +145,6 @@ TEST_F(test_alldayeventview, setRange)
     QDate enddate(2020, 12, 21);
     int rightmagin = 2;
     cAllDayEventWeekView->setRange(w, h, begindate, enddate, rightmagin);
-}
-
-QVector<ScheduleDataInfo> getTestScheduleDataInfo()
-{
-    ScheduleDataInfo info1;
-    info1.setID(1);
-    info1.setType(2);
-    info1.setAllDay(true);
-    info1.setRecurID(2);
-    info1.setTitleName("测试1");
-    QString strDate = "2020-12-02 12:24:36";
-    QDateTime ignoreDate = QDateTime::fromString(strDate, "yyyy-MM-dd hh:mm:ss");
-    QVector<QDateTime> ignoreDateList;
-    ignoreDateList.append(ignoreDate);
-    info1.setIgnoreTime(ignoreDateList);
-    QString begin = "2020-12-01 12:24:36";
-    QDateTime begindate = QDateTime::fromString(begin, "yyyy-MM-dd hh:mm:ss");
-    QString end = "2020-12-03 12:24:36";
-    QDateTime enddate = QDateTime::fromString(end, "yyyy-MM-dd hh:mm:ss");
-    info1.setBeginDateTime(begindate);
-    info1.setEndDateTime(enddate);
-
-    ScheduleDataInfo info2;
-    info2.setID(1);
-    info2.setType(2);
-    info2.setAllDay(true);
-    info2.setRecurID(2);
-    info2.setTitleName("测试2");
-    QString strDate2 = "2020-12-12 12:24:36";
-    QDateTime ignoreDate2 = QDateTime::fromString(strDate2, "yyyy-MM-dd hh:mm:ss");
-    QVector<QDateTime> ignoreDateList2;
-    ignoreDateList2.append(ignoreDate2);
-    info2.setIgnoreTime(ignoreDateList2);
-    QString begin2 = "2020-12-11 12:24:36";
-    QDateTime begindate2 = QDateTime::fromString(begin2, "yyyy-MM-dd hh:mm:ss");
-    QString end2 = "2020-12-13 12:24:36";
-    QDateTime enddate2 = QDateTime::fromString(end2, "yyyy-MM-dd hh:mm:ss");
-    info2.setBeginDateTime(begindate2);
-    info2.setEndDateTime(enddate2);
-
-    ScheduleDataInfo info3;
-    info3.setID(1);
-    info3.setType(2);
-    info3.setAllDay(true);
-    info3.setRecurID(2);
-    info3.setTitleName("测试3");
-    QString strDate3 = "2020-12-22 12:24:36";
-    QDateTime ignoreDate3 = QDateTime::fromString(strDate3, "yyyy-MM-dd hh:mm:ss");
-    QVector<QDateTime> ignoreDateList3;
-    ignoreDateList3.append(ignoreDate3);
-    info3.setIgnoreTime(ignoreDateList3);
-    QString begin3 = "2020-12-21 12:24:36";
-    QDateTime begindate3 = QDateTime::fromString(begin3, "yyyy-MM-dd hh:mm:ss");
-    QString end3 = "2020-12-23 12:24:36";
-    QDateTime enddate3 = QDateTime::fromString(end3, "yyyy-MM-dd hh:mm:ss");
-    info3.setBeginDateTime(begindate3);
-    info3.setEndDateTime(enddate3);
-
-    QVector<ScheduleDataInfo> infoList;
-    infoList.append(info1);
-    infoList.append(info2);
-    infoList.append(info3);
-
-    return infoList;
 }
 
 //void CAllDayEventWeekView::setDayData(const QVector<QVector<ScheduleDataInfo>> &vlistData)
@@ -280,11 +279,12 @@ TEST_F(test_alldayeventview, JudgeIsCreate)
     cAllDayEventWeekView->JudgeIsCreate(point);
 }
 
+static QAction *action = nullptr;
 QAction *stub_exec(const QPoint &pos, QAction *at = nullptr)
 {
     Q_UNUSED(pos)
     Q_UNUSED(at)
-    return nullptr;
+    return action;
 }
 
 //RightClickToCreate
@@ -383,9 +383,85 @@ TEST_F(test_alldayeventview, wheelEvent)
 TEST_F(test_alldayeventview, contextMenuEvent)
 {
     //    QEvent event(QEvent::ContextMenu);
-    QContextMenuEvent event(QContextMenuEvent::Mouse, QPoint(20, 20), QPoint(120, 120), Qt::NoModifier);
+
     Stub stub;
     stub.set((QAction * (QMenu::*)(const QPoint &, QAction *)) ADDR(QMenu, exec), stub_exec);
     calendarDDialogExecStub(stub);
+    QList<QGraphicsItem *> item = cAllDayEventWeekView->scene()->items();
+    //模拟右击
+
+    QContextMenuEvent event(QContextMenuEvent::Mouse, QPoint(20, 20), QPoint(120, 120), Qt::NoModifier);
     QApplication::sendEvent(cAllDayEventWeekView->viewport(), &event);
+
+    action = cAllDayEventWeekView->m_editAction;
+    QApplication::sendEvent(cAllDayEventWeekView->viewport(), &event);
+
+    action = cAllDayEventWeekView->m_deleteAction;
+    QApplication::sendEvent(cAllDayEventWeekView->viewport(), &event);
+
+    //模拟右击
+    if (item.size() > 0) {
+        QPoint itemPoint = cAllDayEventWeekView->mapFromScene(item.at(0)->scenePos());
+        QContextMenuEvent event(QContextMenuEvent::Mouse, itemPoint, cAllDayEventWeekView->mapToGlobal(itemPoint), Qt::NoModifier);
+        QApplication::sendEvent(cAllDayEventWeekView->viewport(), &event);
+    }
+}
+
+static void sendMousePress(QWidget *widget, const QPoint &point, Qt::MouseButton button = Qt::LeftButton)
+{
+    QMouseEvent event(QEvent::MouseButtonPress, point, widget->mapToGlobal(point), button, {}, {});
+    QApplication::sendEvent(widget, &event);
+}
+
+static void sendMouseMove(QWidget *widget, const QPoint &point, Qt::MouseButton button = Qt::NoButton, Qt::MouseButtons buttons = {})
+{
+    QTest::mouseMove(widget, point);
+    QMouseEvent event(QEvent::MouseMove, point, widget->mapToGlobal(point), button, buttons, {});
+    QApplication::sendEvent(widget, &event);
+    QApplication::processEvents();
+}
+
+static void sendMouseRelease(QWidget *widget, const QPoint &point, Qt::MouseButton button = Qt::LeftButton)
+{
+    QMouseEvent event(QEvent::MouseButtonRelease, point, widget->mapToGlobal(point), button, {}, {});
+    QApplication::sendEvent(widget, &event);
+}
+
+//交互测试
+TEST_F(test_alldayeventview, interactive)
+{
+    Stub stub;
+    calendarDDialogExecStub(stub);
+    QList<QGraphicsItem *> item = cAllDayEventWeekView->scene()->items();
+    //模拟点击释放
+    if (item.size() > 0) {
+        QPoint itemPoint = cAllDayEventWeekView->mapFromScene(item.at(0)->scenePos());
+        sendMousePress(cAllDayEventWeekView->viewport(), itemPoint);
+        sendMouseRelease(cAllDayEventWeekView->viewport(), itemPoint);
+    }
+
+    //模拟点击移动
+    if (item.size() > 0) {
+        QPoint itemPoint = cAllDayEventWeekView->mapFromScene(item.at(0)->scenePos());
+        sendMousePress(cAllDayEventWeekView->viewport(), itemPoint);
+        sendMouseMove(cAllDayEventWeekView->viewport(), cAllDayEventWeekView->viewport()->rect().center(), Qt::LeftButton, Qt::LeftButton);
+        sendMouseRelease(cAllDayEventWeekView->viewport(), cAllDayEventWeekView->viewport()->rect().center());
+    }
+}
+
+//slotContextMenu
+TEST_F(test_alldayeventview, slotContextMenu)
+{
+    Stub stub;
+    calendarDDialogExecStub(stub);
+    stub.set((QAction * (QMenu::*)(const QPoint &, QAction *)) ADDR(QMenu, exec), stub_exec);
+    action = nullptr;
+    QList<QGraphicsItem *> item = cAllDayEventWeekView->scene()->items();
+    if (item.size() > 0) {
+        CFocusItem *focusItem = dynamic_cast<CFocusItem *>(item.at(0));
+        CGraphicsScene *scent = qobject_cast<CGraphicsScene *>(cAllDayEventWeekView->scene());
+        if (scent && focusItem) {
+            scent->signalContextMenu(focusItem);
+        }
+    }
 }

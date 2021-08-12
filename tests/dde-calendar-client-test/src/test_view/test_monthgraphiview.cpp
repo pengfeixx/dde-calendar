@@ -20,12 +20,36 @@
 */
 #include "test_monthgraphiview.h"
 
-test_monthgraphiview::test_monthgraphiview()
+#include "../dialog_stub.h"
+
+#include <QTest>
+#include <QEvent>
+#include <QMenu>
+
+void test_monthgraphiview::SetUp()
 {
     cMonthGraphiview = new CMonthGraphicsview();
+    QDateTime currentDateTime = QDateTime::currentDateTime();
+    QDate currentDate = currentDateTime.date();
+    QVector<QDate> datelist;
+    QMap<QDate, QVector<ScheduleDataInfo>> mapInfo;
+    QVector<ScheduleDataInfo> infoVector;
+    ScheduleDataInfo info;
+    for (int i = 0; i < 42; ++i) {
+        infoVector.clear();
+        info.setType(1);
+        info.setAllDay(false);
+        info.setBeginDateTime(currentDateTime);
+        info.setEndDateTime(currentDateTime.addSecs(60 * 60 * 30));
+        info.setTitleName(QString("自动测试%1").arg(i));
+        datelist.append(currentDate.addDays(i));
+        mapInfo[currentDate.addDays(i)] = infoVector;
+    }
+    cMonthGraphiview->setDate(datelist);
+    cMonthGraphiview->setCurrentDate(currentDate);
 }
 
-test_monthgraphiview::~test_monthgraphiview()
+void test_monthgraphiview::TearDown()
 {
     delete cMonthGraphiview;
 }
@@ -36,23 +60,6 @@ TEST_F(test_monthgraphiview, setTheMe)
     int type = 1;
     cMonthGraphiview->setTheMe();
     cMonthGraphiview->setTheMe(type);
-}
-
-//void CMonthGraphiview::setDate(const QVector<QDate> &showDate)
-TEST_F(test_monthgraphiview, setDate)
-{
-    QVector<QDate> showDate;
-    QDate date1(2020, 10, 1);
-    QDate date2(2020, 12, 1);
-    for (int i = 0; i < 42; ++i) {
-        if (i % 2 == 0) {
-            showDate.append(date1);
-        } else {
-            showDate.append(date2);
-        }
-    }
-    std::cout << showDate.size() << std::endl;
-    cMonthGraphiview->setDate(showDate);
 }
 
 //void CMonthGraphiview::setLunarInfo(const QMap<QDate, CaHuangLiDayInfo> &lunarCache)
@@ -105,24 +112,10 @@ TEST_F(test_monthgraphiview, getPosDate)
 //    cMonthGraphiview->upDateInfoShow(CMonthGraphiview::DragStatus::IsCreate, info);
 //}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//mouseDoubleClickEvent
+TEST_F(test_monthgraphiview, mouseDoubleClickEvent)
+{
+    Stub stub;
+    calendarDDialogExecStub(stub);
+    QTest::mouseDClick(cMonthGraphiview->viewport(), Qt::LeftButton);
+}

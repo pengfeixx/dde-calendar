@@ -20,16 +20,30 @@
 */
 #include "test_graphicsview.h"
 #include "graphicsItem/scheduleitem.h"
-#include <QGraphicsView>
 
-test_graphicsview::test_graphicsview()
+void test_graphicsview::SetUp()
 {
     cGraphicsView = new CGraphicsView(nullptr, CGraphicsView::WeekPos);
+    cGraphicsView->setMinimumHeight(300);
+    QDateTime currentDateTime = QDateTime::currentDateTime();
+    cGraphicsView->setRange(1000, 800, currentDateTime.date(), currentDateTime.date().addDays(7), 0);
+    cGraphicsView->setTime(currentDateTime.time());
+    cGraphicsView->setCurrentDate(currentDateTime);
+    QVector<ScheduleDataInfo> nonAllInfo;
+    ScheduleDataInfo info;
+    for (int i = 0; i < 7; ++i) {
+        info.setAllDay(false);
+        info.setBeginDateTime(currentDateTime.addDays(i));
+        info.setEndDateTime(currentDateTime.addDays(i).addSecs(60 * 60 * 30));
+        nonAllInfo.append(info);
+    }
+    cGraphicsView->setInfo(nonAllInfo);
 }
 
-test_graphicsview::~test_graphicsview()
+void test_graphicsview::TearDown()
 {
     delete cGraphicsView;
+    cGraphicsView = nullptr;
 }
 
 //void CGraphicsView::setMargins(int left, int top, int right, int bottom)
