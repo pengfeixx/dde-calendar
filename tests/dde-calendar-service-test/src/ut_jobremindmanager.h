@@ -25,12 +25,12 @@
 #include "gtest/gtest.h"
 #include <QObject>
 
-class ut_jobremindmanager : public QObject
-    , public ::testing::Test
+class ut_jobremindmanager : public ::testing::Test
 {
 public:
     ut_jobremindmanager();
-    ~ut_jobremindmanager();
+    void SetUp() override;
+    void TearDown() override;
 
 protected:
     JobRemindManager *jobRemindManager = nullptr;

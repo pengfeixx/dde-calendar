@@ -21,29 +21,41 @@
 #include "ut_huanglidatabase.h"
 #include "../third-party_stub/stub.h"
 #include "config.h"
+#include "sqldatabase_stub.h"
+
+ut_huanglidatabase::ut_huanglidatabase()
+{
+}
 
 bool stub_OpenHuangliDatabase(void *obj, const QString &dbpath)
 {
     Q_UNUSED(dbpath);
     HuangLiDataBase *o = reinterpret_cast<HuangLiDataBase *>(obj);
+    QString name;
+    {
+        name = QSqlDatabase::database().connectionName();
+    }
+    o->m_database.removeDatabase(name);
     o->m_database = QSqlDatabase::addDatabase("QSQLITE");
     o->m_database.setDatabaseName(HL_DATABASE_DIR);
+
     return o->m_database.open();
 }
 
-ut_huanglidatabase::ut_huanglidatabase()
+void ut_huanglidatabase::SetUp()
 {
     Stub stub;
     stub.set(ADDR(HuangLiDataBase, OpenHuangliDatabase), stub_OpenHuangliDatabase);
     hlDb = new HuangLiDataBase();
 }
 
-ut_huanglidatabase::~ut_huanglidatabase()
+void ut_huanglidatabase::TearDown()
 {
     if (hlDb->m_database.isOpen()) {
         hlDb->m_database.close();
     }
     delete hlDb;
+    hlDb = nullptr;
 }
 
 //QString HuangLiDataBase::QueryFestivalList(quint32 year, quint8 month)
@@ -65,7 +77,7 @@ TEST_F(ut_huanglidatabase, QueryFestivalList)
                            "\"month\":10,\"name\":\"中秋节\",\"rest\":"
                            "\"10月9日至10月10日请假2天，与周末连休可拼11天长假。\"}]";
     QString getFes = hlDb->QueryFestivalList(year, month);
-    assert(strFes == getFes);
+    EXPECT_EQ(strFes, getFes);
 }
 
 //QList<stHuangLi> HuangLiDataBase::QueryHuangLiByDays(const QList<stDay> &days)
@@ -86,21 +98,8 @@ TEST_F(ut_huanglidatabase, QueryHuangLiByDays)
     hl2 = getHuangli.at(1);
     QString hl2Suit = "开光.解除.起基.动土.拆卸.上梁.立碑.修坟.安葬.破土.启攒.移柩.";
     QString hl2Avoid = "嫁娶.出行.安床.作灶.祭祀.入宅.移徙.出火.进人口.置产.";
-    assert(20201001 == hl1.ID && 20201002 == hl2.ID);
-    assert(hl2Suit == hl2.Suit && hl2Avoid == hl2.Avoid);
-}
-
-//bool HuangLiDataBase::OpenHuangliDatabase(const QString &dbpath)
-TEST_F(ut_huanglidatabase, OpenHuangliDatabase)
-{
-    QString dbpath = "";
-    hlDb->OpenHuangliDatabase(dbpath);
-
-    dbpath = "123123";
-    hlDb->OpenHuangliDatabase(dbpath);
-
-    dbpath = "%s%s%s%s%s%s";
-    hlDb->OpenHuangliDatabase(dbpath);
-
-    hlDb->OpenHuangliDatabase(HL_DATABASE_DIR);
+    EXPECT_EQ(20201001, hl1.ID);
+    EXPECT_EQ(20201002, hl2.ID);
+    EXPECT_EQ(hl2Suit, hl2.Suit);
+    EXPECT_EQ(hl2Avoid, hl2.Avoid);
 }

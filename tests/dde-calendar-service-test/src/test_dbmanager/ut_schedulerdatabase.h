@@ -25,12 +25,13 @@
 #include "gtest/gtest.h"
 #include <QObject>
 
-class ut_schedulerdatabase : public QObject
-    , public ::testing::Test
+class ut_schedulerdatabase : public ::testing::Test
 {
 public:
     ut_schedulerdatabase();
-    ~ut_schedulerdatabase();
+    void SetUp() override;
+
+    void TearDown() override;
 
 protected:
     SchedulerDatabase *sDb = nullptr;

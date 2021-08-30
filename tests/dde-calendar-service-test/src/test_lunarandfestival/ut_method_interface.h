@@ -25,11 +25,5 @@
 #include "gtest/gtest.h"
 #include <QObject>
 
-class ut_method_interface : public QObject
-    , public ::testing::Test
-{
-public:
-    ut_method_interface();
-};
 
 #endif // UT_METHOD_INTERFACE_H

@@ -25,12 +25,12 @@
 #include "gtest/gtest.h"
 #include <QObject>
 
-class ut_calendarhuangli : public QObject
-    , public ::testing::Test
+class ut_calendarhuangli : public ::testing::Test
 {
 public:
     ut_calendarhuangli();
-    ~ut_calendarhuangli();
+    void SetUp() override;
+    void TearDown() override;
 
 protected:
     CalendarHuangLi *calendarHuangLi = nullptr;

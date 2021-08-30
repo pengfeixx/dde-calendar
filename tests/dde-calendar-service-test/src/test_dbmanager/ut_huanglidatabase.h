@@ -25,12 +25,13 @@
 #include "gtest/gtest.h"
 #include <QObject>
 
-class ut_huanglidatabase : public QObject
-    , public ::testing::Test
+class ut_huanglidatabase : public ::testing::Test
 {
 public:
     ut_huanglidatabase();
-    ~ut_huanglidatabase();
+    void SetUp() override;
+
+    void TearDown() override;
 
 protected:
     HuangLiDataBase *hlDb = nullptr;

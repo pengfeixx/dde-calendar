@@ -32,6 +32,7 @@ class SchedulerDatabase : public QObject
     Q_OBJECT
 public:
     explicit SchedulerDatabase(QObject *parent = nullptr);
+    ~SchedulerDatabase();
     void DeleteJob(qint64 id);
     void DeleteType(qint64 id);
     QString GetJob(qint64 id);

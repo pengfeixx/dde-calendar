@@ -22,6 +22,7 @@
 #include "../third-party_stub/stub.h"
 #include "config.h"
 #include "../calendar-basicstruct/src/utils.h"
+#include "src/scheduledatainfo.h"
 #include <QSqlQuery>
 #include <QDebug>
 
@@ -29,6 +30,11 @@ bool stub_OpenHuangliDatabase_service(void *obj, const QString &dbpath)
 {
     Q_UNUSED(dbpath);
     HuangLiDataBase *o = reinterpret_cast<HuangLiDataBase *>(obj);
+    QString name;
+    {
+        name = QSqlDatabase::database().connectionName();
+    }
+    o->m_database.removeDatabase(name);
     o->m_database = QSqlDatabase::addDatabase("QSQLITE");
     o->m_database.setDatabaseName(HL_DATABASE_DIR);
     return o->m_database.open();
@@ -38,12 +44,50 @@ void stub_OpenSchedulerDatabase_service(void *obj, const QString &dbpath)
 {
     Q_UNUSED(dbpath);
     SchedulerDatabase *o = reinterpret_cast<SchedulerDatabase *>(obj);
-    o->m_database = QSqlDatabase::addDatabase("QSQLITE", "SchedulerDatabase");
+    if (QSqlDatabase::contains("SchedulerDatabase")) {
+        o->m_database = QSqlDatabase::database("SchedulerDatabase");
+    } else {
+        o->m_database = QSqlDatabase::addDatabase("QSQLITE", "SchedulerDatabase");
+    }
+
     o->m_database.setDatabaseName(SD_DATABASE_DIR);
     o->m_database.open();
     if (o->m_database.isOpen()) {
         const QStringList tables = o->m_database.tables();
         if (tables.size() < 1) {
+            o->CreateTables();
+        } else {
+            //初始化数据库表
+            QSqlQuery query(o->m_database);
+            //清空原始表
+            QString strDeleteJobTable = "DROP TABLE jobs;";
+            query.exec(strDeleteJobTable);
+            if (query.isActive()) {
+                query.finish();
+            }
+
+            QString strDeleteJobTypeTable = "DROP TABLE job_types;";
+            query.exec(strDeleteJobTypeTable);
+            if (query.isActive()) {
+                query.finish();
+            }
+
+            //初始化本地job_types表，保证本地日历的可用性
+            QDateTime currentDateTime = QDateTime::currentDateTime();
+            QString sTime = Utils::toconvertData(currentDateTime);
+
+            QString strInitJobType = QString("INSERT INTO job_types (created_at, updated_at, name, color) VALUES "
+                                             "(\"%1\", \"%1\", \"学习\", \"#FF0000\"),"
+                                             "(\"%1\", \"%1\", \"工作\", \"#00FF00\"),"
+                                             "(\"%1\", \"%1\", \"其他\", \"#800080\");")
+                                         .arg(sTime);
+            query.exec(strInitJobType);
+            if (query.isActive()) {
+                query.finish();
+            }
+
+            o->m_database.commit();
+
             o->CreateTables();
         }
     }
@@ -51,59 +95,20 @@ void stub_OpenSchedulerDatabase_service(void *obj, const QString &dbpath)
 
 ut_calendarservice::ut_calendarservice()
 {
+}
+
+void ut_calendarservice::SetUp()
+{
     Stub stub;
     stub.set(ADDR(HuangLiDataBase, OpenHuangliDatabase), stub_OpenHuangliDatabase_service);
     stub.set(ADDR(SchedulerDatabase, OpenSchedulerDatabase), stub_OpenSchedulerDatabase_service);
     service = new CalendarService();
 }
 
-ut_calendarservice::~ut_calendarservice()
+void ut_calendarservice::TearDown()
 {
     delete service;
-}
-
-TEST_F(ut_calendarservice, dbOparetion)
-{
-    QSqlQuery query(service->m_scheduler->m_database->m_database);
-    //清空原始表
-    QString strDeleteJobTable = "DROP TABLE jobs;";
-    query.exec(strDeleteJobTable);
-    if (query.isActive()) {
-        query.finish();
-    }
-
-    QString strDeleteJobTypeTable = "DROP TABLE job_types;";
-    query.exec(strDeleteJobTypeTable);
-    if (query.isActive()) {
-        query.finish();
-    }
-    service->m_scheduler->m_database->m_database.commit();
-
-    service->m_scheduler->m_database->CreateTables();
-
-    //初始化本地job_types表，保证本地日历的可用性
-    QDateTime currentDateTime = QDateTime::currentDateTime();
-    QString sTime = Utils::toconvertData(currentDateTime);
-
-    QString strInitJobType = QString("INSERT INTO job_types (created_at, updated_at, name, color) VALUES "
-                                     "(\"%1\", \"%1\", \"学习\", \"#FF0000\"),"
-                                     "(\"%1\", \"%1\", \"工作\", \"#00FF00\"),"
-                                     "(\"%1\", \"%1\", \"其他\", \"#800080\");").arg(sTime);
-    query.exec(strInitJobType);
-    if (query.isActive()) {
-        query.finish();
-    }
-
-    //为后续测试UpdateType、DeleteTpye做先决条件
-    QString strCreateJobType = QString("INSERT INTO job_types (created_at, updated_at, name, color) VALUES "
-                                       "(\"%1\", \"%1\", \"UT测试X——ID应为4\", \"#FFFFFF\"),"
-                                       "(\"%1\", \"%1\", \"UT测试X——ID应为5\", \"#FFFFFF\"),"
-                                       "(\"%1\", \"%1\", \"UT测试Y——ID应为6\", \"#FFFFFF\");").arg(sTime);
-    query.exec(strCreateJobType);
-    if (query.isActive()) {
-        query.finish();
-    }
-    service->m_scheduler->m_database->m_database.commit();
+    service = nullptr;
 }
 
 //QString CalendarService::GetFestivalMonth(quint32 year, quint32 month)
@@ -122,7 +127,7 @@ TEST_F(ut_calendarservice, GetFestivalMonth)
                                 "{\"date\":\"2020-10-10\",\"status\":2}],"
                                 "\"month\":10,\"name\":\"中秋节\",\"rest\":\"10月9日至10月10日请假2天，与周末连休可拼11天长假。\"}]";
     QString festivalMonth = service->GetFestivalMonth(2020, 10);
-    assert(fesTenMonth == festivalMonth);
+    EXPECT_EQ(fesTenMonth, festivalMonth);
 }
 
 //QString CalendarService::GetHuangLiDay(quint32 year, quint32 month, quint32 day)
@@ -138,7 +143,7 @@ TEST_F(ut_calendarservice, GetHuangLiDay)
     quint32 month = 12;
     quint32 day = 13;
     QString gethuangli = service->GetHuangLiDay(year, month, day);
-    assert(huangli_20201213 == gethuangli);
+    EXPECT_EQ(huangli_20201213, gethuangli);
 
     //2020年12月14日黄历信息
     const QString huangli_20201214 = "{\"Avoid\":\"入宅.修造.动土.破土.安门.上梁.\",\"GanZhiDay\":\"辛卯\",\"GanZhiMonth\":\"戊子\","
@@ -147,85 +152,134 @@ TEST_F(ut_calendarservice, GetHuangLiDay)
                                      "\"\",\"Worktime\":0,\"Zodiac\":\"鼠\"}";
     day = 14;
     gethuangli = service->GetHuangLiDay(year, month, day);
-    assert(huangli_20201214 == gethuangli);
+    EXPECT_EQ(huangli_20201214, gethuangli);
 }
 
 //QString CalendarService::GetHuangLiMonth(quint32 year, quint32 month, bool fill)
-TEST_F(ut_calendarservice, GetHuangLiMonth)
+TEST_F(ut_calendarservice, GetHuangLiMonth_01)
 {
-    quint32 year = 2020;
-    quint32 month = 12;
-    bool fill = false;
-    service->GetHuangLiMonth(year, month, fill);
+    QDate currentDate(2021, 1, 1);
+    QDate testDate;
+    QString fesMonth;
+    for (int i = 0; i < 100; ++i) {
+        testDate = currentDate.addMonths(i);
+        fesMonth = service->GetHuangLiMonth(testDate.year(), testDate.month(), true);
+        EXPECT_NE(fesMonth, "");
+    }
+}
 
-    fill = true;
-    service->GetHuangLiMonth(year, month, fill);
+TEST_F(ut_calendarservice, GetHuangLiMonth_02)
+{
+    QDate currentDate(2021, 1, 1);
+    QDate testDate;
+    QString fesMonth;
+    for (int i = 0; i < 100; ++i) {
+        testDate = currentDate.addMonths(i);
+        fesMonth = service->GetHuangLiMonth(testDate.year(), testDate.month(), false);
+        EXPECT_NE(fesMonth, "");
+    }
 }
 
 //CaLunarDayInfo CalendarService::GetLunarInfoBySolar(quint32 year, quint32 month, quint32 day)
 TEST_F(ut_calendarservice, GetLunarInfoBySolar)
 {
-    quint32 year = 2020;
-    quint32 month = 12;
-    quint32 day = 13;
-    CaLunarDayInfo caLunarDay = service->GetLunarInfoBySolar(year, month, day);
-    qInfo() << caLunarDay;
+    CaLunarDayInfo huangliDayInfo;
+
+    QDate currentDate = QDate::currentDate();
+    QDate testDate;
+    QString fesMonth;
+    for (int i = 0; i < 100; ++i) {
+        testDate = currentDate.addDays(i);
+        huangliDayInfo = service->GetLunarInfoBySolar(testDate.year(), testDate.month(), testDate.day());
+        EXPECT_NE(huangliDayInfo.mGanZhiDay, "");
+    }
 }
 
 //CaLunarMonthInfo CalendarService::GetLunarMonthCalendar(quint32 year, quint32 month, bool fill)
-TEST_F(ut_calendarservice, GetLunarCalendarMonth)
+TEST_F(ut_calendarservice, GetLunarCalendarMonth_01)
 {
     quint32 year = 2020;
     quint32 month = 12;
     bool fill = false;
-    service->GetLunarMonthCalendar(year, month, fill);
+    CaLunarMonthInfo monthInfo = service->GetLunarMonthCalendar(year, month, fill);
+    EXPECT_NE(monthInfo.mCaLunarDayInfo.size(), 0);
+}
 
-    fill = true;
-    service->GetLunarMonthCalendar(year, month, fill);
+TEST_F(ut_calendarservice, GetLunarCalendarMonth_02)
+{
+    quint32 year = 2020;
+    quint32 month = 12;
+    bool fill = true;
+    CaLunarMonthInfo monthInfo = service->GetLunarMonthCalendar(year, month, fill);
+    EXPECT_NE(monthInfo.mCaLunarDayInfo.size(), 0);
 }
 
 //QString CalendarService::GetType(qint64 id)
 TEST_F(ut_calendarservice, GetType)
 {
     //无type 0
-    const QString type_0 = "";
     qint64 id = 0;
     QString type = service->GetType(id);
-    assert(type_0 == type);
+    EXPECT_EQ(type, "");
 
-    //type_1 Work #FF0000
-    const QString type_1 = "{\n    \"Color\": \"#FF0000\",\n    \"ID\": 1,\n    \"Name\": \"Work\"\n}\n";
     id = 1;
     type = service->GetType(id);
-    assert(type_1 == type);
+    EXPECT_NE(type, "");
 }
 
 //qint64 CalendarService::CreateJob(const QString &jobInfo)
 TEST_F(ut_calendarservice, CreateJob)
 {
-    QString jobInfo1 = "{\"AllDay\":true,\"Description\":\"\",\"End\":"
-                       "\"2020-12-13T23:59:00+08:00\",\"Ignore\":[],"
-                       "\"RRule\":\"FREQ=DAILY;BYDAY=MO,TU,WE,TH,FR;COUNT=1\","
-                       "\"RecurID\":0,\"Remind\":\"1;09:00\",\"Start\":"
-                       "\"2020-12-13T00:00:00+08:00\",\"Title\":\"UT测试A\",\"Type\":1}";
-    qint64 id1 = service->CreateJob(jobInfo1);
-    assert(1 == id1);
+    QDateTime currentTime = QDateTime::currentDateTime();
 
-    QString jobInfo2 = "{\"AllDay\":true,\"Description\":\"\",\"End\":"
-                       "\"2020-12-14T23:59:00+08:00\",\"Ignore\":[],"
-                       "\"RRule\":\"FREQ=DAILY;BYDAY=MO,TU,WE,TH,FR;COUNT=2\","
-                       "\"RecurID\":0,\"Remind\":\"1;09:00\",\"Start\":"
-                       "\"2020-12-14T00:00:00+08:00\",\"Title\":\"UT测试B\",\"Type\":1}";
-    qint64 id2 = service->CreateJob(jobInfo2);
-    assert(2 == id2);
+    ScheduleDataInfo info;
+    info.setTitleName("test ut");
+    info.setType(1);
+    info.setAllDay(false);
+    info.setBeginDateTime(currentTime);
+    info.setEndDateTime(currentTime.addSecs(60 * 60));
 
-    QString jobInfo3 = "{\"AllDay\":true,\"Description\":\"\",\"End\":"
-                       "\"2020-12-16T23:59:00+08:00\",\"Ignore\":[],"
-                       "\"RRule\":\"FREQ=DAILY;BYDAY=MO,TU,WE,TH,FR;COUNT=2\","
-                       "\"RecurID\":0,\"Remind\":\"1;09:00\",\"Start\":"
-                       "\"2020-12-15T00:00:00+08:00\",\"Title\":\"UT测试C\",\"Type\":1}";
-    qint64 id3 = service->CreateJob(jobInfo3);
-    assert(3 == id3);
+    qint64 intJob1 = service->CreateJob(ScheduleDataInfo::ScheduleToJsonStr(info));
+
+    ScheduleDataInfo info_1;
+    info_1.setTitleName("test ut1");
+    info_1.setType(1);
+    info_1.setAllDay(false);
+    info_1.setBeginDateTime(currentTime.addSecs(60 * 60));
+    info_1.setEndDateTime(currentTime.addSecs(60 * 60 * 2));
+
+    qint64 intJob2 = service->CreateJob(ScheduleDataInfo::ScheduleToJsonStr(info_1));
+
+    ScheduleDataInfo info_2;
+    info_2.setTitleName("test ut2");
+    info_2.setType(2);
+    info_2.setAllDay(false);
+    info_2.setBeginDateTime(currentTime.addSecs(60 * 60));
+    info_2.setEndDateTime(currentTime.addSecs(60 * 60 * 2));
+
+    qint64 intJob3 = service->CreateJob(ScheduleDataInfo::ScheduleToJsonStr(info_2));
+
+    QString jobs1 = service->GetJob(intJob1);
+    QString jobs2 = service->GetJob(intJob2);
+    QString jobs3 = service->GetJob(intJob3);
+
+    ScheduleDataInfo scheduleInfo1 = ScheduleDataInfo::JsonStrToSchedule(jobs1);
+    EXPECT_TRUE(scheduleInfo1.getTitleName() == info.getTitleName());
+    EXPECT_EQ(scheduleInfo1.getAllDay(), info.getAllDay());
+    EXPECT_EQ(scheduleInfo1.getType(), info.getType());
+    EXPECT_EQ(scheduleInfo1.getDescription(), info.getDescription());
+
+    ScheduleDataInfo scheduleInfo2 = ScheduleDataInfo::JsonStrToSchedule(jobs2);
+    EXPECT_TRUE(scheduleInfo2.getTitleName() == info_1.getTitleName());
+    EXPECT_EQ(scheduleInfo2.getAllDay(), info_1.getAllDay());
+    EXPECT_EQ(scheduleInfo2.getType(), info_1.getType());
+    EXPECT_EQ(scheduleInfo2.getDescription(), info_1.getDescription());
+
+    ScheduleDataInfo scheduleInfo3 = ScheduleDataInfo::JsonStrToSchedule(jobs3);
+    EXPECT_TRUE(scheduleInfo3.getTitleName() == info_2.getTitleName());
+    EXPECT_EQ(scheduleInfo3.getAllDay(), info_2.getAllDay());
+    EXPECT_EQ(scheduleInfo3.getType(), info_2.getType());
+    EXPECT_EQ(scheduleInfo3.getDescription(), info_2.getDescription());
 }
 
 //qint64 CalendarService::CreateType(const QString &typeInfo)
@@ -238,106 +292,220 @@ TEST_F(ut_calendarservice, CreateType)
 //void CalendarService::DeleteJob(qint64 id)
 TEST_F(ut_calendarservice, DeleteJob)
 {
-    qint64 id = 1;
-    service->DeleteJob(id);
+    QDateTime currentTime = QDateTime::currentDateTime();
+
+    ScheduleDataInfo info;
+    info.setTitleName("test ut");
+    info.setType(1);
+    info.setAllDay(false);
+    info.setBeginDateTime(currentTime);
+    info.setEndDateTime(currentTime.addSecs(60 * 60));
+
+    qint64 intJob1 = service->CreateJob(ScheduleDataInfo::ScheduleToJsonStr(info));
+    EXPECT_GT(intJob1, 0);
+    service->DeleteJob(intJob1);
+    EXPECT_EQ(service->GetJob(intJob1), "");
 }
 
 //void CalendarService::DeleteType(qint64 id)
 TEST_F(ut_calendarservice, DeleteType)
 {
-    qint64 id = 4;
+    int id = 1;
+    QString type = service->GetType(id);
+    EXPECT_NE(type, "");
     service->DeleteType(id);
+    type = service->GetType(id);
+    EXPECT_NE(type, "");
 }
 
 //QString CalendarService::GetTypes()
 TEST_F(ut_calendarservice, GetTypes)
 {
-    const QString types = "";
-    QString getTypes = service->GetTypes();
-    qInfo() << "types = " << getTypes;
+    QString types_all = service->GetTypes();
+    EXPECT_NE(types_all, "");
 }
 
 //QString CalendarService::GetJob(qint64 id)
 TEST_F(ut_calendarservice, GetJob)
 {
-    qint64 id = 2;
-    QString getJob = service->GetJob(id);
-    qInfo() << "getJob = " << getJob;
+    QDateTime currentTime = QDateTime::currentDateTime();
+
+    ScheduleDataInfo info;
+    info.setTitleName("test ut");
+    info.setType(1);
+    info.setAllDay(false);
+    info.setBeginDateTime(currentTime);
+    info.setEndDateTime(currentTime.addSecs(60 * 60));
+
+    qint64 intJob1 = service->CreateJob(ScheduleDataInfo::ScheduleToJsonStr(info));
+
+    ScheduleDataInfo info_1;
+    info_1.setTitleName("test ut1");
+    info_1.setType(1);
+    info_1.setAllDay(false);
+    info_1.setBeginDateTime(currentTime.addSecs(60 * 60));
+    info_1.setEndDateTime(currentTime.addSecs(60 * 60 * 2));
+
+    qint64 intJob2 = service->CreateJob(ScheduleDataInfo::ScheduleToJsonStr(info_1));
+
+    ScheduleDataInfo info_2;
+    info_2.setTitleName("test ut2");
+    info_2.setType(2);
+    info_2.setAllDay(false);
+    info_2.setBeginDateTime(currentTime.addSecs(60 * 60));
+    info_2.setEndDateTime(currentTime.addSecs(60 * 60 * 2));
+
+    qint64 intJob3 = service->CreateJob(ScheduleDataInfo::ScheduleToJsonStr(info_2));
+
+    QString jobs1 = service->GetJob(intJob1);
+    QString jobs2 = service->GetJob(intJob2);
+    QString jobs3 = service->GetJob(intJob3);
+
+    ScheduleDataInfo scheduleInfo1 = ScheduleDataInfo::JsonStrToSchedule(jobs1);
+    EXPECT_TRUE(scheduleInfo1.getTitleName() == info.getTitleName());
+    EXPECT_EQ(scheduleInfo1.getAllDay(), info.getAllDay());
+    EXPECT_EQ(scheduleInfo1.getType(), info.getType());
+    EXPECT_EQ(scheduleInfo1.getDescription(), info.getDescription());
+
+    ScheduleDataInfo scheduleInfo2 = ScheduleDataInfo::JsonStrToSchedule(jobs2);
+    EXPECT_TRUE(scheduleInfo2.getTitleName() == info_1.getTitleName());
+    EXPECT_EQ(scheduleInfo2.getAllDay(), info_1.getAllDay());
+    EXPECT_EQ(scheduleInfo2.getType(), info_1.getType());
+    EXPECT_EQ(scheduleInfo2.getDescription(), info_1.getDescription());
+
+    ScheduleDataInfo scheduleInfo3 = ScheduleDataInfo::JsonStrToSchedule(jobs3);
+    EXPECT_TRUE(scheduleInfo3.getTitleName() == info_2.getTitleName());
+    EXPECT_EQ(scheduleInfo3.getAllDay(), info_2.getAllDay());
+    EXPECT_EQ(scheduleInfo3.getType(), info_2.getType());
+    EXPECT_EQ(scheduleInfo3.getDescription(), info_2.getDescription());
 }
 
 //QString CalendarService::GetJobs(quint32 startYear, quint32 startMonth, quint32 startDay, quint32 endYear, quint32 endMonth, quint32 endDay)
 TEST_F(ut_calendarservice, GetJobs)
 {
-    const QString getjobs = "[{\"Date\":\"2020-12-16\",\"Jobs\":"
-                            "[{\"AllDay\":true,\"Description\":\"\",\"End\":\"2020-12-17T23:59:00+08:00\","
-                            "\"ID\":3,\"Ignore\":[],\"RRule\":\"FREQ=DAILY;BYDAY=MO,TU,WE,TH,FR;COUNT=2\","
-                            "\"RecurID\":1,\"Remind\":\"1;09:00\",\"Start\":\"2020-12-16T00:00:00+08:00\",\"Title\":\"UT测试C\",\"Type\":1},"
-                            "{\"AllDay\":true,\"Description\":\"\",\"End\":\"2020-12-16T23:59:00+08:00\","
-                            "\"ID\":3,\"Ignore\":[],\"RRule\":\"FREQ=DAILY;BYDAY=MO,TU,WE,TH,FR;COUNT=2\","
-                            "\"RecurID\":0,\"Remind\":\"1;09:00\",\"Start\":\"2020-12-15T00:00:00+08:00\",\"Title\":\"UT测试C\",\"Type\":1}]},"
-                            "{\"Date\":\"2020-12-17\",\"Jobs\":"
-                            "[{\"AllDay\":true,\"Description\":\"\",\"End\":\"2020-12-17T23:59:00+08:00\","
-                            "\"ID\":3,\"Ignore\":[],\"RRule\":\"FREQ=DAILY;BYDAY=MO,TU,WE,TH,FR;COUNT=2\","
-                            "\"RecurID\":1,\"Remind\":\"1;09:00\",\"Start\":\"2020-12-16T00:00:00+08:00\",\"Title\":\"UT测试C\",\"Type\":1}]}]";
+    QDateTime currentTime = QDateTime::currentDateTime();
 
-    QString jobs = service->GetJobs(2020, 12, 16, 2020, 12, 17);
-    assert(getjobs == jobs);
+    ScheduleDataInfo info;
+    info.setTitleName("test ut");
+    info.setType(1);
+    info.setAllDay(false);
+    info.setBeginDateTime(currentTime);
+    info.setEndDateTime(currentTime.addSecs(60 * 60));
+
+    qint64 intJob1 = service->CreateJob(ScheduleDataInfo::ScheduleToJsonStr(info));
+    EXPECT_GT(intJob1, 0);
+    quint32 beginYear = static_cast<quint32>(info.getBeginDateTime().date().year());
+    quint32 beginMonth = static_cast<quint32>(info.getBeginDateTime().date().month());
+    quint32 beginDay = static_cast<quint32>(info.getBeginDateTime().date().day());
+    quint32 endYear = static_cast<quint32>(info.getEndDateTime().date().year());
+    quint32 endMonth = static_cast<quint32>(info.getEndDateTime().date().month());
+    quint32 endDay = static_cast<quint32>(info.getEndDateTime().date().day());
+    QString jobs = service->GetJobs(beginYear, beginMonth, beginDay, endYear, endMonth, endDay);
+    QMap<QDate, QVector<ScheduleDataInfo>> infoMap = ScheduleDataInfo::StrJsonToRangeInfo(jobs);
+    ASSERT_GT(infoMap.size(), 0);
+    EXPECT_EQ(infoMap.begin().key(), currentTime.date());
+    ASSERT_GT(infoMap.begin().value().size(), 0);
+    EXPECT_EQ(infoMap.begin().value().at(0).getTitleName(), info.getTitleName());
 }
 
 //QString CalendarService::QueryJobs(const QString &params);
 TEST_F(ut_calendarservice, QueryJobs)
 {
-    const QString jobs = "[{\"Date\":\"2020-12-16\",\"Jobs\":"
-                         "[{\"AllDay\":true,\"Description\":\"\",\"End\":\"2020-12-17T23:59:00+08:00\","
-                         "\"ID\":3,\"Ignore\":[],\"RRule\":\"FREQ=DAILY;BYDAY=MO,TU,WE,TH,FR;COUNT=2\","
-                         "\"RecurID\":1,\"Remind\":\"1;09:00\",\"Start\":\"2020-12-16T00:00:00+08:00\",\"Title\":\"UT测试C\",\"Type\":1},"
-                         "{\"AllDay\":true,\"Description\":\"\",\"End\":\"2020-12-16T23:59:00+08:00\","
-                         "\"ID\":3,\"Ignore\":[],\"RRule\":\"FREQ=DAILY;BYDAY=MO,TU,WE,TH,FR;COUNT=2\","
-                         "\"RecurID\":0,\"Remind\":\"1;09:00\",\"Start\":\"2020-12-15T00:00:00+08:00\",\"Title\":\"UT测试C\",\"Type\":1}]}]";
-    const QString params = "{\"key\":\"ce\",\"Start\":\"2020-12-16T00:00:00\",\"End\":\"2020-12-16T23:59:00\"}";
+    QDateTime currentTime = QDateTime::currentDateTime();
+
+    ScheduleDataInfo info;
+    info.setTitleName("test ut");
+    info.setType(1);
+    info.setAllDay(false);
+    info.setBeginDateTime(currentTime);
+    info.setEndDateTime(currentTime.addSecs(60 * 60));
+
+    qint64 intJob1 = service->CreateJob(ScheduleDataInfo::ScheduleToJsonStr(info));
+    EXPECT_GT(intJob1, 0);
+
+    const QString params = QString("{\"key\":\"%1\",\"Start\":\"%2\",\"End\":\"%2\"}").arg("").arg(info.getBeginDateTime().toString("yyyy-MM-ddTHH:mm:ss")).arg(info.getEndDateTime().toString("yyyy-MM-ddTHH:mm:ss"));
     QString qJobs = service->QueryJobs(params);
-    assert(jobs == qJobs);
+    QMap<QDate, QVector<ScheduleDataInfo>> infoMap = ScheduleDataInfo::StrJsonToRangeInfo(qJobs);
+    ASSERT_GT(infoMap.size(), 0);
+    EXPECT_EQ(infoMap.begin().key(), currentTime.date());
+    ASSERT_GT(infoMap.begin().value().size(), 0);
+    EXPECT_EQ(infoMap.begin().value().at(0).getTitleName(), info.getTitleName());
 }
 
 //void CalendarService::UpdateJob(const QString &jobInfo);
 TEST_F(ut_calendarservice, UpdateJob)
 {
-    const QString jobInfo = "{\"AllDay\":true,\"Description\":\"\",\"End\":"
-                            "\"2020-12-09T23:59:00+08:00\",\"ID\":2,\"Ignore\":[],"
-                            "\"RRule\":\"FREQ=DAILY;BYDAY=MO,TU,WE,TH,FR;UNTIL=20201130T000000Z\","
-                            "\"RecurID\":0,\"Remind\":\"1;09:00\",\"Start\":"
-                            "\"2020-12-09T00:00:00+08:00\",\"Title\":\"UT测试X\",\"Type\":1}";
-    service->UpdateJob(jobInfo);
+    QDateTime currentTime = QDateTime::currentDateTime();
+
+    ScheduleDataInfo info;
+    info.setTitleName("test ut");
+    info.setType(1);
+    info.setAllDay(false);
+    info.setBeginDateTime(currentTime);
+    info.setEndDateTime(currentTime.addSecs(60 * 60));
+
+    qint64 intJob1 = service->CreateJob(ScheduleDataInfo::ScheduleToJsonStr(info));
+    EXPECT_GT(intJob1, 0);
+
+    QString getInfoStr = service->GetJob(intJob1);
+    ScheduleDataInfo getInfo = ScheduleDataInfo::JsonStrToSchedule(getInfoStr);
+    getInfo.setTitleName("test update");
+    service->UpdateJob(ScheduleDataInfo::ScheduleToJsonStr(getInfo));
+    QString getChangetInfoStr = service->GetJob(intJob1);
+    ScheduleDataInfo changetInfo = ScheduleDataInfo::JsonStrToSchedule(getChangetInfoStr);
+    EXPECT_EQ(changetInfo.getTitleName(), getInfo.getTitleName());
 }
 
 //QString CalendarService::QueryJobsWithLimit(const QString &params, qint32 maxNum);
 TEST_F(ut_calendarservice, QueryJobsWithLimit)
 {
-    const QString jobs = "[{\"Date\":\"2020-12-16\",\"Jobs\":"
-                         "[{\"AllDay\":true,\"Description\":\"\",\"End\":\"2020-12-17T23:59:00+08:00\","
-                         "\"ID\":3,\"Ignore\":[],\"RRule\":\"FREQ=DAILY;BYDAY=MO,TU,WE,TH,FR;COUNT=2\","
-                         "\"RecurID\":1,\"Remind\":\"1;09:00\",\"Start\":\"2020-12-16T00:00:00+08:00\",\"Title\":\"UT测试C\",\"Type\":1}]}]";
-    const QString params = "{\"key\":\"ce\",\"Start\":\"2020-12-16T00:00:00\",\"End\":\"2020-12-16T23:59:00\"}";
+    QDateTime currentTime = QDateTime::currentDateTime();
+
+    ScheduleDataInfo info;
+    info.setTitleName("test ut");
+    info.setType(1);
+    info.setAllDay(false);
+    info.setBeginDateTime(currentTime);
+    info.setEndDateTime(currentTime.addSecs(60 * 60));
+
+    qint64 intJob1 = service->CreateJob(ScheduleDataInfo::ScheduleToJsonStr(info));
+    EXPECT_GT(intJob1, 0);
+    const QString params = QString("{\"key\":\"%1\",\"Start\":\"%2\",\"End\":\"%3\"}").arg("").arg(info.getBeginDateTime().toString("yyyy-MM-ddTHH:mm:ss")).arg(info.getEndDateTime().toString("yyyy-MM-ddTHH:mm:ss"));
     QString qJobs = service->QueryJobsWithLimit(params, 1);
-    assert(jobs == qJobs);
+    QMap<QDate, QVector<ScheduleDataInfo>> infoMap = ScheduleDataInfo::StrJsonToRangeInfo(qJobs);
+    ASSERT_GT(infoMap.size(), 0);
+    EXPECT_EQ(infoMap.begin().key(), currentTime.date());
+    ASSERT_GT(infoMap.begin().value().size(), 0);
+    EXPECT_EQ(infoMap.begin().value().at(0).getTitleName(), info.getTitleName());
 }
 
 //QString CalendarService::QueryJobsWithRule(const QString &params, const QString &rules);
 TEST_F(ut_calendarservice, QueryJobsWithRule)
 {
-    const QString jobs = "[{\"Date\":\"2020-12-16\",\"Jobs\":"
-                         "[{\"AllDay\":true,\"Description\":\"\",\"End\":\"2020-12-17T23:59:00+08:00\","
-                         "\"ID\":3,\"Ignore\":[],\"RRule\":\"FREQ=DAILY;BYDAY=MO,TU,WE,TH,FR;COUNT=2\","
-                         "\"RecurID\":1,\"Remind\":\"1;09:00\",\"Start\":\"2020-12-16T00:00:00+08:00\",\"Title\":\"UT测试C\",\"Type\":1}]}]";
-    const QString params = "{\"key\":\"ce\",\"Start\":\"2020-12-16T00:00:00\",\"End\":\"2020-12-16T23:59:00\"}";
+    QDateTime currentTime = QDateTime::currentDateTime();
+
+    ScheduleDataInfo info;
+    info.setTitleName("test ut");
+    info.setType(1);
+    info.setAllDay(false);
+    info.setBeginDateTime(currentTime);
+    info.setEndDateTime(currentTime.addSecs(60 * 60));
+
+    qint64 intJob1 = service->CreateJob(ScheduleDataInfo::ScheduleToJsonStr(info));
+    EXPECT_GT(intJob1, 0);
+    const QString params = QString("{\"key\":\"%1\",\"Start\":\"%2\",\"End\":\"%3\"}").arg("").arg(info.getBeginDateTime().toString("yyyy-MM-ddTHH:mm:ss")).arg(info.getEndDateTime().toString("yyyy-MM-ddTHH:mm:ss"));
     const QString rules = "FREQ=DAILY;BYDAY=MO,TU,WE,TH,FR;COUNT=2";
     QString qJobs = service->QueryJobsWithRule(params, rules);
-    assert(jobs == qJobs);
+    QMap<QDate, QVector<ScheduleDataInfo>> infoMap = ScheduleDataInfo::StrJsonToRangeInfo(qJobs);
+    ASSERT_EQ(infoMap.size(), 0);
 }
 
 //void CalendarService::UpdateType(const QString &typeInfo)
 TEST_F(ut_calendarservice, UpdateType)
 {
-    QString updateTypeJson = "{\"ID\":5,\"Name\":\"嗨皮\",\"Color\":\"#CC99AA\"}";
+    int id = 1;
+    QString getType = service->GetType(id);
+    QString updateTypeJson = QString("{\"ID\":%1,\"Name\":\"test\",\"Color\":\"#CC99AA\"}").arg(id);
     service->UpdateType(updateTypeJson);
+    EXPECT_EQ(getType, service->GetType(id));
 }

@@ -28,6 +28,11 @@ bool stub_OpenHuangliDB(void *obj, const QString &dbpath)
 {
     Q_UNUSED(dbpath);
     HuangLiDataBase *o = reinterpret_cast<HuangLiDataBase *>(obj);
+    QString name;
+    {
+        name = QSqlDatabase::database().connectionName();
+    }
+    o->m_database.removeDatabase(name);
     o->m_database = QSqlDatabase::addDatabase("QSQLITE");
     o->m_database.setDatabaseName(HL_DATABASE_DIR);
     return o->m_database.open();
@@ -35,81 +40,101 @@ bool stub_OpenHuangliDB(void *obj, const QString &dbpath)
 
 ut_calendarhuangli::ut_calendarhuangli()
 {
+}
+
+void ut_calendarhuangli::SetUp()
+{
     Stub stub;
     stub.set(ADDR(HuangLiDataBase, OpenHuangliDatabase), stub_OpenHuangliDB);
     calendarHuangLi = new CalendarHuangLi();
 }
 
-ut_calendarhuangli::~ut_calendarhuangli()
+void ut_calendarhuangli::TearDown()
 {
     if (calendarHuangLi->m_database->m_database.isOpen()) {
         calendarHuangLi->m_database->m_database.close();
     }
     delete calendarHuangLi;
+    calendarHuangLi = nullptr;
 }
 
 //QString CalendarHuangLi::GetFestivalMonth(quint32 year, quint32 month)
 TEST_F(ut_calendarhuangli, GetFestivalMonth)
 {
-    quint32 year = 2020;
-    quint32 month = 12;
-    QString fesMonth = calendarHuangLi->GetFestivalMonth(year, month);
+    QDate currentDate(2021, 1, 1);
+    QString fesMonth;
+    fesMonth = calendarHuangLi->GetFestivalMonth(currentDate.year(), currentDate.month());
+    EXPECT_NE(fesMonth, "");
 }
 
 //QString CalendarHuangLi::GetHuangLiDay(quint32 year, quint32 month, quint32 day)
 TEST_F(ut_calendarhuangli, GetHuangLiDay)
 {
-    //2020年12月13日黄历信息
-    const QString huangli_20201213 = "{\"Avoid\":\"嫁娶.祈福.出火.移徙.入宅.\",\"GanZhiDay\":\"庚寅\",\"GanZhiMonth\":\"戊子\","
-                                     "\"GanZhiYear\":\"庚子\",\"LunarDayName\":\"廿九\",\"LunarFestival\":\"\",\"LunarLeapMonth\":0,"
-                                     "\"LunarMonthName\":\"十月\",\"SolarFestival\":\"南京大屠杀死难者国家公祭日\","
-                                     "\"Suit\":\"纳财.开市.交易.立券.会亲友.进人口.经络.祭祀.祈福.安香.出火.求医.治病.修造.动土.拆卸.扫舍.安床."
-                                     "栽种.牧养.开生坟.合寿木.入殓.安葬.启攒.\",\"Term\":\"\",\"Worktime\":0,\"Zodiac\":\"鼠\"}";
-    quint32 year = 2020;
-    quint32 month = 12;
-    quint32 day = 13;
-    QString gethuangli = calendarHuangLi->GetHuangLiDay(year, month, day);
-    assert(huangli_20201213 == gethuangli);
-
-    //2020年12月14日黄历信息
-    const QString huangli_20201214 = "{\"Avoid\":\"入宅.修造.动土.破土.安门.上梁.\",\"GanZhiDay\":\"辛卯\",\"GanZhiMonth\":\"戊子\","
-                                     "\"GanZhiYear\":\"庚子\",\"LunarDayName\":\"三十\",\"LunarFestival\":\"\",\"LunarLeapMonth\":0,"
-                                     "\"LunarMonthName\":\"十月\",\"SolarFestival\":\"\",\"Suit\":\"祭祀.入殓.移柩.余事勿取.\",\"Term\":"
-                                     "\"\",\"Worktime\":0,\"Zodiac\":\"鼠\"}";
-    day = 14;
-    gethuangli = calendarHuangLi->GetHuangLiDay(year, month, day);
-    assert(huangli_20201214 == gethuangli);
+    QDate currentDate(2021, 1, 1);
+    QDate testDate;
+    QString fesMonth;
+    for (int i = 0; i < 100; ++i) {
+        testDate = currentDate.addDays(i);
+        fesMonth = calendarHuangLi->GetHuangLiDay(testDate.year(), testDate.month(), testDate.day());
+        EXPECT_NE(fesMonth, "");
+    }
 }
 
 //QString CalendarHuangLi::GetHuangLiMonth(quint32 year, quint32 month, bool fill)
-TEST_F(ut_calendarhuangli, GetHuangLiMonth)
+TEST_F(ut_calendarhuangli, GetHuangLiMonth_01)
 {
-    quint32 year = 2020;
-    quint32 month = 12;
-    bool fill = false;
-    calendarHuangLi->GetHuangLiMonth(year, month, fill);
+    QDate currentDate(2021, 1, 1);
+    QDate testDate;
+    QString fesMonth;
+    for (int i = 0; i < 100; ++i) {
+        testDate = currentDate.addMonths(i);
+        fesMonth = calendarHuangLi->GetHuangLiMonth(testDate.year(), testDate.month(), true);
+        EXPECT_NE(fesMonth, "");
+    }
+}
 
-    fill = true;
-    calendarHuangLi->GetHuangLiMonth(year, month, fill);
+TEST_F(ut_calendarhuangli, GetHuangLiMonth_02)
+{
+    QDate currentDate(2021, 1, 1);
+    QDate testDate;
+    QString fesMonth;
+    for (int i = 0; i < 100; ++i) {
+        testDate = currentDate.addMonths(i);
+        fesMonth = calendarHuangLi->GetHuangLiMonth(testDate.year(), testDate.month(), false);
+        EXPECT_NE(fesMonth, "");
+    }
 }
 
 //CaLunarDayInfo CalendarHuangLi::GetLunarInfoBySolar(quint32 year, quint32 month, quint32 day)
 TEST_F(ut_calendarhuangli, GetLunarInfoBySolar)
 {
-    quint32 year = 2020;
-    quint32 month = 12;
-    quint32 day = 13;
-    CaLunarDayInfo huangliDayInfo = calendarHuangLi->GetLunarInfoBySolar(year, month, day);
+    CaLunarDayInfo huangliDayInfo;
+
+    QDate currentDate = QDate::currentDate();
+    QDate testDate;
+    QString fesMonth;
+    for (int i = 0; i < 100; ++i) {
+        testDate = currentDate.addDays(i);
+        huangliDayInfo = calendarHuangLi->GetLunarInfoBySolar(testDate.year(), testDate.month(), testDate.day());
+        EXPECT_NE(huangliDayInfo.mGanZhiDay, "");
+    }
 }
 
 //CaLunarMonthInfo CalendarHuangLi::GetLunarCalendarMonth(quint32 year, quint32 month, bool fill)
-TEST_F(ut_calendarhuangli, GetLunarCalendarMonth)
+TEST_F(ut_calendarhuangli, GetLunarCalendarMonth_01)
 {
     quint32 year = 2020;
     quint32 month = 12;
     bool fill = false;
-    calendarHuangLi->GetLunarCalendarMonth(year, month, fill);
+    CaLunarMonthInfo monthInfo = calendarHuangLi->GetLunarCalendarMonth(year, month, fill);
+    EXPECT_NE(monthInfo.mCaLunarDayInfo.size(), 0);
+}
 
-    fill = true;
-    calendarHuangLi->GetLunarCalendarMonth(year, month, fill);
+TEST_F(ut_calendarhuangli, GetLunarCalendarMonth_02)
+{
+    quint32 year = 2020;
+    quint32 month = 12;
+    bool fill = true;
+    CaLunarMonthInfo monthInfo = calendarHuangLi->GetLunarCalendarMonth(year, month, fill);
+    EXPECT_NE(monthInfo.mCaLunarDayInfo.size(), 0);
 }

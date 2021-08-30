@@ -23,21 +23,69 @@
 #include "calendarscheduler.h"
 #include "../../calendar-basicstruct/src/utils.h"
 #include "../third-party_stub/stub.h"
+
+#include "src/scheduledatainfo.h"
+
 #include "config.h"
 #include <QSqlQuery>
 #include <QDebug>
+#include <QStandardPaths>
+#include <QDir>
+
+QString writableLocation_Stub(QStandardPaths::StandardLocation type)
+{
+    Q_UNUSED(type)
+    return QDir::currentPath();
+}
 
 //OpenSchedulerDatabase
 void stub_OpenSchedulerDatabase(void *obj, const QString &dbpath)
 {
     Q_UNUSED(dbpath);
     SchedulerDatabase *o = reinterpret_cast<SchedulerDatabase *>(obj);
-    o->m_database = QSqlDatabase::addDatabase("QSQLITE", "SchedulerDatabase");
+    QString name;
+    {
+        name = QSqlDatabase::database().connectionName();
+    }
+    o->m_database.removeDatabase(name);
+    o->m_database = QSqlDatabase::addDatabase("QSQLITE");
     o->m_database.setDatabaseName(SD_DATABASE_DIR);
     o->m_database.open();
     if (o->m_database.isOpen()) {
         const QStringList tables = o->m_database.tables();
         if (tables.size() < 1) {
+            o->CreateTables();
+        } else {
+            QSqlQuery query(o->m_database);
+            //清空原始表
+            QString strDeleteJobTable = "DROP TABLE jobs;";
+            query.exec(strDeleteJobTable);
+            if (query.isActive()) {
+                query.finish();
+            }
+
+            QString strDeleteJobTypeTable = "DROP TABLE job_types;";
+            query.exec(strDeleteJobTypeTable);
+            if (query.isActive()) {
+                query.finish();
+            }
+
+            //初始化本地job_types表，保证本地日历的可用性
+            QDateTime currentDateTime = QDateTime::currentDateTime();
+            QString sTime = Utils::toconvertData(currentDateTime);
+
+            QString strInitJobType = QString("INSERT INTO job_types (created_at, updated_at, name, color) VALUES "
+                                             "(\"%1\", \"%1\", \"学习\", \"#FF0000\"),"
+                                             "(\"%1\", \"%1\", \"工作\", \"#00FF00\"),"
+                                             "(\"%1\", \"%1\", \"其他\", \"#800080\");")
+                                         .arg(sTime);
+            query.exec(strInitJobType);
+            if (query.isActive()) {
+                query.finish();
+            }
+
+            o->m_database.commit();
+
             o->CreateTables();
         }
     }
@@ -45,68 +93,27 @@ void stub_OpenSchedulerDatabase(void *obj, const QString &dbpath)
 
 ut_schedulerdatabase::ut_schedulerdatabase()
 {
+}
+
+void ut_schedulerdatabase::SetUp()
+{
     Stub stub;
     stub.set(ADDR(SchedulerDatabase, OpenSchedulerDatabase), stub_OpenSchedulerDatabase);
     sDb = new SchedulerDatabase();
+    qRegisterMetaType<Job>("Job");
+    qRegisterMetaType<QList<Job>>("QList<Job>");
 }
 
-ut_schedulerdatabase::~ut_schedulerdatabase()
+void ut_schedulerdatabase::TearDown()
 {
-    if (sDb->m_database.isOpen()) {
-        sDb->m_database.close();
-        sDb->m_database.removeDatabase("SchedulerDatabase");
-    }
     delete sDb;
-}
-
-//获取Schedulerdatabase类中私有成员以及私有函数权限
-TEST_F(ut_schedulerdatabase, dbOparetion)
-{
-    QSqlQuery query(sDb->m_database);
-    //清空原始表
-    QString strDeleteJobTable = "DROP TABLE jobs;";
-    query.exec(strDeleteJobTable);
-    if (query.isActive()) {
-        query.finish();
-    }
-
-    QString strDeleteJobTypeTable = "DROP TABLE job_types;";
-    query.exec(strDeleteJobTypeTable);
-    if (query.isActive()) {
-        query.finish();
-    }
-    sDb->m_database.commit();
-
-    sDb->CreateTables();
-
-    //初始化本地job_types表，保证本地日历的可用性
-    QDateTime currentDateTime = QDateTime::currentDateTime();
-    QString sTime = Utils::toconvertData(currentDateTime);
-
-    QString strInitJobType = QString("INSERT INTO job_types (created_at, updated_at, name, color) VALUES "
-                                     "(\"%1\", \"%1\", \"学习\", \"#FF0000\"),"
-                                     "(\"%1\", \"%1\", \"工作\", \"#00FF00\"),"
-                                     "(\"%1\", \"%1\", \"其他\", \"#800080\");").arg(sTime);
-    query.exec(strInitJobType);
-    if (query.isActive()) {
-        query.finish();
-    }
-
-    //为后续测试UpdateType、DeleteTpye做先决条件
-    QString strCreateJobType = QString("INSERT INTO job_types (created_at, updated_at, name, color) VALUES "
-                                       "(\"%1\", \"%1\", \"UT测试X——ID应为4\", \"#FFFFFF\"),"
-                                       "(\"%1\", \"%1\", \"UT测试X——ID应为5\", \"#FFFFFF\"),"
-                                       "(\"%1\", \"%1\", \"UT测试Y——ID应为6\", \"#FFFFFF\");").arg(sTime);
-    query.exec(strCreateJobType);
-    if (query.isActive()) {
-        query.finish();
-    }
-    sDb->m_database.commit();
+    sDb = nullptr;
 }
 
 //qint64 SchedulerDatabase::CreateJob(const Job &job)
 TEST_F(ut_schedulerdatabase, CreateJob)
 {
+    //创建多个日程进行测试
     Job job1;
     job1.Start = QDateTime::fromString("2020-12-05T00:00:00+08:00", Qt::ISODate);
     job1.End = QDateTime::fromString("2020-12-05T23:59:00+08:00", Qt::ISODate);
@@ -149,113 +156,206 @@ TEST_F(ut_schedulerdatabase, CreateJob)
     job3.RRule = "FREQ=DAILY;BYDAY=MO,TU,WE,TH,FR;COUNT=4";
     job3.RecurID = 0;
     job3.Remind = "1;09:00";
+    //根据创建日程获取到的日程id获取对应的日程
     qint64 intJob3 = sDb->CreateJob(job3);
+    QString jobs1 = sDb->GetJob(intJob1);
+    QString jobs2 = sDb->GetJob(intJob2);
+    QString jobs3 = sDb->GetJob(intJob3);
+    //将获取到的日程和创建的日程作对比
+    ScheduleDataInfo scheduleInfo1 = ScheduleDataInfo::JsonStrToSchedule(jobs1);
+    EXPECT_TRUE(scheduleInfo1.getTitleName() == job1.Title);
+    EXPECT_EQ(scheduleInfo1.getAllDay(), job1.AllDay);
+    EXPECT_EQ(scheduleInfo1.getType(), job1.Type);
+    EXPECT_EQ(scheduleInfo1.getDescription(), job1.Description);
 
-    assert(1 == intJob1 && 2 == intJob2 && 3 == intJob3);
+    ScheduleDataInfo scheduleInfo2 = ScheduleDataInfo::JsonStrToSchedule(jobs2);
+    EXPECT_TRUE(scheduleInfo2.getTitleName() == job2.Title);
+    EXPECT_EQ(scheduleInfo2.getAllDay(), job2.AllDay);
+    EXPECT_EQ(scheduleInfo2.getType(), job2.Type);
+    EXPECT_EQ(scheduleInfo2.getDescription(), job2.Description);
+
+    ScheduleDataInfo scheduleInfo3 = ScheduleDataInfo::JsonStrToSchedule(jobs3);
+    EXPECT_TRUE(scheduleInfo3.getTitleName() == job3.Title);
+    EXPECT_EQ(scheduleInfo3.getAllDay(), job3.AllDay);
+    EXPECT_EQ(scheduleInfo3.getType(), job3.Type);
+    EXPECT_EQ(scheduleInfo3.getDescription(), job3.Description);
 }
 
-//QString SchedulerDatabase::GetJob(qint64 id)
-TEST_F(ut_schedulerdatabase, GetJob)
-{
-    //返回值需要解析
-    QString getJob1 = sDb->GetJob(1);
-    const QString job1 = "{\"AllDay\":true,\"Description\":\"\",\"End\":"
-                         "\"2020-12-05T23:59:00+08:00\",\"ID\":1,\"Ignore\":[],"
-                         "\"RRule\":\"FREQ=DAILY;BYDAY=MO,TU,WE,TH,FR;COUNT=3\","
-                         "\"RecurID\":0,\"Remind\":\"1;09:00\",\"Start\":"
-                         "\"2020-12-05T00:00:00+08:00\",\"Title\":\"UT测试A\",\"Type\":1}";
-    assert(job1 == getJob1);
-}
 
-//QList<Job> SchedulerDatabase::GetAllOriginJobs()
-//QList<Job> SchedulerDatabase::GetAllOriginJobs(const QString &key, const QString &strsort)
 TEST_F(ut_schedulerdatabase, GetAllOriginJobs)
 {
+    Job job1;
+    job1.Start = QDateTime::fromString("2020-12-05T00:00:00+08:00", Qt::ISODate);
+    job1.End = QDateTime::fromString("2020-12-05T23:59:00+08:00", Qt::ISODate);
+    job1.AllDay = true;
+    job1.Type = 1;
+    job1.Description = "";
+    job1.ID = 0;
+    job1.Ignore = "[]";
+    job1.Title = "UT测试A";
+    job1.RRule = "FREQ=DAILY;BYDAY=MO,TU,WE,TH,FR;COUNT=3";
+    job1.RecurID = 0;
+    job1.Remind = "1;09:00";
+
+    qint64 intJob1 = sDb->CreateJob(job1);
+    EXPECT_GT(intJob1, 0);
+
     QList<Job> jobList = sDb->GetAllOriginJobs();
-    //int jobCount = jobList.count();
+    ASSERT_EQ(jobList.size(), 1) << "获取到的jobList" << jobList.size();
+    EXPECT_EQ(jobList.at(0).Title, job1.Title);
 
-    const QString key = "";
-    const QString strsort = "";
-    QList<Job> jobListP = sDb->GetAllOriginJobs(key, strsort);
+    QList<Job> jobListP = sDb->GetAllOriginJobs("", "");
+    EXPECT_EQ(jobList.size(), 1);
+    EXPECT_EQ(jobList.at(0).Title, job1.Title);
 
-    const QString key1 = "BYDAY";
-    const QString strsort1 = "id";
-    QList<Job> jobListP1 = sDb->GetAllOriginJobs(key1, strsort1);
-
-    const QString key2 = "ce";
-    const QString strsort2 = "id";
-    QList<Job> jobList2 = sDb->GetAllOriginJobs(key2, strsort2);
+    QList<Job> jobListttt = sDb->GetAllOriginJobs("ttt", "");
+    EXPECT_EQ(jobListttt.size(), 0);
 }
 
-//QList<Job> SchedulerDatabase::GetAllOriginJobsWithRule(const QString &key, const QString &rules)
+////QList<Job> SchedulerDatabase::GetAllOriginJobsWithRule(const QString &key, const QString &rules)
 TEST_F(ut_schedulerdatabase, GetAllOriginJobsWithRule)
 {
-    const QString key = "";
-    const QString rules = "";
-    QList<Job> jobs = sDb->GetAllOriginJobsWithRule(key, rules);
+    Job job1;
+    job1.Start = QDateTime::fromString("2020-12-05T00:00:00+08:00", Qt::ISODate);
+    job1.End = QDateTime::fromString("2020-12-05T23:59:00+08:00", Qt::ISODate);
+    job1.AllDay = true;
+    job1.Type = 1;
+    job1.Description = "";
+    job1.ID = 0;
+    job1.Ignore = "[]";
+    job1.Title = "UT测试A";
+    job1.RRule = "FREQ=DAILY;BYDAY=MO,TU,WE,TH,FR;COUNT=3";
+    job1.RecurID = 0;
+    job1.Remind = "1;09:00";
+
+    qint64 intJob1 = sDb->CreateJob(job1);
+    EXPECT_GT(intJob1, 0);
+
+    QList<Job> jobs = sDb->GetAllOriginJobsWithRule("key", "rules");
+    EXPECT_EQ(jobs.size(), 0);
+
+    QList<Job> jobs1 = sDb->GetAllOriginJobsWithRule("UT测试A", "rules");
+    EXPECT_EQ(jobs1.size(), 0);
+
+    QList<Job> jobs2 = sDb->GetAllOriginJobsWithRule("", "BYDAY=MO,TU,WE,TH,FR");
+    EXPECT_EQ(jobs2.size(), 1);
+
+    QList<Job> jobs3 = sDb->GetAllOriginJobsWithRule("UT测试A", "BYDAY=MO,TU,WE,TH,FR");
+    EXPECT_EQ(jobs3.size(), 1);
 }
 
-//QList<Job> SchedulerDatabase::GetJobsContainRemind()
+////QList<Job> SchedulerDatabase::GetJobsContainRemind()
 TEST_F(ut_schedulerdatabase, GetJobsContainRemind)
 {
     QList<Job> jobList = sDb->GetJobsContainRemind();
-    qInfo() << jobList.at(0).ID;
+    EXPECT_EQ(jobList.size(), 0);
+
+    Job job1;
+    job1.Start = QDateTime::fromString("2020-12-05T00:00:00+08:00", Qt::ISODate);
+    job1.End = QDateTime::fromString("2020-12-05T23:59:00+08:00", Qt::ISODate);
+    job1.AllDay = true;
+    job1.Type = 1;
+    job1.Description = "";
+    job1.ID = 0;
+    job1.Ignore = "[]";
+    job1.Title = "UT测试A";
+    job1.RRule = "FREQ=DAILY;BYDAY=MO,TU,WE,TH,FR;COUNT=3";
+    job1.RecurID = 0;
+    job1.Remind = "1;09:00";
+
+    qint64 intJob1 = sDb->CreateJob(job1);
+    EXPECT_GT(intJob1, 0);
+
+    QList<Job> jobList1 = sDb->GetJobsContainRemind();
+    EXPECT_EQ(jobList1.size(), 1);
 }
 
-//void SchedulerDatabase::DeleteJob(qint64 id)
+////void SchedulerDatabase::DeleteJob(qint64 id)
 TEST_F(ut_schedulerdatabase, DeleteJob)
 {
-    sDb->DeleteJob(3);
+    Job job1;
+    job1.Start = QDateTime::fromString("2020-12-05T00:00:00+08:00", Qt::ISODate);
+    job1.End = QDateTime::fromString("2020-12-05T23:59:00+08:00", Qt::ISODate);
+    job1.AllDay = true;
+    job1.Type = 1;
+    job1.Description = "";
+    job1.ID = 0;
+    job1.Ignore = "[]";
+    job1.Title = "UT测试A";
+    job1.RRule = "FREQ=DAILY;BYDAY=MO,TU,WE,TH,FR;COUNT=3";
+    job1.RecurID = 0;
+    job1.Remind = "1;09:00";
+
+    qint64 intJob1 = sDb->CreateJob(job1);
+    EXPECT_GT(intJob1, 0);
+    QString jobstr = sDb->GetJob(intJob1);
+    EXPECT_NE(jobstr, "");
+    sDb->DeleteJob(intJob1);
+    QString jobstr1 = sDb->GetJob(intJob1);
+    EXPECT_EQ(jobstr1, "");
 }
 
-
-//qint64 SchedulerDatabase::UpdateJob(const QString &jobInfo)
+////qint64 SchedulerDatabase::UpdateJob(const QString &jobInfo)
 TEST_F(ut_schedulerdatabase, UpdateJob)
 {
-    //将job2修改为一下参数
-    QString updateJobJson = "{\"AllDay\":true,\"Description\":\"\",\"End\":"
-                            "\"2020-12-09T23:59:00+08:00\",\"ID\":2,\"Ignore\":[],"
-                            "\"RRule\":\"FREQ=DAILY;BYDAY=MO,TU,WE,TH,FR;UNTIL=20201130T000000Z\","
-                            "\"RecurID\":0,\"Remind\":\"1;09:00\",\"Start\":"
-                            "\"2020-12-09T00:00:00+08:00\",\"Title\":\"UT测试X\",\"Type\":1}";
-    qint64 id = sDb->UpdateJob(updateJobJson);
-    assert(2 == id);
+    QDateTime currentTime = QDateTime::currentDateTime();
+
+    ScheduleDataInfo info;
+    info.setTitleName("test ut");
+    info.setType(1);
+    info.setAllDay(false);
+    info.setBeginDateTime(currentTime);
+    info.setEndDateTime(currentTime.addSecs(60 * 60));
+
+    Job job;
+    job.Title = info.getTitleName();
+    job.Type = info.getType();
+    job.AllDay = info.getAllDay();
+    job.Start = info.getBeginDateTime();
+    job.End = info.getEndDateTime();
+
+    int jobid = static_cast<int>(sDb->CreateJob(job));
+    EXPECT_GT(jobid, 0);
+    info.setID(jobid);
+
+    info.setTitleName("change title");
+    qint64 updateid = sDb->UpdateJob(info.ScheduleToJsonStr(info));
+    EXPECT_NE(updateid, -1);
+    EXPECT_EQ(jobid, updateid);
+
+    ScheduleDataInfo changeInfo = ScheduleDataInfo::JsonStrToSchedule(sDb->GetJob(updateid));
+    EXPECT_EQ(changeInfo, info);
 }
 
-//bool SchedulerDatabase::UpdateJobIgnore(const QString &strignore, qint64 id)
+////bool SchedulerDatabase::UpdateJobIgnore(const QString &strignore, qint64 id)
 TEST_F(ut_schedulerdatabase, UpdateJobIgnore)
 {
-    //job2在ut测试UpdateJob函数中，Ignore参数被置空，因此再此传入Ignore
-    qint64 jobId = 2;
-    const QString strignore = "[\"2020-12-06T00:00:00+08:00\"]";
-    bool successBool = sDb->UpdateJobIgnore(strignore, jobId);
-    assert(false == successBool);
+    const QString strignore = "[\"2020-12-07T00:00:00+08:00\"]";
+
+    Job job1;
+    job1.Start = QDateTime::fromString("2020-12-05T00:00:00+08:00", Qt::ISODate);
+    job1.End = QDateTime::fromString("2020-12-05T23:59:00+08:00", Qt::ISODate);
+    job1.AllDay = true;
+    job1.Type = 1;
+    job1.Description = "";
+    job1.ID = 0;
+    job1.Ignore = "[\"2020-12-08T00:00:00+08:00\"]";
+    job1.Title = "UT测试A";
+    job1.RRule = "FREQ=DAILY;BYDAY=MO,TU,WE,TH,FR;COUNT=6";
+    job1.RecurID = 0;
+    job1.Remind = "1;09:00";
+
+    qint64 intJob1 = sDb->CreateJob(job1);
+    EXPECT_GT(intJob1, 0);
+
+    bool updateIgnore = sDb->UpdateJobIgnore(strignore, intJob1);
+    EXPECT_FALSE(updateIgnore) << "job id:" << intJob1;
 }
 
-//void SchedulerDatabase::UpdateType(const QString &typeInfo)
-TEST_F(ut_schedulerdatabase, UpdateType)
+////void SchedulerDatabase::UpdateType(const QString &typeInfo)
+TEST_F(ut_schedulerdatabase, Typehandle)
 {
-    QString updateTypeJson = "{\"ID\":5,\"Name\":\"嗨皮\",\"Color\":\"#CC99AA\"}";
+    QString updateTypeJson = "{\"ID\":1,\"Name\":\"嗨皮\",\"Color\":\"#CC99AA\"}";
     sDb->UpdateType(updateTypeJson);
-}
-
-//void SchedulerDatabase::DeleteType(qint64 id)
-TEST_F(ut_schedulerdatabase, DeleteType)
-{
-    sDb->DeleteType(6);
-}
-
-//void SchedulerDatabase::OpenSchedulerDatabase(const QString &dbpath)
-TEST_F(ut_schedulerdatabase, OpenSchedulerDatabase)
-{
-    QString dbpath = "";
-    sDb->OpenSchedulerDatabase(dbpath);
-
-    dbpath = "123123";
-    sDb->OpenSchedulerDatabase(dbpath);
-
-    dbpath = "%s%s%s%s%s%s";
-    sDb->OpenSchedulerDatabase(dbpath);
-
-    sDb->OpenSchedulerDatabase(SD_DATABASE_DIR);
+    sDb->DeleteType(1);
 }

@@ -41,9 +41,17 @@ ut_jobremindmanager::ut_jobremindmanager()
     jobRemindManager = new JobRemindManager();
 }
 
-ut_jobremindmanager::~ut_jobremindmanager()
+void ut_jobremindmanager::SetUp()
+{
+    Stub stub;
+    stub.set(ADDR(QDBusAbstractInterface, callWithArgumentList), stub_callWithArgumentList);
+    jobRemindManager = new JobRemindManager();
+}
+
+void ut_jobremindmanager::TearDown()
 {
     delete jobRemindManager;
+    jobRemindManager = nullptr;
 }
 
 QList<Job> createJobs()
@@ -106,43 +114,85 @@ TEST_F(ut_jobremindmanager, RemindJob)
     Stub stub;
     qDBusAbstractInterface_callWithArgumentList_stub(stub);
     jobRemindManager->RemindJob(createJobs().at(0));
+    EXPECT_EQ(jobRemindManager->m_notifymap.size(), 1);
 }
 
 //int JobRemindManager::GetRemindAdvanceDays(const QString &remind)
 TEST_F(ut_jobremindmanager, GetRemindAdvanceDays)
 {
     const QString remind = "1,09:00";
-    jobRemindManager->GetRemindAdvanceDays(remind);
+    EXPECT_EQ(jobRemindManager->GetRemindAdvanceDays(remind), -1);
 }
 
 //void JobRemindManager::RemindJobLater(const Job &job)
 TEST_F(ut_jobremindmanager, RemindJobLater)
 {
     jobRemindManager->RemindJobLater(createJobs().at(0));
+    EXPECT_EQ(jobRemindManager->m_remindlatertimersmap.size(), 1);
 }
 
 //void JobRemindManager::SetJobRemindOneDayBefore(const Job &job)
-TEST_F(ut_jobremindmanager, SetJobRemindOneDayBefore)
+TEST_F(ut_jobremindmanager, SetJobRemindOneDayBefore_01)
 {
+    QString remindStr = "";
+    QObject::connect(jobRemindManager, &JobRemindManager::ModifyJobRemind, [&](const Job &job, const QString &remind) {
+        remindStr = remind;
+    });
     jobRemindManager->SetJobRemindOneDayBefore(createJobs().at(0));
+    EXPECT_EQ(remindStr, "1;09:00");
+}
+
+TEST_F(ut_jobremindmanager, SetJobRemindOneDayBefore_02)
+{
+    Job job3 = createJobs().at(0);
+    job3.AllDay = false;
+    QString remindStr = "";
+    QObject::connect(jobRemindManager, &JobRemindManager::ModifyJobRemind, [&](const Job &job, const QString &remind) {
+        Q_UNUSED(job)
+        remindStr = remind;
+    });
+
+    jobRemindManager->SetJobRemindOneDayBefore(job3);
+    EXPECT_EQ(remindStr, "1440") << remindStr.toStdString();
 }
 
 //void JobRemindManager::SetJobRemindTomorrow(const Job &job)
-TEST_F(ut_jobremindmanager, SetJobRemindTomorrow)
+TEST_F(ut_jobremindmanager, SetJobRemindTomorrow_01)
 {
+    QString remindStr = "";
+    QObject::connect(jobRemindManager, &JobRemindManager::ModifyJobRemind, [&](const Job &job, const QString &remind) {
+        Q_UNUSED(job)
+        remindStr = remind;
+    });
     jobRemindManager->SetJobRemindTomorrow(createJobs().at(0));
+    EXPECT_EQ(remindStr, "0;09:00");
+}
+
+TEST_F(ut_jobremindmanager, SetJobRemindTomorrow_02)
+{
+    Job job3 = createJobs().at(0);
+    job3.AllDay = false;
+    QString remindStr = "";
+    QObject::connect(jobRemindManager, &JobRemindManager::ModifyJobRemind, [&](const Job &job, const QString &remind) {
+        remindStr = remind;
+    });
+
+    jobRemindManager->SetJobRemindTomorrow(job3);
+    EXPECT_EQ(remindStr, "60");
 }
 
 ////void JobRemindManager::RemindWorkTimeOut()
 TEST_F(ut_jobremindmanager, RemindWorkTimeOut)
 {
     jobRemindManager->RemindWorkTimeOut();
+    EXPECT_EQ(jobRemindManager->m_timejobmap.size(), 0);
 }
 
 //void JobRemindManager::UpdateRemindJobs(const QList<Job> &jobs)
 TEST_F(ut_jobremindmanager, UpdateRemindJobs)
 {
     jobRemindManager->UpdateRemindJobs(createJobs());
+    EXPECT_EQ(jobRemindManager->m_timejobmap.size(), createJobs().size());
 }
 
 //void JobRemindManager::ActionInvoked(quint32 id, const QString &actionKey)
@@ -156,6 +206,7 @@ TEST_F(ut_jobremindmanager, ActionInvoked)
     jobRemindManager->ActionInvoked(1, "later");
     jobRemindManager->ActionInvoked(2, "one-day-before");
     jobRemindManager->ActionInvoked(3, "tomorrow");
+    EXPECT_EQ(jobRemindManager->m_notifymap.size(), 1);
 }
 
 //void JobRemindManager::NotifyClosed(quint32 id, quint32 reason)
@@ -164,4 +215,6 @@ TEST_F(ut_jobremindmanager, NotifyClosed)
     jobRemindManager->NotifyClosed(1, 1);
     jobRemindManager->NotifyClosed(2, 1);
     jobRemindManager->NotifyClosed(3, 2);
+
+    EXPECT_EQ(jobRemindManager->m_notifymap.size(), 0);
 }

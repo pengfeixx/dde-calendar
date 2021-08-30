@@ -1,9 +1,9 @@
 /*
 * Copyright (C) 2019 ~ 2020 Uniontech Software Technology Co.,Ltd.
 *
-* Author:     hejinghai <hejinghai@uniontech.com>
+* Author:     chenhaifeng  <chenhaifeng@uniontech.com>
 *
-* Maintainer: hejinghai <hejinghai@uniontech.com>
+* Maintainer: chenhaifeng  <chenhaifeng@uniontech.com>
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -18,23 +18,28 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef UT_CALENDARSCHEDULER_H
-#define UT_CALENDARSCHEDULER_H
+#include "sqldatabase_stub.h"
 
-#include "calendarscheduler.h"
-#include "jobremindmanager.h"
-#include "gtest/gtest.h"
-#include <QObject>
+#include <QSqlDatabase>
 
-class ut_calendarscheduler : public ::testing::Test
+bool isOpen_database_stub()
 {
-public:
-    ut_calendarscheduler();
-    void SetUp() override;
-    void TearDown() override;
+    return true;
+}
 
-protected:
-    CalendarScheduler *calScheduler = nullptr;
-};
+bool open_database_stub()
+{
+    return true;
+}
 
-#endif // UT_CALENDARSCHEDULER_H
+void setDatabaseName_database_stub(const QString &name)
+{
+    Q_UNUSED(name)
+}
+
+void sqlDataBaseStub(Stub &stub)
+{
+    stub.set(ADDR(QSqlDatabase, isOpen), isOpen_database_stub);
+    stub.set((bool (QSqlDatabase::*)())ADDR(QSqlDatabase, open), open_database_stub);
+    stub.set(ADDR(QSqlDatabase, setDatabaseName), setDatabaseName_database_stub);
+}

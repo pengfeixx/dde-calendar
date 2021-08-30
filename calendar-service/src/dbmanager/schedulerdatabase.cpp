@@ -46,6 +46,12 @@ SchedulerDatabase::SchedulerDatabase(QObject *parent)
     OpenSchedulerDatabase(dbpath);
 }
 
+SchedulerDatabase::~SchedulerDatabase()
+{
+    if (m_database.isOpen())
+        m_database.close();
+}
+
 //通过id获取日程信息
 QString SchedulerDatabase::GetJob(qint64 id)
 {
@@ -249,19 +255,25 @@ void SchedulerDatabase::CreateTables()
 {
     QSqlQuery query(m_database);
     //table job_types
-    qDebug() << query.exec("CREATE TABLE \"job_types\" (\"id\" integer primary key autoincrement,\"created_at\""
-                           " datetime,\"updated_at\" datetime,\"deleted_at\" datetime,\"name\" varchar(255),\"color\" varchar(255) )")
-             << query.lastError();
-    qDebug() << query.exec("CREATE INDEX idx_job_types_deleted_at ON \"job_types\"(deleted_at)") << query.lastError();
+    if (!query.exec("CREATE TABLE \"job_types\" (\"id\" integer primary key autoincrement,\"created_at\""
+                    " datetime,\"updated_at\" datetime,\"deleted_at\" datetime,\"name\" varchar(255),\"color\" varchar(255) )")) {
+        qWarning() << "create table job_types error:" << query.lastError();
+    }
+    if (!query.exec("CREATE INDEX idx_job_types_deleted_at ON \"job_types\"(deleted_at)")) {
+        qWarning() << "create INDEX error :" << query.lastError();
+    }
 
     //table jobs
-    qDebug() << query.exec("CREATE TABLE \"jobs\" (\"id\" integer primary key autoincrement,"
-                           "\"created_at\" datetime,\"updated_at\" datetime,\"deleted_at\" datetime,"
-                           "\"type\" integer,\"title\" varchar(255),\"description\" varchar(255),"
-                           "\"all_day\" bool,\"start\" datetime,\"end\" datetime,\"r_rule\" varchar(255),"
-                           "\"remind\" varchar(255),\"ignore\" varchar(255) , \"title_pinyin\" varchar(255))")
-             << query.lastError();
-    qDebug() << query.exec("CREATE INDEX idx_jobs_deleted_at ON \"jobs\"(deleted_at)") << query.lastError();
+    if (!query.exec("CREATE TABLE \"jobs\" (\"id\" integer primary key autoincrement,"
+                    "\"created_at\" datetime,\"updated_at\" datetime,\"deleted_at\" datetime,"
+                    "\"type\" integer,\"title\" varchar(255),\"description\" varchar(255),"
+                    "\"all_day\" bool,\"start\" datetime,\"end\" datetime,\"r_rule\" varchar(255),"
+                    "\"remind\" varchar(255),\"ignore\" varchar(255) , \"title_pinyin\" varchar(255))")) {
+        qWarning() << "create jobs error:" << query.lastError();
+    }
+    if (!query.exec("CREATE INDEX idx_jobs_deleted_at ON \"jobs\"(deleted_at)")) {
+        qWarning() << "CREATE INDEX jobs error:" << query.lastError();
+    }
     if (query.isActive()) {
         query.finish();
     }
@@ -446,6 +458,7 @@ void SchedulerDatabase::UpdateType(const QString &typeInfo)
     QJsonParseError json_error;
     QJsonDocument jsonDoc(QJsonDocument::fromJson(typeInfo.toLocal8Bit(), &json_error));
     if (json_error.error != QJsonParseError::NoError) {
+        qDebug() << Q_FUNC_INFO << "typeInfo";
         return ;
     }
     QJsonObject rootObj = jsonDoc.object();

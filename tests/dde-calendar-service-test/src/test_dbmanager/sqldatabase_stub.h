@@ -1,9 +1,9 @@
 /*
 * Copyright (C) 2019 ~ 2020 Uniontech Software Technology Co.,Ltd.
 *
-* Author:     hejinghai <hejinghai@uniontech.com>
+* Author:     chenhaifeng  <chenhaifeng@uniontech.com>
 *
-* Maintainer: hejinghai <hejinghai@uniontech.com>
+* Maintainer: chenhaifeng  <chenhaifeng@uniontech.com>
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -18,23 +18,11 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef UT_CALENDARSCHEDULER_H
-#define UT_CALENDARSCHEDULER_H
+#ifndef SQLDATABASE_STUB_H
+#define SQLDATABASE_STUB_H
 
-#include "calendarscheduler.h"
-#include "jobremindmanager.h"
-#include "gtest/gtest.h"
-#include <QObject>
+#include "../third-party_stub/stub.h"
 
-class ut_calendarscheduler : public ::testing::Test
-{
-public:
-    ut_calendarscheduler();
-    void SetUp() override;
-    void TearDown() override;
+void sqlDataBaseStub(Stub &stub);
 
-protected:
-    CalendarScheduler *calScheduler = nullptr;
-};
-
-#endif // UT_CALENDARSCHEDULER_H
+#endif // SQLDATABASE_STUB_H

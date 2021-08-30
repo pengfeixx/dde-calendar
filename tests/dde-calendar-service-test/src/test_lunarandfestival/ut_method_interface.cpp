@@ -19,218 +19,197 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "ut_method_interface.h"
+
 #include <QVector>
 #include <QDebug>
 #include <QtGlobal>
 
-ut_method_interface::ut_method_interface()
-{
-
-}
 
 //QString GetLunarMonthName(int lunarmonthname, bool isleap)
-TEST_F(ut_method_interface, GetLunarMonthName)
+TEST(ut_method_interface, GetLunarMonthName)
 {
-    // 腊月
-    int lunarmonthname = 12;
-    bool isleap = false;
-    QString lunarMName = GetLunarMonthName(lunarmonthname, isleap);
-    assert("腊月" == lunarMName);
+    QString lunarName;
+    QString lunarMonthNamesStr;
+    for (int i = 1; i < 13; ++i) {
+        lunarName = GetLunarMonthName(i, false);
+        lunarMonthNamesStr = lunarMonthNames[i - 1] + "月";
+        EXPECT_EQ(lunarName, lunarMonthNamesStr);
 
-    // 闰腊月
-    isleap = true;
-    lunarMName = GetLunarMonthName(lunarmonthname, isleap);
-    assert("闰腊月" == lunarMName);
+        lunarName = GetLunarMonthName(i, true);
+        lunarMonthNamesStr = "闰" + lunarMonthNames[i - 1] + "月";
+        EXPECT_EQ(lunarName, lunarMonthNamesStr);
+    }
 }
 
 //QString GetLunarDayName(int lundayname)
-TEST_F(ut_method_interface, GetLunarDayName)
+TEST(ut_method_interface, GetLunarDayName)
 {
-    // "初八"
-    int lundayname = 8;
-    QString lunarDayName = GetLunarDayName(lundayname);
-    //qInfo() << lunarDayName;
-    assert("初八" == lunarDayName);
-
-    // "廿五"
-    lundayname = 25;
-    lunarDayName = GetLunarDayName(lundayname);
-    //qInfo() << lunarDayName;
-    assert("廿五" == lunarDayName);
+    QString lunarDayName;
+    for (int i = 1; i < 31; ++i) {
+        lunarDayName = GetLunarDayName(i);
+        EXPECT_EQ(lunarDayName, lunarDayNames[i - 1]);
+    }
 }
 
 //QString GetLunarDayFestival(int monthname, int lunarday, int lunarmonthdays, int solarterm)
-TEST_F(ut_method_interface, GetLunarDayFestival)
+TEST(ut_method_interface, GetLunarDayFestival)
 {
-    // "除夕"
-    int monthname = 12;
-    int lunarday = 30;
+    QVector<int> monthV = {1, 1, 5, 7, 8, 9, 12, 12, 12, 12, 4, 4};
+    QVector<int> dayV = {1, 15, 5, 7, 15, 9, 8, 29, 29, 30, 2, 3};
     int lunarmonthdays = 30;
-    int solarterm = 1;
-    QString dayFestival = GetLunarDayFestival(monthname, lunarday, lunarmonthdays, solarterm);
-    //qInfo() << dayFestival;
-    assert("除夕" == dayFestival);
+    QVector<int> solartermV = {1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1};
 
-    // "清明节"
-    monthname = 4;
-    lunarday = 2;
-    lunarmonthdays = 23;
-    solarterm = 1;
-    dayFestival = GetLunarDayFestival(monthname, lunarday, lunarmonthdays, solarterm);
-    //qInfo() << dayFestival;
-    assert("清明节" == dayFestival);
-
-    // ""
-    monthname = 5;
-    lunarday = 1;
-    lunarmonthdays = 13;
-    solarterm = 0;
-    dayFestival = GetLunarDayFestival(monthname, lunarday, lunarmonthdays, solarterm);
-    //qInfo() << dayFestival;
-    assert("" == dayFestival);
+    QVector<QString> strV = {"春节", "元宵节", "端午节", "七夕节", "中秋节", "重阳节", "腊八节", "", "清明节", "除夕", "", "清明节"};
+    QString dayFestival;
+    for (int i = 0; i < strV.size(); ++i) {
+        dayFestival = GetLunarDayFestival(monthV.at(i), dayV.at(i), lunarmonthdays, solartermV.at(i));
+        EXPECT_EQ(dayFestival, strV.at(i)) << "dayFestival:" << dayFestival.toStdString() << " strV:" << strV.at(i).toStdString() << i;
+    }
 }
 
 //QString GetSolarTermName(int order)
-TEST_F(ut_method_interface, GetSolarTermName)
+TEST(ut_method_interface, GetSolarTermName)
 {
-    // "小满"
-    int order = 4;
-    QString stName = GetSolarTermName(order);
-    //qInfo() << stName;
-    assert("小满" == stName);
-
-    // ""
-    order = 24;
-    stName = GetSolarTermName(order);
-    //qInfo() << stName;
-    assert("" == stName);
+    for (int i = 0; i < SolarTermNames.size(); ++i) {
+        EXPECT_EQ(SolarTermNames.at(i), GetSolarTermName(i));
+    }
+    EXPECT_EQ(GetSolarTermName(SolarTermNames.size()), "");
 }
 
 //QString GetGanZhiMonth(int year, int monthzhi)
-TEST_F(ut_method_interface, GetGanZhiMonth)
+TEST(ut_method_interface, GetGanZhiMonth)
 {
-    // "戊子"
-    int year = 2020;
-    int month = 12;
-    QString ganzhi = GetGanZhiMonth(year, month);
-    //qInfo() << ganzhi;
-    assert("戊子" == ganzhi);
+    QString ganzhi;
+    int num;
+    for (int year = 1900; year < 2150; ++year) {
+        for (int month = 1; month < 13; ++month) {
+            num = (year - 1900) * 12 + month + 12;
+            ganzhi = TianGan[num % 10] + DiZhi[num % 12];
+            EXPECT_EQ(ganzhi, GetGanZhiMonth(year, month)) << "ganzhi:" << ganzhi.toStdString() << "getGanZhi:" << GetGanZhiMonth(year, month).toStdString();
+        }
+    }
 }
 
 //QString GetGanZhiYear(int lunaryear)
-TEST_F(ut_method_interface, GetGanZhiYear)
+TEST(ut_method_interface, GetGanZhiYear)
 {
-    // "庚子"
-    int lunaryear = 2020;
-    QString ganzhi = GetGanZhiYear(lunaryear);
-    //qInfo() << ganzhi;
-    assert("庚子" == ganzhi);
+    QString ganzhi;
+    int num;
+    for (int year = 1900; year < 2150; ++year) {
+        num = year - 1864;
+        ganzhi = TianGan[num % 10] + DiZhi[num % 12];
+        EXPECT_EQ(ganzhi, GetGanZhiYear(year)) << "ganzhi:" << ganzhi.toStdString() << "getGanZhi:" << GetGanZhiYear(year).toStdString();
+    }
 }
 
 //QString GetGanZhiDay(int year, int month, int day)
-TEST_F(ut_method_interface, GetGanZhiDay)
+TEST(ut_method_interface, GetGanZhiDay)
 {
-    // "己丑"
-    int year = 2020;;
-    int month = 12;
-    int day = 12;
-    QString ganzhi = GetGanZhiDay(year, month, day);
-    assert("己丑" == ganzhi);
+    int dayCyclical;
+    QDate currentDate = QDate::currentDate();
+    QDate testDate;
+    QString ganzhi;
+    for (int i = 0; i < 100; ++i) {
+        testDate = currentDate.addDays(i);
+        dayCyclical = int(QDateTime(QDate(testDate.year(), testDate.month(), testDate.day()), QTime(0, 0, 0, 0), Qt::TimeSpec::UTC).toMSecsSinceEpoch() / 1000 / 86400) + 29219 + 18;
+        ganzhi = TianGan[dayCyclical % 10] + DiZhi[dayCyclical % 12];
+        EXPECT_EQ(ganzhi, GetGanZhiDay(testDate.year(), testDate.month(), testDate.day())) << "ganzhi:" << ganzhi.toStdString() << "getGanZhi:" << GetGanZhiDay(testDate.year(), testDate.month(), testDate.day()).toStdString();
+    }
 }
 
 //QString GetYearZodiac(int lunaryear)
-TEST_F(ut_method_interface, GetYearZodiac)
+TEST(ut_method_interface, GetYearZodiac)
 {
-    // "鼠"
-    int lunaryear = 2020;
-    QString Zodiac = GetYearZodiac(lunaryear);
-    //qInfo() << Zodiac;
-    assert("鼠" == Zodiac);
-
-    // "猪"
-    lunaryear = 2019;
-    Zodiac = GetYearZodiac(lunaryear);
-    //qInfo() << Zodiac;
-    assert("猪" == Zodiac);
+    QString zodiac;
+    for (int year = 2000; year < 2100; ++year) {
+        zodiac = Animals[(year - 4) % 12];
+        EXPECT_EQ(zodiac, GetYearZodiac(year)) << "zodiac:" << zodiac.toStdString() << " GetYearZodiac:" << GetYearZodiac(year).toStdString();
+    }
 }
 
 //QVector<double> get25SolarTermJDs(int year, int start)
-TEST_F(ut_method_interface, get25SolarTermJDs)
+TEST(ut_method_interface, get25SolarTermJDs)
 {
     int year = 0;
     int start = 0;
     QVector<double> jds = get25SolarTermJDs(year, start);
-    // TODO
+    EXPECT_NE(jds.size(), 0);
 }
 
 //double GetSolarTermJD(int year, int order)
-TEST_F(ut_method_interface, GetSolarTermJD)
+TEST(ut_method_interface, GetSolarTermJD)
 {
     int year = 2020;
     int order = 0; //春分 3月20日
-    double jd = GetSolarTermJD(year, order);
-    assert(2.45893e+06 > jd);
+    for (int i = 0; i < 100; ++i) {
+        double jd = GetSolarTermJD(year + i, order + i);
+        EXPECT_GT(jd, 0);
+    }
 }
 
 //bool IsLeapYear(int year)
-TEST_F(ut_method_interface, IsLeapYear)
+TEST(ut_method_interface, IsLeapYear)
 {
     int leapYear = 2020; // 闰年
     int notLeapYear = 2019; // 非闰年
-    assert(true == IsLeapYear(leapYear) && false == IsLeapYear(notLeapYear));
+    EXPECT_TRUE(IsLeapYear(leapYear));
+    EXPECT_FALSE(IsLeapYear(notLeapYear));
 }
 
 // int GetSolarMonthDays(int year, int month)
-TEST_F(ut_method_interface, GetSolarMonthDays)
+TEST(ut_method_interface, GetSolarMonthDays)
 {
-    int year = 2020;
-    int month = 2;
-    int a = GetSolarMonthDays(year, month);
-    assert(29 == a);
+    QDate currentDate = QDate::currentDate();
+    QDate testDate;
+    for (int i = 0; i < 100; ++i) {
+        testDate = currentDate.addMonths(i);
+        EXPECT_EQ(testDate.daysInMonth(), GetSolarMonthDays(testDate.year(), testDate.month()));
+    }
 }
 
 //int GetWeekday(int y, int m, int d)
-TEST_F(ut_method_interface, GetWeekday)
+TEST(ut_method_interface, GetWeekday)
 {
-    int y = 2020;
-    int m = 2;
-    int d = 29;
-    int a = GetWeekday(y, m, d);
-    assert(6 == a);
+    QDate currentDate = QDate::currentDate();
+    QDate testDate;
+    for (int i = 0; i < 100; ++i) {
+        testDate = currentDate.addMonths(i);
+        EXPECT_EQ(testDate.dayOfWeek() % 7, GetWeekday(testDate.year(), testDate.month(), testDate.day()));
+    }
 }
 
 //double DmsToDegrees(int degrees, int mintues, double seconds)
-TEST_F(ut_method_interface, DmsToDegrees)
+TEST(ut_method_interface, DmsToDegrees)
 {
     int degrees = 4;
     int mintues = 3;
     double seconds = 7200;
     double degress = DmsToDegrees(degrees, mintues, seconds);
-    assert(qAbs(6.05 - degress) < 0.001);
+    EXPECT_GT(degress, 0);
 }
 
 //double DmsToSeconds(int d, int m, double s)
-TEST_F(ut_method_interface, DmsToSeconds)
+TEST(ut_method_interface, DmsToSeconds)
 {
     int d = 4;
     int m = 3;
     double s = 7200;
     double degress = DmsToSeconds(d, m, s);
-    assert(qAbs(21780 - degress) < 0.001);
+    EXPECT_GT(degress, 0);
 }
 
 //double DmsToRadians(int d, int m, int s)
-TEST_F(ut_method_interface, DmsToRadians)
+TEST(ut_method_interface, DmsToRadians)
 {
     int d = 4;
     int m = 3;
     int s = 7200;
     double degress = DmsToRadians(d, m, s);
-    assert(0.105592 <= degress);
+    EXPECT_GT(degress, 0);
 }
 
 //QDateTime GetDateTimeFromJulianDay(double jd)
-TEST_F(ut_method_interface, GetDateTimeFromJulianDay)
+TEST(ut_method_interface, GetDateTimeFromJulianDay)
 {
     int year = 2020;
     int order = 0; //春分 3月20日
@@ -238,12 +217,11 @@ TEST_F(ut_method_interface, GetDateTimeFromJulianDay)
 
     QString strJulianDay = "周五 3月 20 03:49:33 2020 GMT";
     QDateTime julianDay = GetDateTimeFromJulianDay(jd);
-    //qInfo() << julianDay.toString();
-    assert(strJulianDay.contains(julianDay.toString()));
+    EXPECT_EQ(julianDay.date().year(), year);
 }
 
 //double GetDeltaT(int year, int month)
-TEST_F(ut_method_interface, GetDeltaT)
+TEST(ut_method_interface, GetDeltaT)
 {
     const int count = 15;
     const int year[count] = {-501, 0, 1599, 1699, 1799,
@@ -252,47 +230,45 @@ TEST_F(ut_method_interface, GetDeltaT)
                             };
     const int mouth = 6;
     for (int i = 0; i < count; ++i) {
-        GetDeltaT(year[i], mouth);
+        EXPECT_NE(GetDeltaT(year[i], mouth), 0);
     }
 }
 
 //double JDBeijingTime2UTC(double bjtJD)
-TEST_F(ut_method_interface, JDBeijingTime2UTC)
+TEST(ut_method_interface, JDBeijingTime2UTC)
 {
     double bjtJD = 1.01;
     double utc = JDBeijingTime2UTC(bjtJD);
-    assert(0.67667 > utc);
+    EXPECT_GT(bjtJD, utc);
 }
 
 //QString GetSolarDayFestival(int year, int month, int day)
-TEST_F(ut_method_interface, GetSolarDayFestival)
+TEST(ut_method_interface, GetSolarDayFestival)
 {
     int year = 2020;
     // 建军节
     int month = 8;
     int day = 1;
     QString getFesStr = GetSolarDayFestival(year, month, day);
-    assert("建军节" == getFesStr);
+    EXPECT_EQ("建军节", getFesStr);
 
     // 儿童节
     month = 6;
     day = 1;
     getFesStr = GetSolarDayFestival(year, month, day);
-    assert("儿童节" == getFesStr);
+    EXPECT_EQ("儿童节", getFesStr);
 }
 
 //double CalcEarthObliquityNutation(double dt)
-TEST_F(ut_method_interface, CalcEarthObliquityNutation)
+TEST(ut_method_interface, CalcEarthObliquityNutation)
 {
     double julianDay = 1;
     double dt = GetJulianCentury(julianDay);
-    CalcEarthObliquityNutation(dt);
-    //qInfo() << ceon;
+    EXPECT_NE(CalcEarthObliquityNutation(dt), 0);
 }
 
 //double lightAberration()
-TEST_F(ut_method_interface, lightAberration)
+TEST(ut_method_interface, lightAberration)
 {
-    lightAberration();
-    //qInfo() << lightAb;
+    EXPECT_GT(lightAberration(), 0);
 }

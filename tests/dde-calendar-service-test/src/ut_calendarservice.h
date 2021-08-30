@@ -25,12 +25,12 @@
 #include "gtest/gtest.h"
 #include <QObject>
 
-class ut_calendarservice : public QObject
-    , public ::testing::Test
+class ut_calendarservice : public ::testing::Test
 {
 public:
     ut_calendarservice();
-    ~ut_calendarservice();
+    void SetUp() override;
+    void TearDown() override;
 
 protected:
     CalendarService *service = nullptr;

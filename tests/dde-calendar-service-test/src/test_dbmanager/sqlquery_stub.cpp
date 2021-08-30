@@ -1,9 +1,9 @@
 /*
 * Copyright (C) 2019 ~ 2020 Uniontech Software Technology Co.,Ltd.
 *
-* Author:     hejinghai <hejinghai@uniontech.com>
+* Author:     chenhaifeng  <chenhaifeng@uniontech.com>
 *
-* Maintainer: hejinghai <hejinghai@uniontech.com>
+* Maintainer: chenhaifeng  <chenhaifeng@uniontech.com>
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -18,23 +18,33 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef UT_CALENDARSCHEDULER_H
-#define UT_CALENDARSCHEDULER_H
+#include "sqlquery_stub.h"
 
-#include "calendarscheduler.h"
-#include "jobremindmanager.h"
-#include "gtest/gtest.h"
-#include <QObject>
+#include <QSqlQuery>
+#include <QVariant>
 
-class ut_calendarscheduler : public ::testing::Test
+bool exec_sqlQuery_stub()
 {
-public:
-    ut_calendarscheduler();
-    void SetUp() override;
-    void TearDown() override;
+    return true;
+}
 
-protected:
-    CalendarScheduler *calScheduler = nullptr;
-};
+bool next_sqlQuery_stub()
+{
+    static bool ret = false;
+    ret = !ret;
+    return ret;
+}
 
-#endif // UT_CALENDARSCHEDULER_H
+QVariant value(const QString &name)
+{
+    //    if(name =="id"){
+    //        return QString("")
+    //    }
+    return name;
+}
+
+void sqlqueryStub(Stub &stub)
+{
+    stub.set((bool (QSqlQuery::*)())ADDR(QSqlQuery, exec), exec_sqlQuery_stub);
+    stub.set(ADDR(QSqlQuery, next), next_sqlQuery_stub);
+}
