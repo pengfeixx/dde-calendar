@@ -22,6 +22,7 @@
 
 #include "../third-party_stub/stub.h"
 #include <QTest>
+#include <QSignalSpy>
 
 ut_yearview::ut_yearview()
 {
@@ -56,13 +57,17 @@ QVector<QDate> getListDate()
 //void CYearView::slotDoubleClickDate(const QDate &date)
 TEST_F(ut_yearview, slotDoubltClickDate)
 {
+    QSignalSpy spy(cYearView, SIGNAL(signalMousePress(const QDate &, const int)));
     cYearView->slotDoubleClickDate(QDate(2021, 1, 6));
+    ASSERT_EQ(spy.count(), 1);
 }
 
 //void CYearView::slotPressClickDate(const QDate &date)
 TEST_F(ut_yearview, slotPressClickDate)
 {
+    QSignalSpy spy(cYearView, SIGNAL(signalMousePress(const QDate &, const int)));
     cYearView->slotPressClickDate(QDate(2021, 1, 6));
+    ASSERT_EQ(spy.count(), 1);
 }
 
 //void CYearView::setTheMe(int type)
@@ -70,12 +75,14 @@ TEST_F(ut_yearview, setTheMe)
 {
     cYearView->setTheMe(1);
     cYearView->setTheMe(2);
+    ASSERT_EQ(QString::number(cYearView->m_bnormalColor.alphaF(), 'f', 2), "0.05");
 }
 
 //void CYearView::setShowDate(const QDate &showMonth, const QVector<QDate> &showDate)
 TEST_F(ut_yearview, setShowDate)
 {
     cYearView->setShowDate(getListDate().first(), getListDate());
+    ASSERT_EQ(cYearView->m_showMonth, getListDate().first());
 }
 
 //void CYearView::setHasScheduleFlag(const QVector<bool> &hasScheduleFlag)
@@ -86,6 +93,7 @@ TEST_F(ut_yearview, setHasScheduleFlag)
     listLintFlag.append(true);
 
     cYearView->setHasScheduleFlag(listLintFlag);
+    ASSERT_FALSE(cYearView->m_monthView->m_DayItem[1]->m_vlineflag);
 }
 
 //void CYearView::setHasSearchScheduleFlag(const QVector<bool> &hasSearchScheduleFlag)
@@ -96,6 +104,7 @@ TEST_F(ut_yearview, setHasSearchScheduleFlag)
     listLintFlag.append(true);
 
     cYearView->setHasSearchScheduleFlag(listLintFlag);
+    ASSERT_FALSE(cYearView->m_monthView->m_DayItem[1]->m_searchScheduleFlag);
 }
 
 void setDate_Stub(const int showMonth, const QVector<QDate> &showDate) {
@@ -132,12 +141,15 @@ TEST_F(ut_yearview, paintEvent)
     cYearView->setFixedSize(600, 600);
     QPixmap pixmap(cYearView->size());
     cYearView->render(&pixmap);
+    ASSERT_EQ(pixmap.size(), cYearView->size());
 }
 
 TEST_F(ut_yearview, guitest)
 {
+    QSignalSpy spy(cYearView, SIGNAL(signalMousePress(const QDate &, const int)));
     QWidget *currentMonth = cYearView->findChild<QWidget *>("currentMouth");
     if (currentMonth) {
         QTest::mouseDClick(currentMonth, Qt::LeftButton);
+        ASSERT_EQ(spy.count(), 1);
     }
 }

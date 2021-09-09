@@ -41,19 +41,23 @@ ut_weekview::~ut_weekview()
 TEST_F(ut_weekview, setSelectDate)
 {
     mWeekView->setSelectDate(QDate::currentDate());
+    ASSERT_EQ(mWeekView->m_weekNumWidget->m_selectDate, QDate::currentDate());
 }
 
 //void CWeekView::setCurrent(const QDateTime &dateTime)
 TEST_F(ut_weekview, setCurrent)
 {
     mWeekView->setCurrent(QDateTime::currentDateTime());
+    ASSERT_EQ(mWeekView->m_weekNumWidget->m_currentDate, QDateTime::currentDateTime());
 }
 
 //void CWeekView::setTheMe(int type)
 TEST_F(ut_weekview, setTheMe)
 {
     mWeekView->setTheMe(1);
+    ASSERT_EQ(mWeekView->m_weekNumWidget->m_currentDayTextColor, Qt::white);
     mWeekView->setTheMe(2);
+    ASSERT_EQ(QString::number(mWeekView->m_weekNumWidget->m_backgrounddefaultColor.alphaF(), 'f', 2), "0.05");
 }
 
 TEST_F(ut_weekview, getPixmap)
@@ -62,4 +66,5 @@ TEST_F(ut_weekview, getPixmap)
     mWeekView->setFixedSize(600, 50);
     QPixmap pixmap(mWeekView->size());
     mWeekView->render(&pixmap);
+    ASSERT_EQ(pixmap.size(), mWeekView->size());
 }

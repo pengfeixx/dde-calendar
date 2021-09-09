@@ -24,6 +24,8 @@
 
 #include <QObject>
 
+QString UpdateJob_titlename = "";
+
 qint64 CreateJob_stub(void *obj, const ScheduleDataInfo &info)
 {
     Q_UNUSED(obj)
@@ -34,7 +36,8 @@ qint64 CreateJob_stub(void *obj, const ScheduleDataInfo &info)
 bool UpdateJob_stub(void *obj, const ScheduleDataInfo &info)
 {
     Q_UNUSED(obj)
-    Q_UNUSED(info)
+
+    UpdateJob_titlename = info.getTitleName();
     return true;
 }
 
@@ -42,6 +45,7 @@ bool DeleteJob_stub(void *obj, qint64 jobId)
 {
     Q_UNUSED(obj)
     Q_UNUSED(jobId)
+    UpdateJob_titlename = QString::number(jobId);
     return true;
 }
 
@@ -63,11 +67,26 @@ bool QueryJobs_stub(void *obj, QString key, QDateTime starttime, QDateTime endti
     return true;
 }
 
+bool QueryJobs1_stub(void *obj, QString key, QDateTime starttime, QDateTime endtime, QString &out)
+{
+    Q_UNUSED(obj)
+    Q_UNUSED(key)
+    Q_UNUSED(starttime)
+    Q_UNUSED(endtime)
+    out = QDateTime::currentDateTime().toString("yyyy-MM-dd");
+    return true;
+}
+
 void cscheduleDbusStub(Stub &stub)
 {
     stub.set(ADDR(CScheduleDBus, CreateJob), CreateJob_stub);
     stub.set(ADDR(CScheduleDBus, UpdateJob), UpdateJob_stub);
     stub.set(ADDR(CScheduleDBus, DeleteJob), DeleteJob_stub);
     stub.set(ADDR(CScheduleDBus, GetJob), GetJob_stub);
+    stub.set((bool (CScheduleDBus::*)(QString, QDateTime, QDateTime, QString &))ADDR(CScheduleDBus, QueryJobs), QueryJobs1_stub);
     stub.set((bool (CScheduleDBus::*)(QString, QDateTime, QDateTime, QMap<QDate, QVector<ScheduleDataInfo>> &))ADDR(CScheduleDBus, QueryJobs), QueryJobs_stub);
+}
+
+void cscheduleoperation(Stub &stub)
+{
 }

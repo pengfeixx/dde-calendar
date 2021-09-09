@@ -22,6 +22,7 @@
 
 #include "shortcut.h"
 #include "gtest/gtest.h"
+#include <QDebug>
 
 ut_Shortcut::ut_Shortcut(QObject *parent)
     : QObject(parent)
@@ -32,4 +33,14 @@ TEST(shorcutTest, shorcut)
 {
     Shortcut shortcut;
     QString str = shortcut.toStr();
+    QJsonParseError jsonerror;
+    QJsonDocument doc = QJsonDocument::fromJson(str.toLatin1(), &jsonerror);
+
+    if (!doc.isNull() && jsonerror.error == QJsonParseError::NoError) {
+        if (doc.isObject()) {
+            ASSERT_FALSE(doc.isNull());
+        }
+    } else {
+        ASSERT_TRUE(doc.isNull());
+    }
 }

@@ -217,12 +217,17 @@ TEST_F(ut_yearscheduleview, setDate)
 {
     QVector<ScheduleDataInfo> scheduleinfo = getScheduleDataInfo();
     cYearScheduleView->setData(scheduleinfo);
+    ASSERT_EQ(cYearScheduleView->m_vlistData[0].m_ScheduleTitleName, scheduleinfo[5].m_ScheduleTitleName);
 }
 
 //void CYearScheduleView::clearData()
 TEST_F(ut_yearscheduleview, clearDate)
 {
+    QVector<ScheduleDataInfo> scheduleinfo = getScheduleDataInfo();
+    cYearScheduleView->setData(scheduleinfo);
+    ASSERT_GT(cYearScheduleView->m_vlistData.count(), 0);
     cYearScheduleView->clearData();
+    ASSERT_EQ(cYearScheduleView->m_vlistData.count(), 0);
 }
 
 //int CYearScheduleView::showWindow()
@@ -230,8 +235,11 @@ TEST_F(ut_yearscheduleview, showWindow)
 {
     QVector<ScheduleDataInfo> vlistData = getScheduleDataInfo();
     cYearScheduleView->showWindow();
+    ASSERT_EQ(cYearScheduleView->size(), QSize(130, 45));
+
     cYearScheduleView->setData(vlistData);
     cYearScheduleView->showWindow();
+    ASSERT_NE(cYearScheduleView->size(), QSize(130, 45));
 }
 
 //void CYearScheduleView::setTheMe(int type)
@@ -239,15 +247,17 @@ TEST_F(ut_yearscheduleview, setTheMe)
 {
     int type = 1;
     cYearScheduleView->setTheMe(type);
-
+    ASSERT_EQ(QString::number(cYearScheduleView->m_btimecolor.alphaF(), 'f', 2), "0.70");
     type = 2;
     cYearScheduleView->setTheMe(type);
+    ASSERT_EQ(QString::number(cYearScheduleView->m_btimecolor.alphaF(), 'f', 2), "0.70");
 }
 
 //void CYearScheduleView::setCurrentDate(QDate cdate)
 TEST_F(ut_yearscheduleview, setCurrentDate)
 {
     cYearScheduleView->setCurrentDate(QDate(2021, 1, 6));
+    ASSERT_EQ(cYearScheduleView->m_currentDate, QDate(2021, 1, 6));
 }
 
 //QDate CYearScheduleView::getCurrentDate()
@@ -270,24 +280,32 @@ TEST_F(ut_yearscheduleview, setOutData)
 {
     QVector<ScheduleDataInfo> scheduleInfo = getScheduleDataInfo();
     zYearScheduleOutView->setData(scheduleInfo);
+    ASSERT_EQ(zYearScheduleOutView->list_count, scheduleInfo.count());
 }
 
 //void CYearScheduleOutView::clearData()
 TEST_F(ut_yearscheduleview, clearOutData)
 {
+    QVector<ScheduleDataInfo> scheduleinfo = getScheduleDataInfo();
+    zYearScheduleOutView->yearscheduleview->setData(scheduleinfo);
+    ASSERT_GT(zYearScheduleOutView->yearscheduleview->m_vlistData.count(), 0);
     zYearScheduleOutView->clearData();
+    ASSERT_EQ(zYearScheduleOutView->yearscheduleview->m_vlistData.count(), 0);
 }
 
 //void CYearScheduleOutView::setTheMe(int type)
 TEST_F(ut_yearscheduleview, setTheOutMe)
 {
+    //w.setBackgroundRole()
     zYearScheduleOutView->setTheMe(1);
+    ASSERT_EQ(QString::number(zYearScheduleOutView->yearscheduleview->m_btimecolor.alphaF(), 'f', 2), "0.70");
 }
 
 //void CYearScheduleOutView::setCurrentDate(QDate cdate)
 TEST_F(ut_yearscheduleview, setCurrentOutDate)
 {
     zYearScheduleOutView->setCurrentDate(QDate(2021, 1, 6));
+    ASSERT_EQ(zYearScheduleOutView->currentdate, QDate(2021, 1, 6));
 }
 
 TEST_F(ut_yearscheduleview, paintEvent)
@@ -296,6 +314,8 @@ TEST_F(ut_yearscheduleview, paintEvent)
     QVector<ScheduleDataInfo> scheduleInfo = getScheduleDataInfo();
     cYearScheduleView->setData(scheduleInfo);
     cYearScheduleView->render(&pixmap);
+    qWarning() << pixmap.size() << cYearScheduleView->size();
+    ASSERT_EQ(pixmap.size(), cYearScheduleView->size());
 }
 
 TEST_F(ut_yearscheduleview, mousePressEvent)

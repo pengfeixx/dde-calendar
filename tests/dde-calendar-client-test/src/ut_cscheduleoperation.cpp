@@ -26,6 +26,8 @@
 #include "dialog_stub.h"
 #include "cscheduledbusstub.h"
 
+#include <QSignalSpy>
+
 ut_cscheduleoperation::ut_cscheduleoperation()
 {
 }
@@ -54,10 +56,17 @@ void ut_cscheduleoperation::TearDown()
 {
 }
 
+bool ut_changeRecurInfostub(const ScheduleDataInfo &newinfo, const ScheduleDataInfo &oldinfo)
+{
+    UpdateJob_titlename = oldinfo.getTitleName();
+    return true;
+}
+
 TEST_F(ut_cscheduleoperation, createSchedule)
 {
     ScheduleDataInfo info;
-    operation.createSchedule(info);
+    bool ret = operation.createSchedule(info);
+    ASSERT_TRUE(ret);
 }
 
 TEST_F(ut_cscheduleoperation, changeSchedule)
@@ -75,36 +84,42 @@ TEST_F(ut_cscheduleoperation, changeSchedule)
     info.setRecurID(0);
 
     ScheduleDataInfo newinfo = info;
-    newinfo.setTitleName(tr("test"));
+    newinfo.setTitleName(tr("1"));
 
     newinfo.setAllDay(false);
     info.getRepetitionRule().setRuleId(RepetitionRule::RRule_NONE);
     ScheduleTestBtnNum::button_num = 0;
     operation.changeSchedule(newinfo, info);
+    ASSERT_EQ(UpdateJob_titlename, "1");
+
     ScheduleTestBtnNum::button_num = 1;
+    newinfo.setTitleName("2");
     operation.changeSchedule(newinfo, info);
+    ASSERT_EQ(UpdateJob_titlename, "2");
 
     newinfo.setAllDay(true);
+    newinfo.setTitleName("3");
     operation.changeSchedule(newinfo, info);
+    ASSERT_EQ(UpdateJob_titlename, "3");
+
+    QSignalSpy spy(&operation, SIGNAL(signalViewtransparentFrame(const int)));
     ScheduleTestBtnNum::button_num = 0;
     newinfo.getRepetitionRule().setRuleId(RepetitionRule::RRule_EVEDAY);
-    operation.changeSchedule(newinfo, info);
-    ScheduleTestBtnNum::button_num = 1;
-    operation.changeSchedule(newinfo, info);
-    info.getRepetitionRule().setRuleId(RepetitionRule::RRule_EVEDAY);
-    operation.changeSchedule(newinfo, info);
-    ScheduleTestBtnNum::button_num = 0;
-    operation.changeSchedule(newinfo, info);
-    ScheduleTestBtnNum::button_num = 2;
-    operation.changeSchedule(newinfo, info);
+    bool ret = operation.changeSchedule(newinfo, info);
+    ASSERT_EQ(spy.count(), 2);
+    ASSERT_EQ(ret, false);
 
-    newinfo.setRecurID(2);
-    ScheduleTestBtnNum::button_num = 0;
-    operation.changeSchedule(newinfo, info);
     ScheduleTestBtnNum::button_num = 1;
+    newinfo.setTitleName(tr("4"));
     operation.changeSchedule(newinfo, info);
-    ScheduleTestBtnNum::button_num = 2;
+    ASSERT_EQ(UpdateJob_titlename, "4");
+    ASSERT_EQ(spy.count(), 4);
+
+    newinfo.setTitleName("5");
+    info.getRepetitionRule().setRuleId(RepetitionRule::RRule_EVEDAY);
+    stub.set(ADDR(CScheduleOperation, changeRecurInfo), ut_changeRecurInfostub);
     operation.changeSchedule(newinfo, info);
+    ASSERT_EQ(UpdateJob_titlename, "5");
 }
 
 TEST_F(ut_cscheduleoperation, deleteSchedule)
@@ -121,36 +136,48 @@ TEST_F(ut_cscheduleoperation, deleteSchedule)
     info.setID(0);
     info.setRecurID(0);
     ScheduleTestBtnNum::button_num = 0;
-    operation.deleteSchedule(info);
+    bool ret = operation.deleteSchedule(info);
+    ASSERT_FALSE(ret);
     ScheduleTestBtnNum::button_num = 1;
-    operation.deleteSchedule(info);
+    ret = operation.deleteSchedule(info);
+    ASSERT_TRUE(ret);
 
     //删除重复日程
     info.getRepetitionRule().setRuleId(RepetitionRule::RRule_EVEDAY);
     ScheduleTestBtnNum::button_num = 0;
-    operation.deleteSchedule(info);
+    ret = operation.deleteSchedule(info);
+    ASSERT_FALSE(ret);
     ScheduleTestBtnNum::button_num = 1;
-    operation.deleteSchedule(info);
+    ret = operation.deleteSchedule(info);
+    ASSERT_TRUE(ret);
     ScheduleTestBtnNum::button_num = 2;
-    operation.deleteSchedule(info);
+    ret = operation.deleteSchedule(info);
+    ASSERT_TRUE(ret);
 
     info.setRecurID(2);
     ScheduleTestBtnNum::button_num = 0;
-    operation.deleteSchedule(info);
+    ret = operation.deleteSchedule(info);
+    ASSERT_FALSE(ret);
     ScheduleTestBtnNum::button_num = 1;
-    operation.deleteSchedule(info);
+    ret = operation.deleteSchedule(info);
+    ASSERT_TRUE(ret);
     ScheduleTestBtnNum::button_num = 2;
     operation.deleteSchedule(info);
+    ASSERT_TRUE(ret);
 }
 
 TEST_F(ut_cscheduleoperation, queryScheduleStr)
 {
     QDateTime currenttime = QDateTime::currentDateTime();
-    operation.queryScheduleStr("", currenttime, currenttime);
+    QString str = operation.queryScheduleStr("", currenttime, currenttime);
+    QString datestr = currenttime.toString("yyyy-MM-dd");
+    ASSERT_TRUE(str.contains(datestr));
 }
 
 TEST_F(ut_cscheduleoperation, deleteOnlyInfo)
 {
     ScheduleDataInfo info;
+    info.setID(123);
     operation.deleteOnlyInfo(info);
+    ASSERT_EQ(UpdateJob_titlename, "123");
 }

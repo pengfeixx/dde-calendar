@@ -22,6 +22,7 @@
 
 #include "../third-party_stub/stub.h"
 #include "customWidget/scheduleview.h"
+#include "customWidget/todaybutton.h"
 
 ut_weekWindow::ut_weekWindow()
 {
@@ -41,8 +42,15 @@ void ut_weekWindow::TearDown()
 TEST_F(ut_weekWindow, setTheMe)
 {
     m_weekWindow->setTheMe(0);
+    QColor sbColor("#002A57");
+    sbColor.setAlphaF(0.05);
+    ASSERT_EQ(m_weekWindow->m_today->m_shadowColor, sbColor);
     m_weekWindow->setTheMe(1);
+    ASSERT_EQ(m_weekWindow->m_today->m_shadowColor, sbColor);
+    QColor sbColor1("#000000");
+    sbColor1.setAlphaF(0.05);
     m_weekWindow->setTheMe(2);
+    ASSERT_EQ(m_weekWindow->m_today->m_shadowColor, sbColor1);
 }
 
 TEST_F(ut_weekWindow, updateHeight)
@@ -52,20 +60,25 @@ TEST_F(ut_weekWindow, updateHeight)
 
 TEST_F(ut_weekWindow, setTime)
 {
-    QTime time = QTime::currentTime();
+    QTime time(13, 51, 24);
     //定位非全天显示位置
     m_weekWindow->setTime(time);
+    ASSERT_EQ(QString::number(m_weekWindow->m_scheduleView->m_graphicsView->m_sceneHeightScale, 'f', 2), "0.58");
 }
 
 TEST_F(ut_weekWindow, setYearData)
 {
+    QString str = QCoreApplication::translate("today", "Today", "Today");
     m_weekWindow->setYearData();
+    ASSERT_EQ(m_weekWindow->m_today->text(), str);
 }
 
+QString wekwindow_str = "";
 namespace WeekDeleteItem {
 void slotDeleteitem_Stub(void *obj)
 {
     Q_UNUSED(obj)
+    wekwindow_str = "slotDeleteitem_Stub";
 }
 } // namespace WeekDeleteItem
 
@@ -74,6 +87,7 @@ TEST_F(ut_weekWindow, deleteselectSchedule)
     Stub stub;
     stub.set(ADDR(CScheduleView, slotDeleteitem), WeekDeleteItem::slotDeleteitem_Stub);
     m_weekWindow->deleteselectSchedule();
+    ASSERT_EQ(wekwindow_str, "slotDeleteitem_Stub");
 }
 
 bool IsDragging_Stub(void *obj)

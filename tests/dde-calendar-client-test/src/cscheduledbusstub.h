@@ -21,8 +21,9 @@
 #ifndef CSCHEDULEDBUSSTUB_H
 #define CSCHEDULEDBUSSTUB_H
 
+#include <QString>
 #include "../third-party_stub/stub.h"
-
+extern QString UpdateJob_titlename;
 void cscheduleDbusStub(Stub &stub);
 
 #endif // CSCHEDULEDBUSSTUB_H

@@ -27,6 +27,8 @@
 #include "constants.h"
 #include "../testscheduledata.h"
 
+#include <QSignalSpy>
+
 QVector<ScheduleDataInfo> getScheduleDInfo()
 {
     QVector<ScheduleDataInfo> scheduleDate {};
@@ -175,9 +177,11 @@ TEST_F(ut_schedulesearchview, setTheMe)
 {
     int type = 1;
     mScheduleSearchView->setTheMe(type);
+    ASSERT_EQ(mScheduleSearchView->m_lBackgroundcolor, Qt::white);
 
     type = 2;
     mScheduleSearchView->setTheMe(type);
+    ASSERT_EQ(QString::number(mScheduleSearchView->m_bBackgroundcolor.alphaF(), 'f', 2), "0.05");
 }
 
 //void CScheduleSearchView::clearSearch()
@@ -194,12 +198,14 @@ TEST_F(ut_schedulesearchview, clearSearch)
     mScheduleSearchView->createItemWidget(schedule1, QDate(2021, 1, 1), 1);
 
     mScheduleSearchView->clearSearch();
+    ASSERT_EQ(mScheduleSearchView->m_gradientItemList->count(), 0);
 }
 
 //void CScheduleSearchView::setMaxWidth(const int w)
 TEST_F(ut_schedulesearchview, setMacWidth)
 {
     mScheduleSearchView->setMaxWidth(44);
+    ASSERT_EQ(mScheduleSearchView->m_maxWidth, 44);
 }
 
 //void CScheduleSearchView::slotsetSearch()
@@ -213,25 +219,37 @@ TEST_F(ut_schedulesearchview, createItemWidget)
 {
     ScheduleDataInfo scheduleinof = getScheduleDInfo().first();
     mScheduleSearchView->createItemWidget(scheduleinof, QDate::currentDate(), 3);
+    ASSERT_EQ(qobject_cast<CScheduleSearchItem *>(mScheduleSearchView->m_gradientItemList->itemWidget(mScheduleSearchView->m_gradientItemList->item(0)))->m_date, QDate::currentDate());
 }
 
 //QListWidgetItem *CScheduleSearchView::createItemWidget(QDate date)
 TEST_F(ut_schedulesearchview, createItemWidgetDate)
 {
-    mScheduleSearchView->createItemWidget(QDate::currentDate());
+    QListWidgetItem *itm = mScheduleSearchView->createItemWidget(QDate::currentDate());
+    ASSERT_EQ(itm->sizeHint(), QSize(mScheduleSearchView->m_maxWidth - 25, 36));
 }
 
 //void CScheduleSearchView::slotSelectSchedule(const ScheduleDataInfo &scheduleInfo)
 TEST_F(ut_schedulesearchview, slotSelectSchedule)
 {
+    QSignalSpy spy(mScheduleSearchView, SIGNAL(signalSelectSchedule(const ScheduleDataInfo &)));
     ScheduleDataInfo scheduleinof = getScheduleDInfo().first();
     mScheduleSearchView->slotSelectSchedule(scheduleinof);
+    ASSERT_EQ(spy.count(), 1);
+}
+QString stub_str = "";
+void stub_slotsetSearch(QString str)
+{
+    stub_str = "stub_slotsetSearch";
 }
 
 //void CScheduleSearchView::updateSearch()
 TEST_F(ut_schedulesearchview, updateSearch)
 {
+    Stub st;
+    st.set(ADDR(CScheduleSearchView, slotsetSearch), stub_slotsetSearch);
     mScheduleSearchView->updateSearch();
+    ASSERT_TRUE(stub_str != "stub_slotsetSearch");
 }
 
 //void CScheduleSearchDateItem::setBackgroundColor(QColor color1)
@@ -239,6 +257,7 @@ TEST_F(ut_schedulesearchview, setBachgroundColor)
 {
     QColor color1(240, 100, 100);
     mScheduleSearchDateItem->setBackgroundColor(color1);
+    ASSERT_EQ(mScheduleSearchDateItem->m_Backgroundcolor, color1);
 }
 
 //void CScheduleSearchDateItem::setText(QColor tcolor, QFont font)
@@ -249,12 +268,14 @@ TEST_F(ut_schedulesearchview, setText)
     font.setWeight(QFont::Medium);
     font.setPixelSize(DDECalendar::FontSizeTwelve);
     mScheduleSearchDateItem->setText(color, font);
+    ASSERT_EQ(mScheduleSearchDateItem->m_textcolor, color);
 }
 
 //void CScheduleSearchDateItem::setDate(QDate date)
 TEST_F(ut_schedulesearchview, setDate)
 {
     mScheduleSearchDateItem->setDate(QDate::currentDate());
+    ASSERT_EQ(mScheduleSearchDateItem->m_date, QDate::currentDate());
 }
 
 //void CScheduleSearchItem::setBackgroundColor(QColor color1)
@@ -262,6 +283,7 @@ TEST_F(ut_schedulesearchview, setBackGroundColor)
 {
     QColor color(240, 100, 100);
     mScheduleSearchItem->setBackgroundColor(color);
+    ASSERT_EQ(mScheduleSearchItem->m_Backgroundcolor, color);
 }
 
 //void CScheduleSearchItem::setSplitLineColor(QColor color1)
@@ -269,6 +291,7 @@ TEST_F(ut_schedulesearchview, setSplitLineColor)
 {
     QColor color(240, 100, 100);
     mScheduleSearchItem->setSplitLineColor(color);
+    ASSERT_EQ(mScheduleSearchItem->m_splitlinecolor, color);
 }
 
 //void CScheduleSearchItem::setText(QColor tcolor, QFont font)
@@ -279,6 +302,7 @@ TEST_F(ut_schedulesearchview, setItemText)
     font.setWeight(QFont::Medium);
     font.setPixelSize(DDECalendar::FontSizeTwelve);
     mScheduleSearchItem->setText(color, font);
+    ASSERT_EQ(mScheduleSearchItem->m_tTextColor, color);
 }
 
 //void CScheduleSearchItem::setTimeC(QColor tcolor, QFont font)
@@ -289,6 +313,7 @@ TEST_F(ut_schedulesearchview, setTimeC)
     font.setWeight(QFont::Medium);
     font.setPixelSize(DDECalendar::FontSizeTwelve);
     mScheduleSearchItem->setTimeC(color, font);
+    ASSERT_EQ(mScheduleSearchItem->m_timecolor, color);
 }
 
 //void CScheduleSearchItem::setData(ScheduleDataInfo vScheduleInfo, QDate date)
@@ -296,6 +321,7 @@ TEST_F(ut_schedulesearchview, setItemDate)
 {
     ScheduleDataInfo scheduleinfo = getScheduleDInfo().first();
     mScheduleSearchItem->setData(scheduleinfo, QDate::currentDate());
+    ASSERT_EQ(mScheduleSearchItem->m_date, QDate::currentDate());
 }
 
 //void CScheduleSearchItem::setRoundtype(int rtype)
@@ -303,6 +329,7 @@ TEST_F(ut_schedulesearchview, setRoundtype)
 {
     mScheduleSearchItem->setRoundtype(3);
     mScheduleSearchItem->setRoundtype(2);
+    ASSERT_EQ(mScheduleSearchItem->m_roundtype, 2);
 }
 
 //void CScheduleSearchItem::setTheMe(int type)
@@ -310,6 +337,7 @@ TEST_F(ut_schedulesearchview, setItemTheMe)
 {
     mScheduleSearchItem->setTheMe(1);
     mScheduleSearchItem->setTheMe(2);
+    ASSERT_EQ(mScheduleSearchItem->m_presscolor.timeColor.alphaF(), 1);
 }
 
 //void CScheduleSearchItem::slotEdit()
@@ -331,7 +359,8 @@ TEST_F(ut_schedulesearchview, slotDelete)
 //const ScheduleDataInfo &getData() const
 TEST_F(ut_schedulesearchview, getDate)
 {
-    mScheduleSearchItem->getData();
+    ScheduleDataInfo sp = mScheduleSearchItem->getData();
+    ASSERT_EQ(sp.m_ScheduleType, 1);
 }
 
 QMap<QDate, QVector<ScheduleDataInfo>> stub_getSearchScheduleInfo(void *obj, const QString &key, const QDateTime &startTime, const QDateTime &endTime)
@@ -356,4 +385,5 @@ TEST_F(ut_schedulesearchview, getPixmap)
     mScheduleSearchView->setFixedSize(300, 800);
     QPixmap pixmap(mScheduleListWidget->size());
     pixmap = mScheduleSearchView->grab();
+    ASSERT_EQ(pixmap.size(), mScheduleSearchView->size());
 }

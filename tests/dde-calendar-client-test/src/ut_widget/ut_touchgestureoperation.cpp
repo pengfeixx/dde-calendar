@@ -35,6 +35,7 @@ ut_touchgestureoperation::~ut_touchgestureoperation()
 TEST_F(ut_touchgestureoperation, setUpdate)
 {
     mTouchGestureOperation->setUpdate(true);
+    ASSERT_TRUE(mTouchGestureOperation->m_update);
 }
 
 //bool touchGestureOperation::isUpdate() const
@@ -51,28 +52,34 @@ TEST_F(ut_touchgestureoperation, isUpdate)
 //touchGestureOperation::TouchState touchGestureOperation::getTouchState() const
 TEST_F(ut_touchgestureoperation, getTouchState)
 {
+    mTouchGestureOperation->m_touchState = touchGestureOperation::T_SINGLE_CLICK;
     mTouchGestureOperation->getTouchState();
+    ASSERT_EQ(mTouchGestureOperation->m_touchState, touchGestureOperation::T_SINGLE_CLICK);
 }
 
 //touchGestureOperation::TouchMovingDirection touchGestureOperation::getMovingDir() const
 TEST_F(ut_touchgestureoperation, getMovingDir)
 {
+    mTouchGestureOperation->m_movingDir = touchGestureOperation::T_LEFT;
     mTouchGestureOperation->getMovingDir();
+    ASSERT_EQ(mTouchGestureOperation->m_movingDir, touchGestureOperation::T_LEFT);
 }
 
 //touchGestureOperation::TouchMovingDirection touchGestureOperation::getTouchMovingDir(QPointF &startPoint, QPointF &stopPoint, qreal &movingLine)
 TEST_F(ut_touchgestureoperation, getTouchMovingDir)
 {
-    QPointF point1;
-    QPointF point2;
+    QPointF point1(10, 12);
+    QPointF point2(30, 40);
     qreal num = 2;
-    mTouchGestureOperation->getTouchMovingDir(point1, point2, num);
+    touchGestureOperation::TouchMovingDirection result = mTouchGestureOperation->getTouchMovingDir(point1, point2, num);
+    ASSERT_EQ(result, touchGestureOperation::T_BOTTOM);
 }
 
 //void touchGestureOperation::calculateAzimuthAngle(QPointF &startPoint, QPointF &stopPoint)
 TEST_F(ut_touchgestureoperation, calculateAzimuthAngle)
 {
-    QPointF point1;
-    QPointF point2;
+    QPointF point1(10, 12);
+    QPointF point2(30, 40);
     mTouchGestureOperation->calculateAzimuthAngle(point1, point2);
+    ASSERT_EQ(mTouchGestureOperation->m_movingDir, touchGestureOperation::T_BOTTOM);
 }

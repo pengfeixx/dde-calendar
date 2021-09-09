@@ -19,6 +19,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "ut_yearwindow.h"
+#include "customWidget/customframe.h"
+#include "widget/yearWidget/yearscheduleview.h"
 
 ut_yearwindow::ut_yearwindow()
 {
@@ -41,12 +43,17 @@ TEST_F(ut_yearwindow, setTheMe)
     mYearWindow->setTheMe(type);
     type = 2;
     mYearWindow->setTheMe(type);
+    QColor tbColor2 = "#414141";
+    tbColor2.setAlphaF(0.3);
+
+    ASSERT_EQ(mYearWindow->m_todayFrame->m_bnormalColor, tbColor2);
 }
 
 TEST_F(ut_yearwindow, slotMousePress)
 {
     QDate currentDate = QDate::currentDate();
     mYearWindow->slotMousePress(currentDate, 0);
+    ASSERT_EQ(mYearWindow->m_scheduleView->arrowDirection(), DArrowRectangle::ArrowRight);
     mYearWindow->slotMousePress(currentDate, 1);
     mYearWindow->slotMousePress(currentDate, 2);
     mYearWindow->slotMousePress(currentDate, 3);
@@ -57,14 +64,18 @@ TEST_F(ut_yearwindow, calculateAzimuthAngle)
 {
     QPointF startPoint(0, 0);
     QPointF stopPoint(30, 20);
-    mYearWindow->calculateAzimuthAngle(startPoint, stopPoint);
+    TouchGestureData tdata = mYearWindow->calculateAzimuthAngle(startPoint, stopPoint);
+    ASSERT_EQ(tdata.movingDirection, TouchGestureData::T_RIGHT);
     stopPoint.setX(20);
     stopPoint.setY(30);
-    mYearWindow->calculateAzimuthAngle(startPoint, stopPoint);
+    tdata = mYearWindow->calculateAzimuthAngle(startPoint, stopPoint);
+    ASSERT_EQ(tdata.movingDirection, TouchGestureData::T_BOTTOM);
     stopPoint.setX(-20);
     stopPoint.setY(30);
-    mYearWindow->calculateAzimuthAngle(startPoint, stopPoint);
+    tdata = mYearWindow->calculateAzimuthAngle(startPoint, stopPoint);
+    ASSERT_EQ(tdata.movingDirection, TouchGestureData::T_BOTTOM);
     stopPoint.setX(-30);
     stopPoint.setY(20);
-    mYearWindow->calculateAzimuthAngle(startPoint, stopPoint);
+    tdata = mYearWindow->calculateAzimuthAngle(startPoint, stopPoint);
+    ASSERT_EQ(tdata.movingDirection, TouchGestureData::T_LEFT);
 }

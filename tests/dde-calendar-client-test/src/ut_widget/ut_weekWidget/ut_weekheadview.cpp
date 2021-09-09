@@ -20,6 +20,7 @@
 */
 #include "ut_weekheadview.h"
 #include "../third-party_stub/stub.h"
+#include "customWidget/customframe.h"
 
 ut_weekheadview::ut_weekheadview()
 {
@@ -71,7 +72,9 @@ QVector<QDate> getDayList()
 TEST_F(ut_weekheadview, setTheMe)
 {
     mWeekHeadView->setTheMe(1);
+    ASSERT_EQ(QString::number(mWeekHeadView->m_backgroundShowColor.alphaF(), 'f', 2), "0.40");
     mWeekHeadView->setTheMe(2);
+    ASSERT_EQ(QString::number(mWeekHeadView->m_backgroundColor.alphaF(), 'f', 2), "0.10");
 }
 
 //void CWeekHeadView::setWeekDay(QVector<QDate> vDays, const QDate &selectDate)
@@ -81,27 +84,33 @@ TEST_F(ut_weekheadview, setWeekDay)
     dateList.append(getDayList().first());
     mWeekHeadView->setWeekDay(dateList, QDate::currentDate());
     mWeekHeadView->setWeekDay(getDayList(), QDate::currentDate());
+    QLocale locale;
+    ASSERT_EQ(mWeekHeadView->m_monthLabel->m_text, locale.monthName(QDate::currentDate().month(), QLocale::ShortFormat));
 }
 
 //void CWeekHeadView::setLunarVisible(bool visible)
 TEST_F(ut_weekheadview, setLunarvisible)
 {
     mWeekHeadView->setLunarVisible(false);
+    ASSERT_EQ(mWeekHeadView->m_showState, CWeekHeadView::ShowLunarFestivalHighlight);
     mWeekHeadView->setLunarVisible(true);
+    ASSERT_EQ(mWeekHeadView->m_showState, CWeekHeadView::Normal);
 }
 
 //const QString CWeekHeadView::getCellDayNum(int pos)
 TEST_F(ut_weekheadview, getCellDayNum)
 {
     mWeekHeadView->setWeekDay(getDayList(), QDate::currentDate());
-    mWeekHeadView->getCellDayNum(4);
+    QString str = mWeekHeadView->getCellDayNum(4);
+    ASSERT_EQ(str, QString::number(QDate::currentDate().day() + 4));
 }
 
 //const QDate CWeekHeadView::getCellDate(int pos)
 TEST_F(ut_weekheadview, getCellDate)
 {
     mWeekHeadView->setWeekDay(getDayList(), QDate::currentDate());
-    mWeekHeadView->getCellDate(4);
+    QDate date = mWeekHeadView->getCellDate(4);
+    ASSERT_EQ(date, QDate::currentDate().addDays(4));
 }
 
 //const QString CWeekHeadView::getLunar(int pos)
@@ -109,7 +118,8 @@ TEST_F(ut_weekheadview, getLunar)
 {
     mWeekHeadView->setWeekDay(getDayList(), QDate::currentDate());
     mWeekHeadView->setHunagLiInfo(getHuangLiDayInfo());
-    mWeekHeadView->getLunar(1);
+    QString str = mWeekHeadView->getLunar(1);
+    ASSERT_EQ(str, "");
 }
 
 TEST_F(ut_weekheadview, getPixmap)
@@ -118,4 +128,5 @@ TEST_F(ut_weekheadview, getPixmap)
     mWeekHeadView->setFixedSize(600, 80);
     QPixmap pixmap(mWeekHeadView->size());
     mWeekHeadView->render(&pixmap);
+    ASSERT_EQ(pixmap.size(), mWeekHeadView->size());
 }
