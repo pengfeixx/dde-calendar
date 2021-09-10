@@ -20,6 +20,8 @@
 */
 #include "ut_daywindow.h"
 
+#include "customWidget/customframe.h"
+
 ut_dayWindow::ut_dayWindow()
 {
 }
@@ -44,36 +46,55 @@ TEST_F(ut_dayWindow, getPixmap)
     m_dayWindow->setFixedSize(800, 600);
     QPixmap pixmap(m_dayWindow->size());
     m_dayWindow->render(&pixmap);
+    EXPECT_EQ(pixmap.size(), m_dayWindow->size());
 }
 
 //setTheme
-TEST_F(ut_dayWindow, setTheme)
+TEST_F(ut_dayWindow, setTheme_001)
 {
-    m_dayWindow->setTheMe(0);
-    m_dayWindow->setTheMe(1);
-    m_dayWindow->setTheMe(2);
+    int type = 1;
+    QColor groundColor("#FFFFFF");
+    m_dayWindow->setTheMe(type);
+    EXPECT_EQ(groundColor, m_dayWindow->m_leftground->m_bnormalColor);
+}
+
+TEST_F(ut_dayWindow, setTheme_002)
+{
+    int type = 2;
+    QColor groundColor("#282828");
+    m_dayWindow->setTheMe(type);
+    EXPECT_EQ(groundColor, m_dayWindow->m_leftground->m_bnormalColor);
 }
 
 //setSearchWFlag
 TEST_F(ut_dayWindow, setSearchWFlag)
 {
-    m_dayWindow->setSearchWFlag(false);
+    bool flag = true;
+    m_dayWindow->setSearchWFlag(flag);
+    EXPECT_EQ(flag, m_dayWindow->m_searchFlag);
 }
 
 //slotChangeSelectDate
 TEST_F(ut_dayWindow, slotChangeSelectDate)
 {
-    m_dayWindow->slotChangeSelectDate(m_dayWindow->getSelectDate());
+    QDate currentDate = QDate::currentDate();
+
+    m_dayWindow->slotChangeSelectDate(currentDate);
+    EXPECT_EQ(m_dayWindow->getSelectDate(), currentDate);
 }
 
 //slotSwitchPrePage
 TEST_F(ut_dayWindow, slotSwitchPrePage)
 {
+    QDate selectDate = m_dayWindow->getSelectDate();
     m_dayWindow->slotSwitchPrePage();
+    EXPECT_EQ(selectDate.addDays(-1), m_dayWindow->getSelectDate());
 }
 
 //slotSwitchNextPage
 TEST_F(ut_dayWindow, slotSwitchNextPage)
 {
+    QDate selectDate = m_dayWindow->getSelectDate();
     m_dayWindow->slotSwitchNextPage();
+    EXPECT_EQ(selectDate.addDays(1), m_dayWindow->getSelectDate());
 }

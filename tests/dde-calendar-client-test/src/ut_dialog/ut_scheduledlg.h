@@ -21,15 +21,17 @@
 #ifndef TEST_SCHEDULEDLG_H
 #define TEST_SCHEDULEDLG_H
 
-#include <QObject>
-#include <gtest/gtest.h>
 #include "dialog/scheduledlg.h"
-class ut_scheduledlg : public ::QObject
-    , public ::testing::Test
+#include "gtest/gtest.h"
+
+#include <QObject>
+
+class ut_scheduledlg : public ::testing::Test
 {
 public:
     ut_scheduledlg();
-    ~ut_scheduledlg();
+    void SetUp() override;
+    void TearDown() override;
 
 protected:
     CScheduleDlg *mScheduleDlg = nullptr;

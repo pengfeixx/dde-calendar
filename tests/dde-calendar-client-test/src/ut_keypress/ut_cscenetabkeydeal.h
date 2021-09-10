@@ -21,17 +21,20 @@
 #ifndef TEST_CSCENETABKEYDEAL_H
 #define TEST_CSCENETABKEYDEAL_H
 
-#include <QObject>
+#include "KeyPress/cscenetabkeydeal.h"
+#include "view/cgraphicsscene.h"
+#include "gtest/gtest.h"
 
-class ut_CSceneTabKeyDeal : public QObject
+class ut_CSceneTabKeyDeal : public ::testing::Test
 {
-    Q_OBJECT
 public:
-    explicit ut_CSceneTabKeyDeal(QObject *parent = nullptr);
+    ut_CSceneTabKeyDeal() {}
+    void SetUp() override;
+    void TearDown() override;
 
-signals:
-
-public slots:
+protected:
+    CSceneTabKeyDeal *m_sceneTabDeal = nullptr;
+    CGraphicsScene *m_scene = nullptr;
 };
 
 #endif // TEST_CSCENETABKEYDEAL_H

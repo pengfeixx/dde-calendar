@@ -22,25 +22,40 @@
 
 ut_cdynamicicon::ut_cdynamicicon()
 {
-    mDynamicicon = new CDynamicIcon(8, 8);
 }
 
-ut_cdynamicicon::~ut_cdynamicicon()
+void ut_cdynamicicon::SetUp()
 {
-    delete mDynamicicon;
+    mDynamicicon = CDynamicIcon::getInstance();
+}
+
+void ut_cdynamicicon::TearDown()
+{
+    CDynamicIcon::releaseInstance();
     mDynamicicon = nullptr;
 }
 
 //void CDynamicIcon::setDate(const QDate &date)
 TEST_F(ut_cdynamicicon, setDate)
 {
-    mDynamicicon->setDate(QDate::currentDate());
+    QDate currentDate = QDate::currentDate();
+    mDynamicicon->setDate(currentDate);
+    EXPECT_EQ(currentDate, mDynamicicon->m_Date);
 }
 
 //void CDynamicIcon::setTitlebar(DTitlebar *titlebar)
 TEST_F(ut_cdynamicicon, setTitlebar)
 {
-    DTitlebar *titlebar;
+    DTitlebar *titlebar = nullptr;
     mDynamicicon->setTitlebar(titlebar);
+    EXPECT_EQ(titlebar, mDynamicicon->m_Titlebar);
 }
 
+TEST_F(ut_cdynamicicon, paintPixmap)
+{
+    QDate currentDate = QDate::currentDate();
+    mDynamicicon->setDate(currentDate);
+    QPixmap pixmap(QSize(20, 20));
+    mDynamicicon->paintPixmap(&pixmap);
+    EXPECT_EQ(pixmap.size(), QSize(20, 20));
+}

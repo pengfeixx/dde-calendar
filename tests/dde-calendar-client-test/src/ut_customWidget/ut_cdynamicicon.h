@@ -21,16 +21,18 @@
 #ifndef TEST_CDYNAMICICON_H
 #define TEST_CDYNAMICICON_H
 
-#include <QObject>
-#include <gtest/gtest.h>
 #include "customWidget/cdynamicicon.h"
 
-class ut_cdynamicicon : public ::QObject
-    , public ::testing::Test
+#include "gtest/gtest.h"
+
+#include <QObject>
+
+class ut_cdynamicicon : public ::testing::Test
 {
 public:
     ut_cdynamicicon();
-    ~ut_cdynamicicon();
+    void SetUp() override;
+    void TearDown() override;
 
 protected:
     CDynamicIcon *mDynamicicon = nullptr;

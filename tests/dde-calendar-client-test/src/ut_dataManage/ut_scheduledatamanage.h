@@ -23,14 +23,15 @@
 
 #include "scheduledatamanage.h"
 #include "gtest/gtest.h"
+
 #include <QObject>
 
-class ut_scheduledatamanage : public QObject
-    , public ::testing::Test
+class ut_scheduledatamanage : public ::testing::Test
 {
 public:
     ut_scheduledatamanage();
-    ~ut_scheduledatamanage();
+    void SetUp() override;
+    void TearDown() override;
 
 protected:
     CScheduleDataManage *datamanage = nullptr;

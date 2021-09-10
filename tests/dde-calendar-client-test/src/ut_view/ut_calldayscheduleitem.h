@@ -26,17 +26,12 @@
 
 #include <QObject>
 
-class ut_CAlldayscheduleitem : public QObject
-    , public ::testing::Test
+class ut_CAlldayscheduleitem : public ::testing::Test
 {
-    Q_OBJECT
 public:
     ut_CAlldayscheduleitem();
     void SetUp() override;
     void TearDown() override;
-signals:
-
-public slots:
 public:
     CAllDayScheduleItem *m_allItem;
     QRectF m_rectF;

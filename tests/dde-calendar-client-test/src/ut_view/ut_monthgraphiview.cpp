@@ -55,11 +55,18 @@ void ut_monthgraphiview::TearDown()
 }
 
 //void CMonthGraphiview::setTheMe(int type)
-TEST_F(ut_monthgraphiview, setTheMe)
+TEST_F(ut_monthgraphiview, setTheMe_001)
 {
     int type = 1;
-    cMonthGraphiview->setTheMe();
     cMonthGraphiview->setTheMe(type);
+    EXPECT_EQ(type, cMonthGraphiview->m_themetype);
+}
+
+TEST_F(ut_monthgraphiview, setTheMe_002)
+{
+    int type = 2;
+    cMonthGraphiview->setTheMe(type);
+    EXPECT_EQ(type, cMonthGraphiview->m_themetype);
 }
 
 //void CMonthGraphiview::setLunarInfo(const QMap<QDate, CaHuangLiDayInfo> &lunarCache)
@@ -67,6 +74,7 @@ TEST_F(ut_monthgraphiview, setLunarInfo)
 {
     QMap<QDate, CaHuangLiDayInfo> lunarCache = QMap<QDate, CaHuangLiDayInfo> {};
     cMonthGraphiview->setLunarInfo(lunarCache);
+    EXPECT_EQ(lunarCache.size(), cMonthGraphiview->m_lunarCache.size());
 }
 
 //void CMonthGraphiview::setLunarVisible(bool visible)
@@ -74,6 +82,7 @@ TEST_F(ut_monthgraphiview, setLunarVisible)
 {
     bool visible = false;
     cMonthGraphiview->setLunarVisible(visible);
+    EXPECT_EQ(visible, CMonthDayItem::m_LunarVisible);
 }
 
 //void CMonthGraphiview::setScheduleInfo(const QMap<QDate, QVector<ScheduleDataInfo> > &info)
@@ -81,6 +90,7 @@ TEST_F(ut_monthgraphiview, setScheduleInfo)
 {
     QMap<QDate, QVector<ScheduleDataInfo> > info = QMap<QDate, QVector<ScheduleDataInfo> > {};
     cMonthGraphiview->setScheduleInfo(info);
+    EXPECT_EQ(cMonthGraphiview->m_schedulelistdata, info);
 }
 
 //void CMonthGraphiview::setSelectSearchSchedule(const ScheduleDataInfo &scheduleInfo)
@@ -93,16 +103,19 @@ TEST_F(ut_monthgraphiview, setSelectSearchSchedule)
 //QPointF CMonthGraphiview::getItemPos(const QPoint &p, const QRectF &itemRect)
 TEST_F(ut_monthgraphiview, getItemPos)
 {
+    //转换item内坐标
     QPoint p(100, 100);
-    QRectF itemRect;
-    cMonthGraphiview->getItemPos(p, itemRect);
+    QRectF itemRect(20, 50, 100, 100);
+    QPointF getPos = cMonthGraphiview->getItemPos(p, itemRect);
+    EXPECT_EQ(getPos, QPointF(100 - 20, 100 - 50));
 }
 
 //QDateTime CMonthGraphiview::getPosDate(const QPoint &p)
 TEST_F(ut_monthgraphiview, getPosDate)
 {
-    QPoint p(100, 100);
+    QPoint p(0, 0);
     QDateTime datetime = cMonthGraphiview->getPosDate(p);
+    EXPECT_EQ(datetime.date(), QDate::currentDate());
 }
 
 ////void CMonthGraphiview::upDateInfoShow(const CMonthGraphiview::DragStatus &status, const ScheduleDataInfo &info)

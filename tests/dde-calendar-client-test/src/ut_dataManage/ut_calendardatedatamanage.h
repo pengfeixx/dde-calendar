@@ -23,16 +23,15 @@
 
 #include "calendardatedatamanage.h"
 #include "gtest/gtest.h"
+
 #include <QObject>
 
-class ut_calendardatedatamanage : public QObject
-    , public ::testing::Test
+class ut_calendardatedatamanage : public ::testing::Test
 {
 public:
     ut_calendardatedatamanage();
     void SetUp() override;
     void TearDown() override;
-
 protected:
     CalendarDateDataManager *calendarDateDataManager = nullptr;
 };

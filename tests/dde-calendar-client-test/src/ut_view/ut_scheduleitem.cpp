@@ -22,15 +22,21 @@
 
 #include "../third-party_stub/stub.h"
 
+#include <DFontSizeManager>
+
 #include <QPainter>
 
 ut_scheduleitem::ut_scheduleitem()
 {
-    QRectF rectf;
+}
+
+void ut_scheduleitem::SetUp()
+{
+    QRectF rectf(0, 0, 200, 50);
     mScheduleItem = new CScheduleItem(rectf);
 }
 
-ut_scheduleitem::~ut_scheduleitem()
+void ut_scheduleitem::TearDown()
 {
     delete mScheduleItem;
     mScheduleItem = nullptr;
@@ -102,8 +108,12 @@ QVector<ScheduleDataInfo> getScheduleItemDInfo()
 //void CScheduleItem::setData(const ScheduleDataInfo &info, QDate date, int totalNum)
 TEST_F(ut_scheduleitem, setData)
 {
-    ScheduleDataInfo scheduleinof = getScheduleItemDInfo().first();
-    mScheduleItem->setData(scheduleinof, QDate::currentDate(), 4);
+    ScheduleDataInfo scheduleinfo = getScheduleItemDInfo().first();
+    int totalNum = 4;
+    QDate date = QDate::currentDate();
+    mScheduleItem->setData(scheduleinfo, date, totalNum);
+    EXPECT_EQ(mScheduleItem->m_vScheduleInfo, scheduleinfo);
+    EXPECT_EQ(totalNum, mScheduleItem->m_totalNum);
 }
 
 //bool CScheduleItem::hasSelectSchedule(const ScheduleDataInfo &info)
@@ -119,14 +129,30 @@ TEST_F(ut_scheduleitem, hasSelectSchedule)
 }
 
 //void CScheduleItem::splitText(QFont font, int w, int h, QString str, QStringList &liststr, QFontMetrics &fontm)
-TEST_F(ut_scheduleitem, splitText)
+TEST_F(ut_scheduleitem, splitText_001)
 {
-    QFont font;
-    QString str = "helo";
-    QStringList strlist("hello,word!");
+    QFont font = DFontSizeManager::instance()->get(DFontSizeManager::T7, QFont::Medium);
+    QString str = "Test length statement";
+    QStringList strlist;
     QFontMetrics fontmetrics(font);
-    mScheduleItem->splitText(font, 10, 12, str, strlist, fontmetrics);
-    mScheduleItem->splitText(font, 40, 40, str, strlist, fontmetrics);
+    int width = 20; //item显示内容宽度
+    int height = 50; //item显示内容高度
+    mScheduleItem->splitText(font, width, height, str, strlist, fontmetrics);
+    ASSERT_GT(strlist.size(), 0);
+    EXPECT_LT(strlist.at(0).size(), str.size());
+}
+
+TEST_F(ut_scheduleitem, splitText_002)
+{
+    QFont font = DFontSizeManager::instance()->get(DFontSizeManager::T7, QFont::Medium);
+    QString str = "Test length statement";
+    QStringList strlist;
+    QFontMetrics fontmetrics(font);
+    int width = 600; //item显示内容宽度
+    int height = 100; //item显示内容高度
+    mScheduleItem->splitText(font, width, height, str, strlist, fontmetrics);
+    ASSERT_GT(strlist.size(), 0);
+    EXPECT_EQ(strlist.at(0).size(), str.size());
 }
 
 bool getItemFocus_Stub()
@@ -135,7 +161,7 @@ bool getItemFocus_Stub()
 }
 
 //paintBackground
-TEST_F(ut_scheduleitem, paintBackground)
+TEST_F(ut_scheduleitem, paintBackground_001)
 {
     QRectF rectf(0, 0, 100, 100);
     mScheduleItem->setRect(rectf);
@@ -146,8 +172,22 @@ TEST_F(ut_scheduleitem, paintBackground)
     mScheduleItem->m_vHighflag = true;
     mScheduleItem->m_vSelectflag = false;
     mScheduleItem->paintBackground(&painter, pixmap.rect(), true);
+    EXPECT_EQ(pixmap.size(), rectf.toRect().size());
+}
+
+TEST_F(ut_scheduleitem, paintBackground_002)
+{
+    QRectF rectf(0, 0, 100, 100);
+    mScheduleItem->setRect(rectf);
+    mScheduleItem->setData(getScheduleItemDInfo().first(), QDate::currentDate(), 4);
+    QPixmap pixmap(rectf.toRect().size());
+    pixmap.fill(Qt::transparent);
+    QPainter painter(&pixmap);
+    mScheduleItem->m_vHighflag = true;
+
     Stub stub;
     stub.set(ADDR(CFocusItem, getItemFocus), getItemFocus_Stub);
     mScheduleItem->m_vSelectflag = true;
     mScheduleItem->paintBackground(&painter, pixmap.rect(), true);
+    EXPECT_EQ(pixmap.size(), rectf.toRect().size());
 }

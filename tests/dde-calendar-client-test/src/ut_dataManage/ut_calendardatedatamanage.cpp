@@ -19,6 +19,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "ut_calendardatedatamanage.h"
+
 #include <QDebug>
 
 ut_calendardatedatamanage::ut_calendardatedatamanage()
@@ -43,49 +44,59 @@ void ut_calendardatedatamanage::TearDown()
 //void CalendarDateDataManager::setSelectDate(const QDate &selectDate, const bool isSwitchYear)
 TEST_F(ut_calendardatedatamanage, setSelectDate)
 {
-    QDate selectDate(2020, 12, 25);
+    QDate selectDate = QDate::currentDate().addYears(1);
     bool isSwitchYear = true;
     calendarDateDataManager->setSelectDate(selectDate, isSwitchYear);
-
-    isSwitchYear = false;
-    calendarDateDataManager->setSelectDate(selectDate, isSwitchYear);
+    EXPECT_EQ(selectDate, calendarDateDataManager->m_selectDate);
 }
 
 //QDate CalendarDateDataManager::getSelectDate() const
 TEST_F(ut_calendardatedatamanage, getSelectDate)
 {
-    QDate selectDate;
-    selectDate = calendarDateDataManager->getSelectDate();
-    //qInfo() << selectDate;
+    QDate selectDate = QDate::currentDate().addYears(1);
+    bool isSwitchYear = true;
+    calendarDateDataManager->setSelectDate(selectDate, isSwitchYear);
+    EXPECT_EQ(selectDate, calendarDateDataManager->getSelectDate());
 }
 
 //void CalendarDateDataManager::setCurrentDateTime(const QDateTime &currentDateTime)
 TEST_F(ut_calendardatedatamanage, setCurrentDateTime)
 {
-    QDate date(2020, 12, 25);
-    QDateTime currentDateTime(date);
+    QDateTime currentDateTime = QDateTime::currentDateTime();
     calendarDateDataManager->setCurrentDateTime(currentDateTime);
+    EXPECT_EQ(currentDateTime, calendarDateDataManager->m_currentDateTime);
 }
 
 //QDateTime CalendarDateDataManager::getCurrentDate() const
 TEST_F(ut_calendardatedatamanage, getCurrentDate)
 {
-    QDateTime currentDateTime;
+    QDateTime currentDateTime = QDateTime::currentDateTime();
+    calendarDateDataManager->setCurrentDateTime(currentDateTime);
     currentDateTime = calendarDateDataManager->getCurrentDate();
+    EXPECT_EQ(currentDateTime, calendarDateDataManager->getCurrentDate());
 }
 
 //QMap<int, QVector<QDate> > CalendarDateDataManager::getYearDate()
 TEST_F(ut_calendardatedatamanage, getYearDate)
 {
-    QMap<int, QVector<QDate> > dateTime;
-    dateTime = calendarDateDataManager->getYearDate();
+    QMap<int, QVector<QDate>> dateTime = calendarDateDataManager->getYearDate();
+    EXPECT_EQ(dateTime.size(), 12);
+}
+
+TEST_F(ut_calendardatedatamanage, getMonthDate)
+{
+    int year = 2021;
+    int month = 2;
+    QVector<QDate> monthDate = calendarDateDataManager->getMonthDate(year, month);
+    EXPECT_EQ(42, monthDate.size());
 }
 
 //QVector<QDate> CalendarDateDataManager::getWeekDate(const QDate &date)
 TEST_F(ut_calendardatedatamanage, getWeekDate)
 {
-    QDate selectDate(2020, 12, 25);
-    QVector<QDate> dateV = calendarDateDataManager->getWeekDate(selectDate);
+    QDate date = QDate::currentDate();
+    QVector<QDate> dateV = calendarDateDataManager->getWeekDate(date);
+    EXPECT_EQ(7, dateV.size());
 }
 
 //void CalendarDateDataManager::setWeekFirstDay(const Qt::DayOfWeek &firstDay)
@@ -93,6 +104,7 @@ TEST_F(ut_calendardatedatamanage, setWeekFirstDay)
 {
     Qt::DayOfWeek firstDay(Qt::Sunday);
     calendarDateDataManager->setWeekFirstDay(firstDay);
+    EXPECT_EQ(firstDay, calendarDateDataManager->m_weekFirstDay);
 }
 
 // Qt::DayOfWeek CalendarDateDataManager::getWeekFirstDay()
@@ -103,24 +115,30 @@ TEST_F(ut_calendardatedatamanage, getWeekFirstDay)
     Qt::DayOfWeek getfirstDay;
     getfirstDay = calendarDateDataManager->getWeekFirstDay();
     //qInfo() << getfirstDay;
-    assert(firstDay == getfirstDay);
+    EXPECT_EQ(firstDay, getfirstDay);
 }
 
 //void CalendarDateDataManager::setWeekDayFormatByID(const int &weekDayFormatID)
-TEST_F(ut_calendardatedatamanage, setWeekDayFormatByID)
+TEST_F(ut_calendardatedatamanage, setWeekDayFormatByID_001)
 {
     int setWeekDayFormatByID = 0;
     calendarDateDataManager->setWeekDayFormatByID(setWeekDayFormatByID);
+    EXPECT_EQ("dddd", calendarDateDataManager->m_weekDayFormat);
+}
 
-    setWeekDayFormatByID = 1;
+TEST_F(ut_calendardatedatamanage, setWeekDayFormatByID_002)
+{
+    int setWeekDayFormatByID = 1;
     calendarDateDataManager->setWeekDayFormatByID(setWeekDayFormatByID);
+    EXPECT_EQ("ddd", calendarDateDataManager->m_weekDayFormat);
 }
 
 //QString CalendarDateDataManager::getWeekDayFormat() const
 TEST_F(ut_calendardatedatamanage, getWeekDayFormat)
 {
-    QString getWEKfomat;
-    calendarDateDataManager->getWeekDayFormat();
+    int setWeekDayFormatByID = 1;
+    calendarDateDataManager->setWeekDayFormatByID(setWeekDayFormatByID);
+    EXPECT_EQ("ddd", calendarDateDataManager->getWeekDayFormat());
 }
 
 //ShowDateRange CalendarDateDataManager::getShowDateRange() const
@@ -128,29 +146,89 @@ TEST_F(ut_calendardatedatamanage, getShowDateRange)
 {
     ShowDateRange showDateR;
     showDateR = calendarDateDataManager->getShowDateRange();
+    QDate currentDate = QDate::currentDate();
+    EXPECT_GT(showDateR.stopDate, currentDate);
 }
 
 //int CalendarDateDataManager::getWeekNumOfYear(const QDate &date)
 TEST_F(ut_calendardatedatamanage, getWeekNumOfYear)
 {
-    //2020-12-25 为第52周
-    const int weeknum = 52;
-    QDate date(2020, 12, 25);
-    int weekNum = 0;
-    weekNum = calendarDateDataManager->getWeekNumOfYear(date);
-    assert(weeknum == weekNum);
+    QDate currentDate = QDate::currentDate();
+    int weekNum = calendarDateDataManager->getWeekNumOfYear(currentDate);
+    EXPECT_GT(weekNum, 0);
 }
 
-TEST_F(ut_calendardatedatamanage, setDateFormatChanged)
+TEST_F(ut_calendardatedatamanage, setDateFormatChanged_001)
 {
-    for (int i = 0; i < 10; ++i) {
-        calendarDateDataManager->setDateFormatChanged(i);
-    }
+    calendarDateDataManager->setDateFormatChanged(0);
+    EXPECT_EQ("yyyy/M/d", calendarDateDataManager->m_dateFormat);
+}
+
+TEST_F(ut_calendardatedatamanage, setDateFormatChanged_002)
+{
+    calendarDateDataManager->setDateFormatChanged(1);
+    EXPECT_EQ("yyyy-M-d", calendarDateDataManager->m_dateFormat);
+}
+
+TEST_F(ut_calendardatedatamanage, setDateFormatChanged_003)
+{
+    calendarDateDataManager->setDateFormatChanged(2);
+    EXPECT_EQ("yyyy.M.d", calendarDateDataManager->m_dateFormat);
+}
+
+TEST_F(ut_calendardatedatamanage, setDateFormatChanged_004)
+{
+    calendarDateDataManager->setDateFormatChanged(3);
+    EXPECT_EQ("yyyy/MM/dd", calendarDateDataManager->m_dateFormat);
+}
+
+TEST_F(ut_calendardatedatamanage, setDateFormatChanged_005)
+{
+    calendarDateDataManager->setDateFormatChanged(4);
+    EXPECT_EQ("yyyy-MM-dd", calendarDateDataManager->m_dateFormat);
+}
+
+TEST_F(ut_calendardatedatamanage, setDateFormatChanged_006)
+{
+    calendarDateDataManager->setDateFormatChanged(5);
+    EXPECT_EQ("yyyy.MM.dd", calendarDateDataManager->m_dateFormat);
+}
+
+TEST_F(ut_calendardatedatamanage, setDateFormatChanged_007)
+{
+    calendarDateDataManager->setDateFormatChanged(6);
+    EXPECT_EQ("yy/M/d", calendarDateDataManager->m_dateFormat);
+}
+
+TEST_F(ut_calendardatedatamanage, setDateFormatChanged_008)
+{
+    calendarDateDataManager->setDateFormatChanged(7);
+    EXPECT_EQ("yy-M-d", calendarDateDataManager->m_dateFormat);
+}
+
+TEST_F(ut_calendardatedatamanage, setDateFormatChanged_009)
+{
+    calendarDateDataManager->setDateFormatChanged(8);
+    EXPECT_EQ("yy.M.d", calendarDateDataManager->m_dateFormat);
+}
+
+TEST_F(ut_calendardatedatamanage, setDateFormatChanged_010)
+{
+    calendarDateDataManager->setDateFormatChanged(9);
+    EXPECT_EQ("yyyy-MM-dd", calendarDateDataManager->m_dateFormat);
 }
 
 //setTimeFormatChanged
-TEST_F(ut_calendardatedatamanage, setTimeFormatChanged)
+TEST_F(ut_calendardatedatamanage, setTimeFormatChanged_001)
 {
     calendarDateDataManager->setTimeFormatChanged(0);
+    EXPECT_EQ(0, calendarDateDataManager->m_timeFormatValue);
+    EXPECT_EQ("h:mm", calendarDateDataManager->m_timeFormat);
+}
+
+TEST_F(ut_calendardatedatamanage, setTimeFormatChanged)
+{
     calendarDateDataManager->setTimeFormatChanged(1);
+    EXPECT_EQ(1, calendarDateDataManager->m_timeFormatValue);
+    EXPECT_EQ("hh:mm", calendarDateDataManager->m_timeFormat);
 }

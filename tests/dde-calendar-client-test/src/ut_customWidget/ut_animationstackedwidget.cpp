@@ -20,44 +20,56 @@
    */
 #include "ut_animationstackedwidget.h"
 
-ut_animationstackedwidget::ut_animationstackedwidget()
+void ut_animationstackedwidget::SetUp()
 {
-
+    mAnimationStackedWidget = new AnimationStackedWidget();
+    widget1 = new QWidget(mAnimationStackedWidget);
+    widget2 = new QWidget(mAnimationStackedWidget);
+    mAnimationStackedWidget->addWidget(widget1);
+    mAnimationStackedWidget->addWidget(widget2);
 }
 
-ut_animationstackedwidget::~ut_animationstackedwidget()
+void ut_animationstackedwidget::TearDown()
 {
-
+    delete mAnimationStackedWidget;
+    mAnimationStackedWidget = nullptr;
 }
 
 //void AnimationStackedWidget::setDuration(int duration)
 TEST_F(ut_animationstackedwidget, setDuration)
 {
     mAnimationStackedWidget->setDuration(400);
+    EXPECT_EQ(400, mAnimationStackedWidget->m_Duration);
 }
 
 //void AnimationStackedWidget::animationFinished()
 TEST_F(ut_animationstackedwidget, animationfinished)
 {
     mAnimationStackedWidget->animationFinished();
+    EXPECT_FALSE(mAnimationStackedWidget->m_IsAnimation);
 }
 
 //void AnimationStackedWidget::setCurrent(int index)
 TEST_F(ut_animationstackedwidget, setCurrent)
 {
     mAnimationStackedWidget->setCurrent(4);
+    EXPECT_TRUE(mAnimationStackedWidget->m_IsAnimation);
 }
 
 //void AnimationStackedWidget::setPre()
 TEST_F(ut_animationstackedwidget, setPre)
 {
+    int currentIndex = mAnimationStackedWidget->currentIndex();
     mAnimationStackedWidget->setPre();
+    EXPECT_TRUE(mAnimationStackedWidget->m_IsAnimation);
 }
 
 //void AnimationStackedWidget::setNext()
 TEST_F(ut_animationstackedwidget, setNext)
 {
+    int currentIndex = mAnimationStackedWidget->currentIndex();
     mAnimationStackedWidget->setNext();
+    EXPECT_TRUE(mAnimationStackedWidget->m_IsAnimation);
 }
 
 //void AnimationStackedWidget::setCurrentWidget(int &index, int beginWidth)
@@ -65,30 +77,66 @@ TEST_F(ut_animationstackedwidget, setCurrentWidget)
 {
     int index = 2;
     mAnimationStackedWidget->setCurrentWidget(index, 8);
+    EXPECT_TRUE(mAnimationStackedWidget->m_IsAnimation);
 }
 
 //int AnimationStackedWidget::getBeginValue()
-TEST_F(ut_animationstackedwidget, getBeginValue)
+TEST_F(ut_animationstackedwidget, getBeginValue_001)
 {
-    mAnimationStackedWidget->getBeginValue();
+    QRect widgetRect = mAnimationStackedWidget->rect();
+    EXPECT_EQ(widgetRect.width(), mAnimationStackedWidget->getBeginValue());
+}
+
+TEST_F(ut_animationstackedwidget, getBeginValue_002)
+{
+    QRect widgetRect = mAnimationStackedWidget->rect();
+    mAnimationStackedWidget->m_animationOri = AnimationStackedWidget::TB;
+    EXPECT_EQ(widgetRect.height(), mAnimationStackedWidget->getBeginValue());
 }
 
 //AnimationStackedWidget::MoveOrientation AnimationStackedWidget::getMoveOrientation(const int currIndex, const int nextIndex)
-TEST_F(ut_animationstackedwidget, getMoveOrientation)
+TEST_F(ut_animationstackedwidget, getMoveOrientation_001)
 {
-    mAnimationStackedWidget->getMoveOrientation(2, 4);
+    EXPECT_EQ(AnimationStackedWidget::RightToLeft, mAnimationStackedWidget->getMoveOrientation(2, 4));
+}
+
+TEST_F(ut_animationstackedwidget, getMoveOrientation_002)
+{
+    EXPECT_EQ(AnimationStackedWidget::LeftToRight, mAnimationStackedWidget->getMoveOrientation(3, 2));
+}
+
+TEST_F(ut_animationstackedwidget, getMoveOrientation_003)
+{
+    mAnimationStackedWidget->m_animationOri = AnimationStackedWidget::TB;
+    EXPECT_EQ(AnimationStackedWidget::TopToBottom, mAnimationStackedWidget->getMoveOrientation(3, 2));
+}
+
+TEST_F(ut_animationstackedwidget, getMoveOrientation_004)
+{
+    mAnimationStackedWidget->m_animationOri = AnimationStackedWidget::TB;
+    EXPECT_EQ(AnimationStackedWidget::BottomToTop, mAnimationStackedWidget->getMoveOrientation(2, 3));
+}
+
+TEST_F(ut_animationstackedwidget, getMoveOrientation_005)
+{
+    mAnimationStackedWidget->m_animationOri = AnimationStackedWidget::TB;
+    EXPECT_EQ(AnimationStackedWidget::LeftToRight, mAnimationStackedWidget->getMoveOrientation(2, 2));
 }
 
 //double AnimationStackedWidget::offset() const
 TEST_F(ut_animationstackedwidget, offset)
 {
-    mAnimationStackedWidget->offset();
+    mAnimationStackedWidget->setOffset(10);
+    EXPECT_GT(mAnimationStackedWidget->offset(), 10 - 0.00001);
+    EXPECT_LT(mAnimationStackedWidget->offset(), 10 + 0.00001);
 }
 
 //void AnimationStackedWidget::setOffset(double offset)
 TEST_F(ut_animationstackedwidget, setOffset)
 {
     mAnimationStackedWidget->setOffset(2.0);
+    EXPECT_GT(mAnimationStackedWidget->offset(), 2 - 0.00001);
+    EXPECT_LT(mAnimationStackedWidget->offset(), 2 + 0.00001);
 }
 
 TEST_F(ut_animationstackedwidget, animationtest)
@@ -98,15 +146,16 @@ TEST_F(ut_animationstackedwidget, animationtest)
     mAnimationStackedWidget->setCurrent(1);
     mAnimationStackedWidget->setFixedSize(500, 800);
     QPixmap pixmap(mAnimationStackedWidget->size());
-    for (int i = 0; i <10; ++i) {
+    for (int i = 0; i < 10; ++i) {
         mAnimationStackedWidget->setOffset(i);
         pixmap = mAnimationStackedWidget->grab();
     }
-
+    EXPECT_EQ(pixmap.size(), mAnimationStackedWidget->size());
     mAnimationStackedWidget->setCurrentIndex(1);
     mAnimationStackedWidget->setCurrent(0);
-    for (int i = 0; i <10; ++i) {
+    for (int i = 0; i < 10; ++i) {
         mAnimationStackedWidget->setOffset(i);
         pixmap = mAnimationStackedWidget->grab();
     }
+    EXPECT_EQ(pixmap.size(), mAnimationStackedWidget->size());
 }

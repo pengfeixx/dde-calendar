@@ -22,11 +22,15 @@
 
 ut_scheduleremindwidget::ut_scheduleremindwidget()
 {
+}
+
+void ut_scheduleremindwidget::SetUp()
+{
     mScheduleRemindWidget = new ScheduleRemindWidget();
     mCenterWidget = new CenterWidget();
 }
 
-ut_scheduleremindwidget::~ut_scheduleremindwidget()
+void ut_scheduleremindwidget::TearDown()
 {
     delete mScheduleRemindWidget;
     mScheduleRemindWidget =  nullptr;
@@ -66,12 +70,15 @@ TEST_F(ut_scheduleremindwidget, setData)
 {
     CSchedulesColor gdcolor = CScheduleDataManage::getScheduleDataManage()->getScheduleColorByType(2);
     mScheduleRemindWidget->setData(getScheduleRemindData().first(), gdcolor);
+    EXPECT_EQ(mScheduleRemindWidget->gdcolor.dotColor, gdcolor.dotColor);
+    EXPECT_EQ(mScheduleRemindWidget->m_ScheduleInfo, getScheduleRemindData().first());
 }
 
 //void SchecduleRemindWidget::setDirection(DArrowRectangle::ArrowDirection value)
 TEST_F(ut_scheduleremindwidget, setdirection)
 {
     mScheduleRemindWidget->setDirection(DArrowRectangle::ArrowDirection::ArrowRight);
+    EXPECT_EQ(mScheduleRemindWidget->arrowDirection(), DArrowRectangle::ArrowDirection::ArrowRight);
 }
 
 //void CenterWidget::setData(const ScheduleDataInfo &vScheduleInfo, const CSchedulesColor &gcolor)
@@ -79,19 +86,25 @@ TEST_F(ut_scheduleremindwidget, setDate)
 {
     CSchedulesColor gdcolor = CScheduleDataManage::getScheduleDataManage()->getScheduleColorByType(2);
     mCenterWidget->setData(getScheduleRemindData().first(), gdcolor);
+    EXPECT_EQ(mCenterWidget->gdcolor.dotColor, gdcolor.dotColor);
+    EXPECT_EQ(mCenterWidget->m_ScheduleInfo, getScheduleRemindData().first());
 }
 
 //void CenterWidget::setTheMe(const int type)
-TEST_F(ut_scheduleremindwidget, setTheMe)
+TEST_F(ut_scheduleremindwidget, setTheMe_001)
 {
-    mCenterWidget->setTheMe(1);
     mCenterWidget->setTheMe(2);
+    QColor timeColor("#C0C6D4");
+    timeColor.setAlphaF(0.7);
+    EXPECT_EQ(mCenterWidget->timeColor, timeColor);
 }
 
-//void CenterWidget::UpdateTextList()
-TEST_F(ut_scheduleremindwidget, updateTextList)
+TEST_F(ut_scheduleremindwidget, setTheMe_002)
 {
-    mCenterWidget->UpdateTextList();
+    mCenterWidget->setTheMe(1);
+    QColor timeColor("#414D68");
+    timeColor.setAlphaF(0.7);
+    EXPECT_EQ(mCenterWidget->timeColor, timeColor);
 }
 
 //getPixmap
@@ -100,4 +113,5 @@ TEST_F(ut_scheduleremindwidget, getPixmap)
     mCenterWidget->setFixedSize(800, 500);
     QPixmap pixmap(mCenterWidget->size());
     mCenterWidget->render(&pixmap);
+    EXPECT_EQ(pixmap.size(), mCenterWidget->size());
 }

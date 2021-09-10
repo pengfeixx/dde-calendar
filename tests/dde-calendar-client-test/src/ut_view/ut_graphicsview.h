@@ -23,6 +23,7 @@
 
 #include "graphicsview.h"
 #include "gtest/gtest.h"
+
 #include <QObject>
 
 class ut_graphicsview : public ::testing::Test

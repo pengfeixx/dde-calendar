@@ -21,6 +21,9 @@
 #include "ut_myscheduleview.h"
 
 #include "../dialog_stub.h"
+#include "../cscheduledbusstub.h"
+
+#include <DPalette>
 
 #include <QEvent>
 #include <QApplication>
@@ -54,55 +57,62 @@ QVector<ScheduleDataInfo> getScheduleViewData()
 
 ut_myscheduleview::ut_myscheduleview()
 {
+}
+
+void ut_myscheduleview::SetUp()
+{
     ScheduleDataInfo scheduleinfo = getScheduleViewData().first();
     mScheduleView = new CMyScheduleView(scheduleinfo);
 }
 
-ut_myscheduleview::~ut_myscheduleview()
+void ut_myscheduleview::TearDown()
 {
     delete mScheduleView;
     mScheduleView = nullptr;
 }
 
 //void CMyScheduleView::setLabelTextColor(const int type)
-TEST_F(ut_myscheduleview, setLabelTextColor)
+TEST_F(ut_myscheduleview, setLabelTextColor_001)
 {
+    DGUI_USE_NAMESPACE
     mScheduleView->setLabelTextColor(1);
-    mScheduleView->setLabelTextColor(2);
+    QColor titleColor = "#000000";
+    titleColor.setAlphaF(0.9);
+    EXPECT_EQ(titleColor, mScheduleView->m_Title->palette().color(DPalette::WindowText));
 }
 
-//
-TEST_F(ut_myscheduleview, CMyScheduleView)
+TEST_F(ut_myscheduleview, setLabelTextColor_002)
 {
-    ScheduleDataInfo scheduleinfo;
-    QDateTime currentDateTime = QDateTime::currentDateTime();
-    scheduleinfo.setID(1);
-    scheduleinfo.setBeginDateTime(currentDateTime);
-    scheduleinfo.setEndDateTime(currentDateTime.addDays(1));
-    scheduleinfo.setTitleName("测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试"
-                              "测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试"
-                              "测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试"
-                              "测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试"
-                              "测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试"
-                              "测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试"
-                              "测试测试测试测试测试测试测试测试测试测试测试测试测试测试");
-    scheduleinfo.setAllDay(true);
-    scheduleinfo.setType(4);
-    scheduleinfo.setRecurID(0);
-    CMyScheduleView scheduleView(scheduleinfo);
+    DGUI_USE_NAMESPACE
+    mScheduleView->setLabelTextColor(2);
+    QColor titleColor = "#FFFFFF";
+    titleColor.setAlphaF(0.9);
+    EXPECT_EQ(titleColor, mScheduleView->m_Title->palette().color(DPalette::WindowText));
 }
 
 //FontChange
 TEST_F(ut_myscheduleview, FontChange)
 {
     QEvent event(QEvent::FontChange);
-    QApplication::sendEvent(mScheduleView, &event);
+    EXPECT_TRUE(QApplication::sendEvent(mScheduleView, &event));
 }
 
 //slotBtClick
-TEST_F(ut_myscheduleview, slotBtClick)
+TEST_F(ut_myscheduleview, slotBtClick_001)
+{
+    Stub stub;
+    cscheduleDbusStub(stub);
+    calendarDDialogExecStub(stub);
+    mScheduleView->slotBtClick(0, "tt");
+    calendarDDialogExecReturn = 0;
+    EXPECT_EQ(mScheduleView->exec(), 0);
+}
+
+TEST_F(ut_myscheduleview, slotBtClick_002)
 {
     Stub stub;
     calendarDDialogExecStub(stub);
     mScheduleView->slotBtClick(1, "tt");
+    calendarDDialogExecReturn = 1;
+    EXPECT_EQ(mScheduleView->exec(), 1);
 }

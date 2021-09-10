@@ -21,18 +21,19 @@
 #ifndef TEST_MONTHSCHEDULEVIEW_H
 #define TEST_MONTHSCHEDULEVIEW_H
 
-#include <QObject>
 #include "monthWidget/monthscheduleview.h"
 #include "graphicsItem/cmonthscheduleitem.h"
 #include "graphicsItem/cmonthschedulenumitem.h"
 #include "gtest/gtest.h"
 
-class ut_monthscheduleview : public QObject
-    , public ::testing::Test
+#include <QObject>
+
+class ut_monthscheduleview : public ::testing::Test
 {
 public:
     ut_monthscheduleview();
-    ~ut_monthscheduleview();
+    void SetUp() override;
+    void TearDown() override;
 
 protected:
     CMonthScheduleView *mMonthScheduleView = nullptr;

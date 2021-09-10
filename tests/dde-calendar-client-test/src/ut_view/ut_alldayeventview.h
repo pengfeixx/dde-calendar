@@ -23,6 +23,7 @@
 
 #include "alldayeventview.h"
 #include "gtest/gtest.h"
+
 #include <QObject>
 
 class ut_alldayeventview : public testing::Test

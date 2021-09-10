@@ -21,7 +21,6 @@
 #include "ut_ckeyenabledeal.h"
 
 #include "../third-party_stub/stub.h"
-
 #include "view/graphicsItem/cweekdaybackgrounditem.h"
 #include "../dialog_stub.h"
 #include "view/graphicsItem/scheduleitem.h"
@@ -47,15 +46,17 @@ void ut_CKeyEnableDeal::TearDown()
 {
 }
 
-TEST_F(ut_CKeyEnableDeal, focusItemDeal_Back)
+TEST_F(ut_CKeyEnableDeal, focusItemDeal)
 {
-    enableDeal->dealEvent();
+    CSceneBackgroundItem *item = dynamic_cast<CSceneBackgroundItem *>(SceneCurrentItem);
+    EXPECT_TRUE(enableDeal->focusItemDeal(item, scene.get()));
 }
 
 TEST_F(ut_CKeyEnableDeal, focusItemDeal_Back_addDay)
 {
     itemDate = QDate::currentDate().addDays(1);
-    enableDeal->dealEvent();
+    CSceneBackgroundItem *item = dynamic_cast<CSceneBackgroundItem *>(SceneCurrentItem);
+    EXPECT_TRUE(enableDeal->focusItemDeal(item, scene.get()));
 }
 
 CFocusItem *focusItem = nullptr;
@@ -71,7 +72,8 @@ TEST_F(ut_CKeyEnableDeal, focusItemDeal_Item)
     focusItem = new CScheduleItem(rect);
     stub.getStub().set(ADDR(CSceneBackgroundItem, getFocusItem), getFocusItem_stub);
     focusItemType = CFocusItem::CITEM;
-    enableDeal->dealEvent();
+    CSceneBackgroundItem *item = dynamic_cast<CSceneBackgroundItem *>(SceneCurrentItem);
+    EXPECT_TRUE(enableDeal->focusItemDeal(item, scene.get()));
     delete focusItem;
     focusItem = nullptr;
 }
@@ -79,5 +81,6 @@ TEST_F(ut_CKeyEnableDeal, focusItemDeal_Item)
 TEST_F(ut_CKeyEnableDeal, focusItemDeal_Other)
 {
     focusItemType = CFocusItem::COTHER;
-    enableDeal->dealEvent();
+    CSceneBackgroundItem *item = dynamic_cast<CSceneBackgroundItem *>(SceneCurrentItem);
+    EXPECT_TRUE(enableDeal->focusItemDeal(item, scene.get()));
 }

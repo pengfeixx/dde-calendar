@@ -20,6 +20,8 @@
    */
 #include "ut_todaybutton.h"
 
+#include <DPalette>
+
 #include <QTest>
 #include <QFocusEvent>
 #include <QEnterEvent>
@@ -44,66 +46,190 @@ void ut_todaybutton::TearDown()
 //void CTodayButton::setBColor(QColor normalC, QColor hoverC, QColor pressc, QColor normalC1, QColor hoverC1, QColor pressc1)
 TEST_F(ut_todaybutton, setBColor)
 {
-    mTodayButton->setBColor("#FFFFFF", "#000000", "#000000", "#FFFFFF", "#000000", "#000000");
+    QColor normalC("#FFFFFF");
+    QColor hoverC("#000000");
+    QColor pressc("#000000");
+    QColor normalC1("#FFFFFF");
+    QColor hoverC1("#000000");
+    QColor pressc1("#000000");
+    mTodayButton->setBColor(normalC, hoverC, pressc, normalC1, hoverC1, pressc1);
+    EXPECT_EQ(normalC, mTodayButton->m_bnormalColor);
+    EXPECT_EQ(hoverC, mTodayButton->m_bhoverColor);
+    EXPECT_EQ(pressc, mTodayButton->m_bPressColor);
+    EXPECT_EQ(normalC1, mTodayButton->m_dbnormalColor);
+    EXPECT_EQ(hoverC1, mTodayButton->m_dbhoverColor);
+    EXPECT_EQ(pressc1, mTodayButton->m_dbPressColor);
 }
 
 //void CTodayButton::setTColor(QColor normalC, QColor hoverC, QColor pressc)
 TEST_F(ut_todaybutton, setTColor)
 {
-    mTodayButton->setTColor(Qt::red, "#001A2E", "#0081FF");
+    QColor normalC = Qt::red;
+    QColor hoverC("#001A2E");
+    QColor pressc("#0081FF");
+    mTodayButton->setTColor(normalC, hoverC, pressc);
+    EXPECT_EQ(normalC, mTodayButton->m_tnormalColor);
+    EXPECT_EQ(hoverC, mTodayButton->m_thoverColor);
+    EXPECT_EQ(pressc, mTodayButton->m_tPressColor);
 }
 
 //void CTodayButton::setshadowColor(QColor sc)
 TEST_F(ut_todaybutton, setshadowColor)
 {
-    mTodayButton->setshadowColor("#FFFFFF");
+    QColor shadowColr("#FFFFFF");
+    mTodayButton->setshadowColor(shadowColr);
+    EXPECT_EQ(shadowColr, mTodayButton->m_shadowColor);
 }
 
 //test mouse event
-TEST_F(ut_todaybutton, mouseEventTest)
+TEST_F(ut_todaybutton, mousePressEvent)
 {
+    QColor normalC = Qt::red;
+    QColor hoverC("#001A2E");
+    QColor pressc("#0081FF");
+    mTodayButton->setTColor(normalC, hoverC, pressc);
+    QColor normalC2("#FFFFFF");
+    QColor hoverC2("#000000");
+    QColor pressc2("#000000");
+    QColor normalC1("#FFFFFF");
+    QColor hoverC1("#000000");
+    QColor pressc1("#000000");
+    mTodayButton->setBColor(normalC2, hoverC2, pressc2, normalC1, hoverC1, pressc1);
+
     QTest::mousePress(mTodayButton, Qt::LeftButton);
+    using namespace DTK_NAMESPACE::DGUI_NAMESPACE;
+    DPalette pa = mTodayButton->palette();
+    QColor pressColor = pa.color(DPalette::ButtonText);
+    QColor DarkColor = pa.color(DPalette::Dark);
+    QColor lightColor = pa.color(DPalette::Light);
+    QColor shadowColor = pa.color(DPalette::Shadow);
+    EXPECT_EQ(pressColor, pressc);
+    EXPECT_EQ(DarkColor, pressc1);
+    EXPECT_EQ(lightColor, pressc2);
+    EXPECT_EQ(shadowColor, normalC2);
+}
+TEST_F(ut_todaybutton, mouseReleaseEvent)
+{
+    QColor normalC = Qt::red;
+    QColor hoverC("#001A2E");
+    QColor pressc("#0081FF");
+    mTodayButton->setTColor(normalC, hoverC, pressc);
+    QColor normalC2("#FFFFFF");
+    QColor hoverC2("#000000");
+    QColor pressc2("#000000");
+    QColor normalC1("#FFFFFF");
+    QColor hoverC1("#000000");
+    QColor pressc1("#000000");
+    mTodayButton->setBColor(normalC2, hoverC2, pressc2, normalC1, hoverC1, pressc1);
+
     QTest::mouseRelease(mTodayButton, Qt::LeftButton);
 
-    QWidget *testWidget = new QWidget();
-    CTodayButton *toDayButton = new CTodayButton(testWidget);
-    toDayButton->setGeometry(10, 10, 20, 20);
-    testWidget->setFixedSize(50, 50);
-    toDayButton->setFocus(Qt::TabFocusReason);
-    QTest::mouseMove(testWidget, QPoint(2, 2));
-    QTest::mouseMove(testWidget, QPoint(15, 15));
-    QTest::mouseMove(testWidget, QPoint(45, 45));
-    QTest::keyClick(testWidget, Qt::Key_Tab);
-    QTest::keyClick(testWidget->focusWidget(), Qt::Key_Tab);
-    QTest::keyClick(testWidget->focusWidget(), Qt::Key_Tab);
-    delete testWidget;
-}
-
-//test key event
-TEST_F(ut_todaybutton, keyEventTest)
-{
-    QTest::keyClick(mTodayButton, Qt::Key_Enter);
-    QTest::keyClick(mTodayButton, Qt::Key_Tab);
+    using namespace DTK_NAMESPACE::DGUI_NAMESPACE;
+    DPalette pa = mTodayButton->palette();
+    QColor pressColor = pa.color(DPalette::ButtonText);
+    QColor DarkColor = pa.color(DPalette::Dark);
+    QColor lightColor = pa.color(DPalette::Light);
+    QColor shadowColor = pa.color(DPalette::Shadow);
+    EXPECT_EQ(pressColor, normalC);
+    EXPECT_EQ(DarkColor, normalC1);
+    EXPECT_EQ(lightColor, normalC2);
+    EXPECT_EQ(shadowColor, normalC2);
 }
 
 //QTEST_MAIN(testGUI_toDayButton)
 TEST_F(ut_todaybutton, focusOutEvent)
 {
+    QColor normalC = Qt::red;
+    QColor hoverC("#001A2E");
+    QColor pressc("#0081FF");
+    mTodayButton->setTColor(normalC, hoverC, pressc);
+    QColor normalC2("#FFFFFF");
+    QColor hoverC2("#000000");
+    QColor pressc2("#000000");
+    QColor normalC1("#FFFFFF");
+    QColor hoverC1("#000000");
+    QColor pressc1("#000000");
+    mTodayButton->setBColor(normalC2, hoverC2, pressc2, normalC1, hoverC1, pressc1);
+
     mTodayButton->setFocus();
-    QFocusEvent focusEvent_out( QEvent::FocusOut,Qt::FocusReason::TabFocusReason);
-    QApplication::sendEvent(mTodayButton,&focusEvent_out);
+    QFocusEvent focusEvent_out(QEvent::FocusOut, Qt::FocusReason::TabFocusReason);
+    QApplication::sendEvent(mTodayButton, &focusEvent_out);
+    using namespace DTK_NAMESPACE::DGUI_NAMESPACE;
+    DPalette pa = mTodayButton->palette();
+    QColor pressColor = pa.color(DPalette::ButtonText);
+    QColor DarkColor = pa.color(DPalette::Dark);
+    QColor lightColor = pa.color(DPalette::Light);
+    QColor shadowColor = pa.color(DPalette::Shadow);
+    EXPECT_EQ(pressColor, normalC);
+    EXPECT_EQ(DarkColor, normalC1);
+    EXPECT_EQ(lightColor, normalC2);
+    EXPECT_EQ(shadowColor, normalC2);
 }
 
 TEST_F(ut_todaybutton, enterEvent)
 {
-    QEnterEvent enterEvent(QPointF(10,2),QPointF(11,3),QPointF(12,4));
-    QApplication::sendEvent(mTodayButton,&enterEvent);
+    QColor normalC = Qt::red;
+    QColor hoverC("#001A2E");
+    QColor pressc("#0081FF");
+    mTodayButton->setTColor(normalC, hoverC, pressc);
+    QColor normalC2("#FFFFFF");
+    QColor hoverC2("#000000");
+    QColor pressc2("#000000");
+    QColor normalC1("#FFFFFF");
+    QColor hoverC1("#000000");
+    QColor pressc1("#000000");
+    mTodayButton->setBColor(normalC2, hoverC2, pressc2, normalC1, hoverC1, pressc1);
+
+    QEnterEvent enterEvent(QPointF(10, 2), QPointF(11, 3), QPointF(12, 4));
+    QApplication::sendEvent(mTodayButton, &enterEvent);
+
+    using namespace DTK_NAMESPACE::DGUI_NAMESPACE;
+    DPalette pa = mTodayButton->palette();
+    QColor pressColor = pa.color(DPalette::ButtonText);
+    QColor DarkColor = pa.color(DPalette::Dark);
+    QColor lightColor = pa.color(DPalette::Light);
+    QColor shadowColor = pa.color(DPalette::Shadow);
+    EXPECT_EQ(pressColor, hoverC);
+    EXPECT_EQ(DarkColor, hoverC1);
+    EXPECT_EQ(lightColor, hoverC2);
+    EXPECT_EQ(shadowColor, normalC2);
+}
+
+TEST_F(ut_todaybutton, leaveEvent)
+{
+    QColor normalC = Qt::red;
+    QColor hoverC("#001A2E");
+    QColor pressc("#0081FF");
+    mTodayButton->setTColor(normalC, hoverC, pressc);
+    QColor normalC2("#FFFFFF");
+    QColor hoverC2("#000000");
+    QColor pressc2("#000000");
+    QColor normalC1("#FFFFFF");
+    QColor hoverC1("#000000");
+    QColor pressc1("#000000");
+    mTodayButton->setBColor(normalC2, hoverC2, pressc2, normalC1, hoverC1, pressc1);
+
     QEvent event(QEvent::Leave);
-    QApplication::sendEvent(mTodayButton,&event);
+    QApplication::sendEvent(mTodayButton, &event);
+    using namespace DTK_NAMESPACE::DGUI_NAMESPACE;
+    DPalette pa = mTodayButton->palette();
+    QColor pressColor = pa.color(DPalette::ButtonText);
+    QColor DarkColor = pa.color(DPalette::Dark);
+    QColor lightColor = pa.color(DPalette::Light);
+    QColor shadowColor = pa.color(DPalette::Shadow);
+    EXPECT_EQ(pressColor, normalC);
+    EXPECT_EQ(DarkColor, normalC1);
+    EXPECT_EQ(lightColor, normalC2);
+    EXPECT_EQ(shadowColor, normalC2);
 }
 
 TEST_F(ut_todaybutton, keypressEvent)
 {
-    QKeyEvent keyevent(QEvent::KeyPress,Qt::Key_Return,Qt::NoModifier);
-    QApplication::sendEvent(mTodayButton,&keyevent);
+    bool isClicked = false;
+    QObject::connect(mTodayButton, &CTodayButton::clicked, [&] {
+        isClicked = true;
+    });
+    QKeyEvent keyevent(QEvent::KeyPress, Qt::Key_Return, Qt::NoModifier);
+    QApplication::sendEvent(mTodayButton, &keyevent);
+    EXPECT_TRUE(isClicked);
 }

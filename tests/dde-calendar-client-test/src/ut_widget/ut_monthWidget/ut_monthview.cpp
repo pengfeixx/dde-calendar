@@ -19,13 +19,19 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "ut_monthview.h"
+#include "view/graphicsItem/draginfoitem.h"
+#include "../third-party_stub/stub.h"
 
 ut_monthview::ut_monthview()
+{
+}
+
+void ut_monthview::SetUp()
 {
     mMonthView = new CMonthView();
 }
 
-ut_monthview::~ut_monthview()
+void ut_monthview::TearDown()
 {
     delete mMonthView;
     mMonthView = nullptr;
@@ -133,46 +139,88 @@ TEST_F(ut_monthview, setTheMe)
     mMonthView->setTheMe(2);
 }
 
+bool setSearch = false;
+void setSelectSearchSchedule_stub(void *obj, const ScheduleDataInfo &scheduleInfo)
+{
+    Q_UNUSED(obj)
+    Q_UNUSED(scheduleInfo)
+    setSearch = true;
+}
+
 //void CMonthView::setSelectSchedule(const ScheduleDataInfo &scheduleInfo)
 TEST_F(ut_monthview, setSelectSchedule)
 {
+    typedef void (*StubSetSearch)(CMonthGraphicsview *, const ScheduleDataInfo &);
+    StubSetSearch setseardch = (StubSetSearch)((void (CMonthGraphicsview::*)(const ScheduleDataInfo &))(&CMonthGraphicsview::setSelectSearchSchedule));
     ScheduleDataInfo scheduleinfo = getMonthViewScheduleDInfo().first();
+    Stub stub;
+    stub.set(setseardch, setSelectSearchSchedule_stub);
     mMonthView->setSelectSchedule(scheduleinfo);
+    EXPECT_TRUE(setSearch);
 }
 
 //void CMonthView::slotScheduleRemindWidget(const bool isShow, const ScheduleDataInfo &out)
-TEST_F(ut_monthview, slotScheduleRemindWidget)
+TEST_F(ut_monthview, slotScheduleRemindWidget_001)
+{
+    ScheduleDataInfo scheduleinfo = getMonthViewScheduleDInfo().first();
+    mMonthView->slotScheduleRemindWidget(true, scheduleinfo);
+    EXPECT_EQ(mMonthView->m_remindWidget->m_ScheduleInfo, scheduleinfo);
+}
+
+TEST_F(ut_monthview, slotScheduleRemindWidget_002)
 {
     ScheduleDataInfo scheduleinfo = getMonthViewScheduleDInfo().first();
     mMonthView->slotScheduleRemindWidget(false, scheduleinfo);
-    mMonthView->slotScheduleRemindWidget(true, scheduleinfo);
+    EXPECT_FALSE(mMonthView->m_remindWidget->m_ScheduleInfo.isValid());
 }
 
 //void CMonthView::setFirstWeekday(Qt::DayOfWeek weekday)
 TEST_F(ut_monthview, setFirstWeekday)
 {
-    mMonthView->setFirstWeekday(Qt::Sunday);
+    Qt::DayOfWeek weekday = Qt::Sunday;
+    mMonthView->setFirstWeekday(weekday);
+    EXPECT_EQ(weekday, mMonthView->m_firstWeekDay);
 }
 
 //void CMonthView::setShowDate(const QVector<QDate> &showDate)
 TEST_F(ut_monthview, setShowDate)
 {
-    mMonthView->setShowDate(MonthviewGetDayList());
+    QVector<QDate> showDate = MonthviewGetDayList();
+    mMonthView->setShowDate(showDate);
+    EXPECT_EQ(mMonthView->m_showDate, showDate);
 }
 
+bool lunarUpdate = false;
+void setLunarInfo_Stub(const QMap<QDate, CaHuangLiDayInfo> &lunarCache)
+{
+    Q_UNUSED(lunarCache);
+    lunarUpdate = true;
+}
 //void CMonthView::setHuangLiInfo(const QMap<QDate, CaHuangLiDayInfo> &huangLiInfo)
 TEST_F(ut_monthview, setHuangLiInfo)
 {
+    Stub stub;
+    stub.set(ADDR(CMonthGraphicsview, setLunarInfo), setLunarInfo_Stub);
     mMonthView->setHuangLiInfo(MonthViewGetHuangLiDayInfo());
+    EXPECT_TRUE(lunarUpdate);
 }
 
+bool festivalupDate = false;
+void setFestival_Stub(const QMap<QDate, int> &festivalInfo)
+{
+    Q_UNUSED(festivalInfo)
+    festivalupDate = true;
+}
 //void CMonthView::setFestival(const QMap<QDate, int> &festivalInfo)
 TEST_F(ut_monthview, setFestival)
 {
     QMap<QDate, int> festivalInfo {};
     festivalInfo.insert(QDate::currentDate(), 1);
     festivalInfo.insert(QDate::currentDate().addDays(1), 2);
+    Stub stub;
+    stub.set(ADDR(CMonthGraphicsview, setFestival), setFestival_Stub);
     mMonthView->setFestival(festivalInfo);
+    EXPECT_TRUE(festivalupDate);
 }
 
 //void CMonthView::setScheduleInfo(const QMap<QDate, QVector<ScheduleDataInfo> > &scheduleInfo)
@@ -181,25 +229,40 @@ TEST_F(ut_monthview, setScheduleInfo)
     QMap<QDate, QVector<ScheduleDataInfo>> scheduleinfo {};
     scheduleinfo.insert(QDate::currentDate(), getMonthViewScheduleDInfo());
     mMonthView->setScheduleInfo(scheduleinfo);
+    EXPECT_EQ(scheduleinfo, mMonthView->m_monthGraphicsView->m_schedulelistdata);
 }
 
 //void CMonthView::setSearchScheduleInfo(const QVector<ScheduleDataInfo> &searchScheduleInfo)
 TEST_F(ut_monthview, setSearchScheduleInfo)
 {
-    mMonthView->setSearchScheduleInfo(getMonthViewScheduleDInfo());
+    QVector<ScheduleDataInfo> info = getMonthViewScheduleDInfo();
+    mMonthView->setSearchScheduleInfo(info);
+    EXPECT_EQ(DragInfoItem::m_searchScheduleInfo, info);
 }
 
 //void CMonthView::setCurrentDate(const QDate &currentDate)
 TEST_F(ut_monthview, setCurrentDate)
 {
-    mMonthView->setCurrentDate(QDate::currentDate());
+    QDate currentDate = QDate::currentDate();
+    mMonthView->setCurrentDate(currentDate);
+    EXPECT_EQ(currentDate, mMonthView->m_monthGraphicsView->getCurrentDate());
 }
 
 //ScheduleDataInfo CMonthView::getScheduleInfo(const QDate &beginDate, const QDate &endDate)
-TEST_F(ut_monthview, getScheduleInfo)
+TEST_F(ut_monthview, getScheduleInfo_001)
 {
     QDate currentDate = QDate::currentDate();
-    QDate currentDate1 = QDate::currentDate().addDays(1);
-    mMonthView->getScheduleInfo(currentDate, currentDate1);
-    mMonthView->getScheduleInfo(currentDate1, currentDate);
+    QDate endDate = currentDate.addDays(5);
+    ScheduleDataInfo info = mMonthView->getScheduleInfo(currentDate, endDate);
+    EXPECT_EQ(info.getBeginDateTime().date(), currentDate);
+    EXPECT_EQ(info.getEndDateTime().date(), endDate);
+}
+
+TEST_F(ut_monthview, getScheduleInfo_002)
+{
+    QDate currentDate = QDate::currentDate();
+    QDate endDate = currentDate.addDays(5);
+    ScheduleDataInfo info = mMonthView->getScheduleInfo(endDate, currentDate);
+    EXPECT_EQ(info.getBeginDateTime().date(), currentDate);
+    EXPECT_EQ(info.getEndDateTime().date(), endDate);
 }

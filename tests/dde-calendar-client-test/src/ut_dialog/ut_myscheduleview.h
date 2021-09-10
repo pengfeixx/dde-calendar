@@ -21,15 +21,17 @@
 #ifndef TEST_MYSCHEDULEVIEW_H
 #define TEST_MYSCHEDULEVIEW_H
 
-#include <QObject>
-#include <gtest/gtest.h>
 #include "dialog/myscheduleview.h"
-class ut_myscheduleview : public ::QObject
-    , public ::testing::Test
+#include "gtest/gtest.h"
+
+#include <QObject>
+
+class ut_myscheduleview : public ::testing::Test
 {
 public:
     ut_myscheduleview();
-    ~ut_myscheduleview();
+    void SetUp() override;
+    void TearDown() override;
 
 protected:
     CMyScheduleView *mScheduleView = nullptr;

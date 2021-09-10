@@ -21,16 +21,17 @@
 #ifndef TEST_SCHEDULEREMINDWIDGET_H
 #define TEST_SCHEDULEREMINDWIDGET_H
 
-#include <QObject>
-#include <gtest/gtest.h>
 #include "customWidget/scheduleRemindWidget.h"
+#include "gtest/gtest.h"
 
-class ut_scheduleremindwidget : public ::QObject
-    , public ::testing::Test
+#include <QObject>
+
+class ut_scheduleremindwidget : public ::testing::Test
 {
 public:
     ut_scheduleremindwidget();
-    ~ut_scheduleremindwidget();
+    void SetUp() override;
+    void TearDown() override;
 
 protected:
     ScheduleRemindWidget *mScheduleRemindWidget = nullptr;

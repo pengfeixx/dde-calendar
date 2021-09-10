@@ -21,22 +21,24 @@
 #include "ut_calldaykeyrightdeal.h"
 
 #include "../third-party_stub/stub.h"
-#include "gtest/gtest.h"
-#include "view/cgraphicsscene.h"
-#include "KeyPress/calldaykeyrightdeal.h"
 #include "view/graphicsItem/cweekdaybackgrounditem.h"
 #include "keypressstub.h"
 
-ut_CAllDayKeyRightDeal::ut_CAllDayKeyRightDeal(QObject *parent)
-    : QObject(parent)
+void ut_CAllDayKeyRightDeal::SetUp()
 {
+    m_scene = new CGraphicsScene();
+    m_rightDeal = new CAllDayKeyRightDeal(m_scene);
 }
 
-TEST(RightHandle_test, ut_CAllDayKeyRightDeal)
+void ut_CAllDayKeyRightDeal::TearDown()
+{
+    delete m_scene;
+    delete m_rightDeal;
+}
+
+TEST_F(ut_CAllDayKeyRightDeal, focusItemDeal)
 {
     KeyPressStub stub;
-    CGraphicsScene *scene = new CGraphicsScene();
-    CAllDayKeyRightDeal alldayRightDeal(scene);
-    alldayRightDeal.dealEvent();
-    delete scene;
+    CWeekDayBackgroundItem backgroundItem;
+    EXPECT_TRUE(m_rightDeal->focusItemDeal(&backgroundItem, m_scene));
 }

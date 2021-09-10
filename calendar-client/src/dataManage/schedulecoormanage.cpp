@@ -45,67 +45,6 @@ void CScheduleCoorManage::setDateRange(QDate begindate, QDate enddate)
     m_totalDay = begindate.daysTo(enddate) + 1;
 }
 
-QRectF CScheduleCoorManage::getDrawRegion(QDateTime begintime, QDateTime endtime)
-{
-    QRectF rect;
-    QString bb = begintime.toString("yyyyMMddhhmmsszzz");
-    QString ee = endtime.toString("yyyyMMddhhmmsszzz");
-
-    if (begintime > endtime)
-        return rect;
-
-    QDate begindate = begintime.date();
-    QDate enddate = endtime.date();
-    QTime beginzero(0, 0, 0);
-    QTime beginScheduleT = begintime.time();
-    QTime endScheduleT = endtime.time();
-
-    if (begindate < m_begindate || enddate > m_enddate)
-        return rect;
-
-    qint64 beginday = m_begindate.daysTo(begindate) + 1;
-    qint64 day = begindate.daysTo(enddate) + 1;
-    int ScheduleBT = beginzero.secsTo(beginScheduleT);
-    int ScheduleET = beginzero.secsTo(endScheduleT);
-    qreal rWidth = m_width * (1.0 * day / m_totalDay);
-    qreal rHeight = m_height * ((ScheduleET - ScheduleBT) / 86400.0);
-    qreal posX = m_width * (1.0 * (beginday - 1) / m_totalDay);
-    qreal posY = m_height * (ScheduleBT / 86400.0);
-    rect = QRectF(posX, posY, rWidth, rHeight);
-
-    return rect;
-}
-
-QRectF CScheduleCoorManage::getDrawRegion(QDateTime begintime, QDateTime endtime, int index, int coount)
-{
-    QRectF rect;
-    QString bb = begintime.toString("yyyyMMddhhmmsszzz");
-    QString ee = endtime.toString("yyyyMMddhhmmsszzz");
-
-    if (begintime > endtime)
-        return rect;
-
-    QDate begindate = begintime.date();
-    QDate enddate = endtime.date();
-    QTime beginzero(0, 0, 0);
-    QTime beginScheduleT = begintime.time();
-    QTime endScheduleT = endtime.time();
-
-    if (begindate < m_begindate || enddate > m_enddate)
-        return rect;
-    qint64 beginday = m_begindate.daysTo(begindate) + 1;
-    qint64 day = begindate.daysTo(enddate) + 1;
-    int ScheduleBT = beginzero.secsTo(beginScheduleT);
-    int ScheduleET = beginzero.secsTo(endScheduleT);
-    qreal rWidth = m_width * (1.0 * day / m_totalDay) / coount;
-    qreal rHeight = m_height * ((ScheduleET - ScheduleBT) / 86400.0);
-    qreal posX = m_width * (1.0 * (beginday - 1) / m_totalDay) + (index - 1) * rWidth;
-    qreal posY = m_height * (ScheduleBT / 86400.0);
-    rect = QRectF(posX, posY, rWidth, rHeight);
-
-    return rect;
-}
-
 QRectF CScheduleCoorManage::getDrawRegion(QDate date, QDateTime begintime, QDateTime endtime, int index, int coount, int maxNum, int type)
 {
     QRectF rect;
@@ -166,35 +105,6 @@ QRectF CScheduleCoorManage::getDrawRegion(QDate date, QDateTime begintime, QDate
     rect = QRectF(posX, posY, rWidth, rHeight);
 
     return rect;
-}
-
-QRectF CScheduleCoorManage::getDrawRegionF(QDateTime begintime, QDateTime endtime)
-{
-    QRectF rectf;
-
-    if (begintime > endtime)
-        return rectf;
-
-    QDate begindate = begintime.date();
-    QDate enddate = endtime.date();
-    QTime beginzero(0, 0, 0);
-    QTime beginScheduleT = begintime.time();
-    QTime endScheduleT = endtime.time();
-
-    if (begindate < m_begindate || enddate > m_enddate)
-        return rectf;
-
-    qint64 beginday = m_begindate.daysTo(begindate) + 1;
-    qint64 day = begindate.daysTo(enddate) + 1;
-    int ScheduleBT = beginzero.secsTo(beginScheduleT);
-    int ScheduleET = beginzero.secsTo(endScheduleT);
-    qreal rWidth = m_width * (1.0 * day / m_totalDay);
-    qreal rHeight = m_height * ((ScheduleET - ScheduleBT) / 86400.0);
-    qreal posX = m_width * (1.0 * (beginday - 1) / m_totalDay);
-    qreal posY = m_height * (ScheduleBT / 86400.0);
-    rectf = QRectF(posX, posY, rWidth, rHeight);
-
-    return rectf;
 }
 
 QRectF CScheduleCoorManage::getAllDayDrawRegion(QDate begin, QDate end)

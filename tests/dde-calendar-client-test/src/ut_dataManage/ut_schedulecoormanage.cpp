@@ -19,16 +19,22 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "ut_schedulecoormanage.h"
+
 #include <QDebug>
 
 ut_schedulecoormanage::ut_schedulecoormanage()
 {
+}
+
+void ut_schedulecoormanage::SetUp()
+{
     cScheduleCoorManage = new CScheduleCoorManage();
 }
 
-ut_schedulecoormanage::~ut_schedulecoormanage()
+void ut_schedulecoormanage::TearDown()
 {
     delete cScheduleCoorManage;
+    cScheduleCoorManage = nullptr;
 }
 
 //void CScheduleCoorManage::setRange(int w, int h, QDate begindate, QDate enddate, int rightmagin)
@@ -36,28 +42,25 @@ TEST_F(ut_schedulecoormanage, setRange)
 {
     int w = 100;
     int h = 100;
-    QDate begindate(2020, 12, 01);
-    QDate enddate(2020, 12, 31);
+    QDate begindate = QDate::currentDate();
+    QDate enddate = begindate.addDays(7);
     int rightmagin = 1;
     cScheduleCoorManage->setRange(w, h, begindate, enddate, rightmagin);
+    EXPECT_EQ(w, cScheduleCoorManage->m_width);
+    EXPECT_EQ(h, cScheduleCoorManage->m_height);
+    EXPECT_EQ(begindate, cScheduleCoorManage->m_begindate);
+    EXPECT_EQ(enddate, cScheduleCoorManage->m_enddate);
+    EXPECT_EQ(rightmagin, cScheduleCoorManage->m_rightmagin);
 }
 
 //void CScheduleCoorManage::setDateRange(QDate begindate, QDate enddate)
 TEST_F(ut_schedulecoormanage, setDateRange)
 {
-    QDate begindate(2020, 12, 01);
-    QDate enddate(2020, 12, 21);
+    QDate begindate = QDate::currentDate();
+    QDate enddate = begindate.addDays(7);
     cScheduleCoorManage->setDateRange(begindate, enddate);
-
-    cScheduleCoorManage->setDateRange(enddate, begindate);
-
-    int w = 100;
-    int h = 100;
-    QDate m_begindate(2020, 12, 11);
-    QDate m_enddate(2020, 12, 31);
-    int rightmagin = 1;
-    cScheduleCoorManage->setRange(w, h, m_begindate, m_enddate, rightmagin);
-    cScheduleCoorManage->setDateRange(begindate, enddate);
+    EXPECT_EQ(begindate, cScheduleCoorManage->m_begindate);
+    EXPECT_EQ(enddate, cScheduleCoorManage->m_enddate);
 }
 
 /**
@@ -68,108 +71,81 @@ TEST_F(ut_schedulecoormanage, setDateRange)
  */
 TEST_F(ut_schedulecoormanage, getDrawRegion)
 {
-    QString begin = "2020-12-01 12:24:36";
-    QDateTime begindate = QDateTime::fromString(begin, "yyyy-MM-dd hh:mm:ss");
-    QString end = "2020-12-21 12:24:36";
-    QDateTime enddate = QDateTime::fromString(end, "yyyy-MM-dd hh:mm:ss");
-
-    cScheduleCoorManage->getDrawRegion(begindate, enddate);
-    cScheduleCoorManage->getDrawRegion(enddate, begindate);
-
-    int index = 2;
-    int coount = 1;
-    cScheduleCoorManage->getDrawRegion(begindate, enddate, index, coount);
-    cScheduleCoorManage->getDrawRegion(enddate, begindate, index, coount);
-
-    QDate date(2020, 12, 31);
-    int maxnum = 3;
-    int type = 0;
-    cScheduleCoorManage->getDrawRegion(date, begindate, enddate, index, coount, maxnum, type);
-    cScheduleCoorManage->getDrawRegion(date, enddate, begindate, index, coount, maxnum, type);
     int w = 100;
     int h = 100;
-    QDate m_begindate(2020, 11, 11);
-    QDate m_enddate(2020, 12, 31);
+    QDate begindate = QDate::currentDate();
+    QDate enddate = begindate.addDays(7);
     int rightmagin = 1;
-    cScheduleCoorManage->setRange(w, h, m_begindate, m_enddate, rightmagin);
-    cScheduleCoorManage->getDrawRegion(begindate, enddate);
-    cScheduleCoorManage->getDrawRegion(begindate, enddate, index, coount);
+    cScheduleCoorManage->setRange(w, h, begindate, enddate, rightmagin);
 
-    coount = 5;
-    cScheduleCoorManage->getDrawRegion(date, begindate, enddate, index, coount, maxnum, type);
-
-    index = 5;
-    cScheduleCoorManage->getDrawRegion(date, begindate, enddate, index, coount, maxnum, type);
-}
-
-//QRectF CScheduleCoorManage::getDrawRegionF(QDateTime begintime, QDateTime endtime)
-TEST_F(ut_schedulecoormanage, getDrawRegionF)
-{
-    QString begin = "2020-12-01 12:24:36";
-    QDateTime begindate = QDateTime::fromString(begin, "yyyy-MM-dd hh:mm:ss");
-    QString end = "2020-12-21 12:24:36";
-    QDateTime enddate = QDateTime::fromString(end, "yyyy-MM-dd hh:mm:ss");
-
-    cScheduleCoorManage->getDrawRegionF(begindate, enddate);
-    cScheduleCoorManage->getDrawRegionF(enddate, begindate);
-
-    int w = 100;
-    int h = 100;
-    QDate m_begindate(2020, 11, 11);
-    QDate m_enddate(2020, 12, 31);
-    int rightmagin = 1;
-    cScheduleCoorManage->setRange(w, h, m_begindate, m_enddate, rightmagin);
-    cScheduleCoorManage->getDrawRegionF(begindate, enddate);
+    QDateTime bDate = QDateTime::currentDateTime();
+    QDateTime eDate = bDate.addSecs(60 * 60);
+    //第几个
+    int index = 1;
+    //一共多少个
+    int totalNum = 3;
+    //最多多少个
+    int maxnum = 7;
+    QRectF rect = cScheduleCoorManage->getDrawRegion(begindate, bDate, eDate, index, totalNum, maxnum);
+    EXPECT_GT(rect.x(), 0);
+    EXPECT_GT(rect.y(), 0);
+    EXPECT_GT(rect.width(), 0);
+    EXPECT_GT(rect.height(), 0);
 }
 
 //QRectF CScheduleCoorManage::getAllDayDrawRegion(QDate begin, QDate end)
 TEST_F(ut_schedulecoormanage, getAllDayDrawRegion)
 {
-    QDate begindate(2020, 12, 01);
-    QDate enddate(2020, 12, 31);
-    cScheduleCoorManage->getAllDayDrawRegion(begindate, enddate);
-    cScheduleCoorManage->getAllDayDrawRegion(enddate, begindate);
+    int w = 100;
+    int h = 100;
+    QDate begindate = QDate::currentDate();
+    QDate enddate = begindate.addDays(7);
+    int rightmagin = 1;
+    cScheduleCoorManage->setRange(w, h, begindate, enddate, rightmagin);
+
+    QRectF rect = cScheduleCoorManage->getAllDayDrawRegion(begindate.addDays(1), begindate.addDays(2));
+    EXPECT_EQ(rect.width(), w / 7 - 2);
 }
 
 //QDateTime CScheduleCoorManage::getDate(QPointF pos)
 TEST_F(ut_schedulecoormanage, getDate)
 {
+    int w = 100;
+    int h = 100;
+    QDate begindate = QDate::currentDate();
+    QDate enddate = begindate.addDays(7);
+    int rightmagin = 1;
+    cScheduleCoorManage->setRange(w, h, begindate, enddate, rightmagin);
+
     QPointF pos(0, 0);
     QDateTime dateTime = cScheduleCoorManage->getDate(pos);
-    qInfo() << dateTime;
-    QPointF pos1(-1, 0);
-    QDateTime dateTime1 = cScheduleCoorManage->getDate(pos1);
+    EXPECT_EQ(dateTime, QDateTime(begindate, QTime(0, 0, 0)));
 }
 
 //QDate CScheduleCoorManage::getsDate(QPointF pos)
 TEST_F(ut_schedulecoormanage, getsDate)
 {
+    int w = 100;
+    int h = 100;
+    QDate begindate = QDate::currentDate();
+    QDate enddate = begindate.addDays(7);
+    int rightmagin = 1;
+    cScheduleCoorManage->setRange(w, h, begindate, enddate, rightmagin);
     QPointF pos(0, 0);
     QDate date = cScheduleCoorManage->getsDate(pos);
-    qInfo() << date;
-    QPointF pos1(-1, 0);
-    cScheduleCoorManage->getsDate(pos1);
+    EXPECT_EQ(date, begindate);
 }
 
 //float CScheduleCoorManage::getHeight(const QTime &time)
 TEST_F(ut_schedulecoormanage, getHeight)
 {
-    const float Height = 0;
-    QTime time(18, 8, 9, 30);
-    float height = cScheduleCoorManage->getHeight(time);
-    qInfo() << height;
-    assert(Height <= height);
-}
-
-//QDate getBegindate()
-TEST_F(ut_schedulecoormanage, getBegindate)
-{
     int w = 100;
     int h = 100;
-    QDate m_begindate(2020, 11, 11);
-    QDate m_enddate(2020, 12, 31);
+    QDate begindate = QDate::currentDate();
+    QDate enddate = begindate.addDays(7);
     int rightmagin = 1;
-    cScheduleCoorManage->setRange(w, h, m_begindate, m_enddate, rightmagin);
-    QDate getbegindate = cScheduleCoorManage->getBegindate();
-    assert(m_begindate == getbegindate);
+    cScheduleCoorManage->setRange(w, h, begindate, enddate, rightmagin);
+    QTime currentTime = QTime::currentTime();
+    float height = cScheduleCoorManage->getHeight(currentTime);
+    EXPECT_GT(height, 0);
 }

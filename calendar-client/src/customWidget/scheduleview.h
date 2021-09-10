@@ -41,7 +41,6 @@ public:
     void setRange(int w, int h, QDate begin, QDate end);
     void setRange(QDate begin, QDate end);
     void setTheMe(int type = 0);
-    void setLunarVisible(bool state);
     void setTime(QTime time);
     void setSelectSchedule(const ScheduleDataInfo &scheduleInfo);
     void updateHeight();

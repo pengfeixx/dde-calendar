@@ -23,6 +23,7 @@
 
 #include "monthgraphiview.h"
 #include "gtest/gtest.h"
+
 #include <QObject>
 
 class ut_monthgraphiview : public ::testing::Test

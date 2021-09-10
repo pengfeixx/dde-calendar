@@ -21,31 +21,18 @@
 #ifndef TEST_ANIMATIONSTACKEDWIDGET_H
 #define TEST_ANIMATIONSTACKEDWIDGET_H
 
-#include <QObject>
-#include <gtest/gtest.h>
 #include "customWidget/animationstackedwidget.h"
 
-class ut_animationstackedwidget : public ::QObject
-    , public ::testing::Test
+#include "gtest/gtest.h"
+
+#include <QObject>
+
+class ut_animationstackedwidget : public ::testing::Test
 {
 public:
-    ut_animationstackedwidget();
-    ~ut_animationstackedwidget();
+    void SetUp() override;
+    void TearDown() override;
 
-    virtual void SetUp()
-    {
-        mAnimationStackedWidget = new AnimationStackedWidget();
-        widget1 = new QWidget(mAnimationStackedWidget);
-        widget2 = new QWidget(mAnimationStackedWidget);
-        mAnimationStackedWidget->addWidget(widget1);
-        mAnimationStackedWidget->addWidget(widget2);
-    }
-
-    virtual void TearDown()
-    {
-        delete mAnimationStackedWidget;
-        mAnimationStackedWidget = nullptr;
-    }
 protected:
     AnimationStackedWidget *mAnimationStackedWidget = nullptr;
     QWidget *widget1 = nullptr;

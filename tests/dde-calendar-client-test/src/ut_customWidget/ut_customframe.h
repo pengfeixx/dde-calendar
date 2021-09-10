@@ -21,16 +21,17 @@
 #ifndef TEST_CUSTOMFRAME_H
 #define TEST_CUSTOMFRAME_H
 
-#include <QObject>
-#include <gtest/gtest.h>
 #include "customWidget/customframe.h"
+#include "gtest/gtest.h"
 
-class ut_customframe : public ::QObject
-    , public ::testing::Test
+#include <QObject>
+
+class ut_customframe : public ::testing::Test
 {
 public:
     ut_customframe();
-    ~ut_customframe();
+    void SetUp() override;
+    void TearDown() override;
 
 protected:
     CustomFrame *mCustomFrame = nullptr;

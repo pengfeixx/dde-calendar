@@ -125,7 +125,8 @@ void CGraphicsView::slotCreate(const QDateTime &date)
 
 bool CGraphicsView::MeetCreationConditions(const QDateTime &date)
 {
-    return qAbs(date.daysTo(m_PressDate) < 7);
+    //判断时间差是否小于7天
+    return qAbs(date.daysTo(m_PressDate)) < 7;
 }
 
 void CGraphicsView::updateHeight()

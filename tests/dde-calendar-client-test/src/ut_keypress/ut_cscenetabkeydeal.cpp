@@ -21,16 +21,9 @@
 #include "ut_cscenetabkeydeal.h"
 
 #include "../third-party_stub/stub.h"
-#include "gtest/gtest.h"
-#include "view/cgraphicsscene.h"
-#include "KeyPress/cscenetabkeydeal.h"
-#include "view/graphicsItem/cweekdaybackgrounditem.h"
+#include "view/graphicsItem/cscenebackgrounditem.h"
 #include "keypressstub.h"
 
-ut_CSceneTabKeyDeal::ut_CSceneTabKeyDeal(QObject *parent)
-    : QObject(parent)
-{
-}
 
 TEST(SceneTabHandle_test, ut_CSceneTabKeyDeal)
 {
@@ -39,4 +32,32 @@ TEST(SceneTabHandle_test, ut_CSceneTabKeyDeal)
     CSceneTabKeyDeal tabDeal(scene);
     tabDeal.dealEvent();
     delete scene;
+}
+
+void ut_CSceneTabKeyDeal::SetUp()
+{
+    m_scene = new CGraphicsScene();
+    m_sceneTabDeal = new CSceneTabKeyDeal();
+}
+
+void ut_CSceneTabKeyDeal::TearDown()
+{
+    delete m_scene;
+    delete m_sceneTabDeal;
+}
+
+void setItemFocus_stub(void *obj, bool isFoucs) {
+    Q_UNUSED(obj)
+        Q_UNUSED(isFoucs)}
+
+TEST_F(ut_CSceneTabKeyDeal, focusItemDeal_001)
+{
+    //    KeyPressStub stub;
+    typedef void (*fptr)(CSceneBackgroundItem *, bool);
+    fptr A_foo = (fptr)(&CSceneBackgroundItem::setItemFocus);
+    Stub stub;
+    stub.set(A_foo, setItemFocus_stub);
+    CSceneBackgroundItem item(CSceneBackgroundItem::OnMonthView);
+    bool deal = m_sceneTabDeal->focusItemDeal(&item, m_scene);
+    EXPECT_FALSE(deal);
 }

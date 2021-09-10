@@ -26,17 +26,12 @@
 
 #include <QObject>
 
-class ut_dayWindow : public QObject
-    , public ::testing::Test
+class ut_dayWindow : public ::testing::Test
 {
-    Q_OBJECT
 public:
     ut_dayWindow();
     void SetUp() override;
     void TearDown() override;
-signals:
-
-public slots:
 public:
     CDayWindow *m_dayWindow;
 };

@@ -20,8 +20,15 @@
 */
 #include "ut_monthscheduleview.h"
 #include "dataManage/scheduledaterangeinfo.h"
+#include "../third-party_stub/stub.h"
+
+#include <QGraphicsItem>
 
 ut_monthscheduleview::ut_monthscheduleview()
+{
+}
+
+void ut_monthscheduleview::SetUp()
 {
     QRect rect;
     m_scene = new QGraphicsScene();
@@ -31,7 +38,7 @@ ut_monthscheduleview::ut_monthscheduleview()
     mMonthScheduleNumButton = new CMonthScheduleNumItem();
 }
 
-ut_monthscheduleview::~ut_monthscheduleview()
+void ut_monthscheduleview::TearDown()
 {
     delete mMonthScheduleView;
     mMonthScheduleView = nullptr;
@@ -147,59 +154,73 @@ QVector<MScheduleDateRangeInfo> getScheduleDateRangeInfo()
     scheduledaterangeinfo1.edate = QDate::currentDate().addDays(1);
     scheduledaterangeinfo1.state = true;
     scheduledaterangeinfo1.tData = getMonthScheduleDInfo().first();
-
-    //    MScheduleDateRangeInfo scheduledaterangeinfo2;
-    //    scheduledaterangeinfo2.num = 2;
-    //    scheduledaterangeinfo2.bDate = QDate(2021, 1, 23);
-    //    scheduledaterangeinfo2.eDate = QDate(2021, 1, 24);
-    //    scheduledaterangeinfo2.state = false;
-    //    scheduledaterangeinfo2.tData = getMonthScheduleDInfo().at(1);
-
-    //    MScheduleDateRangeInfo scheduledaterangeinfo3;
-    //    scheduledaterangeinfo3.num = 2;
-    //    scheduledaterangeinfo3.bDate = QDate(2021, 1, 25);
-    //    scheduledaterangeinfo3.eDate = QDate(2021, 1, 26);
-    //    scheduledaterangeinfo3.state = false;
-    //    scheduledaterangeinfo3.tData = getMonthScheduleDInfo().at(2);
-
-    //    MScheduleDateRangeInfo scheduledaterangeinfo4;
-    //    scheduledaterangeinfo4.num = 2;
-    //    scheduledaterangeinfo4.bDate = QDate(2021, 1, 27);
-    //    scheduledaterangeinfo4.eDate = QDate(2021, 1, 28);
-    //    scheduledaterangeinfo4.state = false;
-    //    scheduledaterangeinfo4.tData = getMonthScheduleDInfo().at(3);
-
     scheduleDateRangeInfo.append(scheduledaterangeinfo1);
-    //    scheduleDateRangeInfo.append(scheduledaterangeinfo2);
-    //    scheduleDateRangeInfo.append(scheduledaterangeinfo3);
-    //    scheduleDateRangeInfo.append(scheduledaterangeinfo4);
-
     return scheduleDateRangeInfo;
 }
 
 //void CMonthScheduleView::setallsize(int w, int h, int left, int top, int buttom, int itemHeight)
 TEST_F(ut_monthscheduleview, setallsize)
 {
-    mMonthScheduleView->setallsize(1, 1, 1, 1, 1, 1);
+    int w = 10;
+    int h = 20;
+    int left = 1;
+    int top = 2;
+    int buttom = 2;
+    int itemHeight = 1;
+    mMonthScheduleView->setallsize(w, h, left, top, buttom, itemHeight);
+    EXPECT_EQ(w, mMonthScheduleView->m_width);
+    EXPECT_EQ(h, mMonthScheduleView->m_height);
+    EXPECT_EQ(left, mMonthScheduleView->m_leftMargin);
+    EXPECT_EQ(top, mMonthScheduleView->m_topMargin);
+    EXPECT_EQ(buttom, mMonthScheduleView->m_bottomMargin);
 }
 
 //void CMonthScheduleView::setData(QMap<QDate, QVector<ScheduleDataInfo> > &data, int currentMonth)
 TEST_F(ut_monthscheduleview, setData)
 {
     QMap<QDate, QVector<ScheduleDataInfo>> mapScheduleInfo = getMonthMapScheduleDInfo(4);
-    mMonthScheduleView->setData(mapScheduleInfo, 1);
+    int currentMonth = QDate::currentDate().month();
+    mMonthScheduleView->setData(mapScheduleInfo, currentMonth);
+    EXPECT_EQ(mapScheduleInfo, mMonthScheduleView->m_data);
+    EXPECT_EQ(currentMonth, mMonthScheduleView->m_currentMonth);
 }
 
 //void CMonthScheduleView::slotFontChange()
 TEST_F(ut_monthscheduleview, slotFontChange)
 {
+    mMonthScheduleView->m_ItemHeight = 10;
+    QFont font = DFontSizeManager::instance()->get(DFontSizeManager::T8);
+    QFontMetrics fm(font);
+    int fontHeight = fm.height();
     mMonthScheduleView->slotFontChange();
+    EXPECT_EQ(fontHeight, mMonthScheduleView->m_ItemHeight);
+}
+
+bool updateShow = false;
+void updateDateShow_Stub(void *obj, QVector<QVector<MScheduleDateRangeInfo>> &vCMDaySchedule, QVector<QGraphicsRectItem *> &scheduleShowItem)
+{
+    Q_UNUSED(obj)
+    Q_UNUSED(vCMDaySchedule)
+    Q_UNUSED(scheduleShowItem)
+    updateShow = true;
 }
 
 //void CMonthScheduleView::updateData()
-TEST_F(ut_monthscheduleview, updateDate)
+TEST_F(ut_monthscheduleview, updateData)
 {
+    Stub stub;
+    stub.set(ADDR(CMonthScheduleView, updateDateShow), updateDateShow_Stub);
+    //设置日程每周最多显示多少行
+    mMonthScheduleView->m_cNum = 5;
+    //设置当前日程
+    mMonthScheduleView->m_data.clear();
+    QDate currentDate = QDate::currentDate();
+    QVector<ScheduleDataInfo> info;
+    for (int i = 0; i < 42; ++i) {
+        mMonthScheduleView->m_data[currentDate.addDays(i)] = info;
+    }
     mMonthScheduleView->updateData();
+    EXPECT_TRUE(updateShow);
 }
 
 //void CMonthScheduleView::updateHeight()
@@ -211,13 +232,17 @@ TEST_F(ut_monthscheduleview, updateHeight)
 //QVector<QGraphicsRectItem *> CMonthScheduleView::getScheduleShowItem() const
 TEST_F(ut_monthscheduleview, getScheduleShowItem)
 {
-    mMonthScheduleView->getScheduleShowItem();
+    QVector<QGraphicsRectItem *> showItems = mMonthScheduleView->getScheduleShowItem();
+    EXPECT_EQ(showItems.size(), 0);
 }
 
 //void CMonthScheduleView::updateDate(const ScheduleDataInfo &info)
-TEST_F(ut_monthscheduleview, updateData)
+TEST_F(ut_monthscheduleview, updateDate)
 {
+    //更新日程显示
     mMonthScheduleView->updateDate(getMonthScheduleDInfo().first());
+    int infosize = mMonthScheduleView->m_weekSchedule.at(0)->getScheduleShowItem().size();
+    EXPECT_EQ(infosize, 0);
 }
 
 //void CMonthScheduleView::changeDate(const ScheduleDataInfo &info)
@@ -315,6 +340,7 @@ TEST_F(ut_monthscheduleview, setHeight)
 //void CWeekScheduleView::updateSchedule(const bool isNormalDisplay, const ScheduleDataInfo &info)
 TEST_F(ut_monthscheduleview, updateSchedule)
 {
+    mWeekScheduleView->m_colum = 3;
     mWeekScheduleView->updateSchedule(true, getMonthScheduleDInfo().first());
     mWeekScheduleView->updateSchedule(false, getMonthScheduleDInfo().first());
 }
@@ -322,19 +348,33 @@ TEST_F(ut_monthscheduleview, updateSchedule)
 //void CWeekScheduleView::clearItem()
 TEST_F(ut_monthscheduleview, clearItem)
 {
+    QGraphicsRectItem *item = new QGraphicsRectItem();
+    mWeekScheduleView->m_scheduleShowItem.append(item);
+    EXPECT_EQ(mWeekScheduleView->m_scheduleShowItem.size(), 1);
+    //释放存储的item并清空
     mWeekScheduleView->clearItem();
+    EXPECT_EQ(mWeekScheduleView->m_scheduleShowItem.size(), 0);
 }
 
 //void CWeekScheduleView::setMaxNum()
 TEST_F(ut_monthscheduleview, setMacNum)
 {
+    mWeekScheduleView->m_MaxNum = 10;
+    mWeekScheduleView->m_DayHeight = 9;
+    mWeekScheduleView->m_ScheduleHeight = 2;
+
     mWeekScheduleView->setMaxNum();
+    EXPECT_EQ(mWeekScheduleView->m_MaxNum, 3);
 }
 
 //void CWeekScheduleView::mScheduleClear()
 TEST_F(ut_monthscheduleview, mScheduleClear)
 {
+    QVector<MScheduleDateRangeInfo> info;
+    mWeekScheduleView->m_MScheduleInfo.append(info);
+    EXPECT_EQ(mWeekScheduleView->m_MScheduleInfo.size(), 1);
     mWeekScheduleView->mScheduleClear();
+    EXPECT_EQ(mWeekScheduleView->m_MScheduleInfo.size(), 0);
 }
 
 //void CWeekScheduleView::sortAndFilter(QVector<MScheduleDateRangeInfo> &vMDaySchedule)
@@ -355,6 +395,8 @@ TEST_F(ut_monthscheduleview, setColor)
     QColor color1(100, 100, 255);
     QColor color2(200, 200, 255);
     mMonthScheduleNumButton->setColor(color1, color2);
+    EXPECT_EQ(color1, mMonthScheduleNumButton->m_color1);
+    EXPECT_EQ(color2, mMonthScheduleNumButton->m_color2);
 }
 
 //void CMonthScheduleNumButton::setText(QColor tcolor, QFont font, QPoint pos)
@@ -363,16 +405,21 @@ TEST_F(ut_monthscheduleview, setText)
     QColor color(100, 100, 255);
     QFont font;
     mMonthScheduleNumButton->setText(color, font);
+    EXPECT_EQ(color, mMonthScheduleNumButton->m_textcolor);
+    EXPECT_EQ(font, mMonthScheduleNumButton->m_font);
 }
 
 //void CMonthScheduleNumButton::setSizeType(DFontSizeManager::SizeType sizeType)
 TEST_F(ut_monthscheduleview, setSizeType)
 {
-    mMonthScheduleNumButton->setSizeType(DFontSizeManager::SizeType::T1);
+    DFontSizeManager::SizeType size = DFontSizeManager::SizeType::T1;
+    mMonthScheduleNumButton->setSizeType(size);
+    EXPECT_EQ(size, mMonthScheduleNumButton->m_SizeType);
 }
 
 //QPixmap CMonthScheduleWidgetItem::getPixmap()
 TEST_F(ut_monthscheduleview, getPixmap)
 {
-    mMonthScheduleWidgetItem->getPixmap();
+    QPixmap pixmap = mMonthScheduleWidgetItem->getPixmap();
+    EXPECT_EQ(pixmap.size(), mMonthScheduleWidgetItem->rect().toRect().size());
 }

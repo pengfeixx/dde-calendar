@@ -26,18 +26,14 @@
 
 #include <QObject>
 
-class ut_graphicsscene : public QObject
-    , public ::testing::Test
+class ut_graphicsscene : public ::testing::Test
 {
-    Q_OBJECT
 public:
     ut_graphicsscene();
 
     void SetUp() override;
     void TearDown() override;
-signals:
 
-public slots:
 public:
     CGraphicsScene *m_Scene = nullptr;
 };

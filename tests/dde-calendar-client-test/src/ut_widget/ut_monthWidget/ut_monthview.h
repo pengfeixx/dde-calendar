@@ -21,16 +21,17 @@
 #ifndef TEST_MONTHVIEW_H
 #define TEST_MONTHVIEW_H
 
-#include <QObject>
 #include "gtest/gtest.h"
 #include "monthWidget/monthview.h"
 
-class ut_monthview : public QObject
-    , public ::testing::Test
+#include <QObject>
+
+class ut_monthview : public ::testing::Test
 {
 public:
     ut_monthview();
-    ~ut_monthview();
+    void SetUp() override;
+    void TearDown() override;
 
 protected:
     CMonthView *mMonthView = nullptr;

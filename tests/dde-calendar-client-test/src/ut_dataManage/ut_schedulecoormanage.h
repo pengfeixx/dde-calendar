@@ -23,14 +23,15 @@
 
 #include "schedulecoormanage.h"
 #include "gtest/gtest.h"
+
 #include <QObject>
 
-class ut_schedulecoormanage : public QObject
-    , public ::testing::Test
+class ut_schedulecoormanage : public ::testing::Test
 {
 public:
     ut_schedulecoormanage();
-    ~ut_schedulecoormanage();
+    void SetUp() override;
+    void TearDown() override;
 
 protected:
     CScheduleCoorManage *cScheduleCoorManage = nullptr;

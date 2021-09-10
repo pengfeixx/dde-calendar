@@ -26,10 +26,14 @@
 
 ut_timeedit::ut_timeedit()
 {
+}
+
+void ut_timeedit::SetUp()
+{
     mTimeEdit = new CTimeEdit();
 }
 
-ut_timeedit::~ut_timeedit()
+void ut_timeedit::TearDown()
 {
     delete mTimeEdit;
     mTimeEdit = nullptr;
@@ -38,26 +42,41 @@ ut_timeedit::~ut_timeedit()
 //void CTimeEdit::setTime(QTime time)
 TEST_F(ut_timeedit, setTime)
 {
-    mTimeEdit->setTime(QTime(23, 59, 59));
+    QTime current = QTime::currentTime();
+    mTimeEdit->setTime(current);
+    EXPECT_EQ(current, mTimeEdit->m_time);
+    QString timeStr = current.toString(mTimeEdit->m_timeFormat);
+    EXPECT_EQ(timeStr, mTimeEdit->m_timeEdit->getLineEdit()->text());
 }
 
 //QTime CTimeEdit::getTime()
 TEST_F(ut_timeedit, getTime)
 {
+    QTime current = QTime::currentTime();
+    mTimeEdit->setTime(current);
     mTimeEdit->getTime();
+    EXPECT_EQ(current.hour(), mTimeEdit->m_time.hour());
+    EXPECT_EQ(current.minute(), mTimeEdit->m_time.minute());
 }
 
 //setTimeFormat
-TEST_F(ut_timeedit, setTimeFormat)
+TEST_F(ut_timeedit, setTimeFormat_001)
+{
+    mTimeEdit->setTimeFormat(0);
+    EXPECT_EQ("h:mm", mTimeEdit->m_timeFormat);
+}
+
+TEST_F(ut_timeedit, setTimeFormat_002)
 {
     mTimeEdit->setTimeFormat(1);
-    mTimeEdit->setTimeFormat(0);
+    EXPECT_EQ("hh:mm", mTimeEdit->m_timeFormat);
 }
 
 //slotFocusDraw
 TEST_F(ut_timeedit, slotFocusDraw)
 {
     mTimeEdit->slotFocusDraw(false);
+    EXPECT_EQ(false, mTimeEdit->m_hasFocus);
 }
 
 //getPixmap
@@ -67,10 +86,14 @@ TEST_F(ut_timeedit, getPixmap)
     mTimeEdit->setFixedSize(200, 50);
     QPixmap pixmap(mTimeEdit->size());
     mTimeEdit->render(&pixmap);
+    EXPECT_EQ(pixmap.size(), mTimeEdit->size());
 }
 
 TEST_F(ut_timeedit, focusInEvent)
 {
-    QFocusEvent focusEvent_in( QEvent::FocusIn,Qt::FocusReason::TabFocusReason);
-    QApplication::sendEvent(mTimeEdit,&focusEvent_in);
+    mTimeEdit->setCurrentIndex(1);
+    QFocusEvent focusEvent_in(QEvent::FocusIn, Qt::FocusReason::TabFocusReason);
+    QApplication::sendEvent(mTimeEdit, &focusEvent_in);
+
+    EXPECT_NE(mTimeEdit->lineEdit()->selectedText(), "");
 }

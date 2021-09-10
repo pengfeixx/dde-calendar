@@ -113,11 +113,6 @@ void CScheduleView::setTheMe(int type)
     update();
 }
 
-void CScheduleView::setLunarVisible(bool state)
-{
-    Q_UNUSED(state);
-}
-
 void CScheduleView::setTime(QTime time)
 {
     m_graphicsView->setTime(time);

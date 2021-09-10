@@ -21,9 +21,13 @@
 #include "ut_ckeypressprxy.h"
 #include "ckeyleftdeal.h"
 
-ut_CKeyPressPrxy::ut_CKeyPressPrxy()
+void ut_CKeyPressPrxy::SetUp()
 {
     keyPressPrxy = QSharedPointer<CKeyPressPrxy>(new CKeyPressPrxy);
+}
+
+void ut_CKeyPressPrxy::TearDown()
+{
 }
 
 TEST_F(ut_CKeyPressPrxy, keyPressDeal_NoEvent)

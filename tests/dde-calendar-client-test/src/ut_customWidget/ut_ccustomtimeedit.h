@@ -21,26 +21,16 @@
 #ifndef TEST_CCUSTOMTIMEEDIT_H
 #define TEST_CCUSTOMTIMEEDIT_H
 
-#include <gtest/gtest.h>
 #include "customWidget/ccustomtimeedit.h"
+#include "gtest/gtest.h"
 
 #include <QObject>
 
-class ut_CCustomTimeEdit : public QObject
-    , public testing::Test
+class ut_CCustomTimeEdit : public testing::Test
 {
-    Q_OBJECT
 public:
-    explicit ut_CCustomTimeEdit(QObject *parent = nullptr)
-        : QObject(parent) {
-
-          };
-
     void SetUp() override;
     void TearDown() override;
-signals:
-
-public slots:
 public:
     CCustomTimeEdit *m_timeEdit = nullptr;
 };

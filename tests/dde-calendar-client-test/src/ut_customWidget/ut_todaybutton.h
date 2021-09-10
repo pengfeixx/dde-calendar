@@ -21,14 +21,13 @@
 #ifndef TEST_TODAYBUTTON_H
 #define TEST_TODAYBUTTON_H
 
-#include <QObject>
-#include <gtest/gtest.h>
 #include "customWidget/todaybutton.h"
+#include "gtest/gtest.h"
 
-class ut_todaybutton : public ::QObject
-    , public ::testing::Test
+#include <QObject>
+
+class ut_todaybutton : public ::testing::Test
 {
-    Q_OBJECT
 public:
     ut_todaybutton();
     void SetUp() override;

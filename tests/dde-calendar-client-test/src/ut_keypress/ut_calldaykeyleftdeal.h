@@ -21,18 +21,20 @@
 #ifndef TEST_CALLDAYKEYLEFTDEAL_H
 #define TEST_CALLDAYKEYLEFTDEAL_H
 
-#include <QObject>
-#include <QWidget>
+#include "KeyPress/calldaykeyleftdeal.h"
+#include "view/cgraphicsscene.h"
+#include "gtest/gtest.h"
 
-class ut_CAllDayKeyLeftDeal : public QObject
+class ut_CAllDayKeyLeftDeal : public ::testing::Test
 {
-    Q_OBJECT
 public:
-    explicit ut_CAllDayKeyLeftDeal(QObject *parent = nullptr);
+    ut_CAllDayKeyLeftDeal() {}
+    void SetUp() override;
+    void TearDown() override;
 
-signals:
-
-public slots:
+protected:
+    CAllDayKeyLeftDeal *m_leftDeal = nullptr;
+    CGraphicsScene *m_scene = nullptr;
 };
 
 #endif // TEST_CALLDAYKEYLEFTDEAL_H

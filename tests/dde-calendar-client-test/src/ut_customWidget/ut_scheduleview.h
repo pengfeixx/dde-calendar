@@ -21,19 +21,19 @@
 #ifndef TEST_SCHEDULEVIEW_H
 #define TEST_SCHEDULEVIEW_H
 
-#include <QObject>
-#include <gtest/gtest.h>
 #include "customWidget/scheduleview.h"
+#include "gtest/gtest.h"
 
-class ut_scheduleview : public ::QObject
-    , public ::testing::Test
+#include <QObject>
+
+class ut_scheduleview : public ::testing::Test
 {
 public:
     ut_scheduleview();
-    ~ut_scheduleview();
+    void SetUp() override;
+    void TearDown() override;
 
 protected:
     CScheduleView *mScheduleView = nullptr;
 };
-
 #endif // TEST_SCHEDULEVIEW_H

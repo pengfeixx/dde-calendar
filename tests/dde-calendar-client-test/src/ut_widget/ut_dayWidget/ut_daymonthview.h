@@ -21,19 +21,22 @@
 #ifndef TEST_DAYMONTHVIEW_H
 #define TEST_DAYMONTHVIEW_H
 
-#include <QObject>
-#include <dayWidget/daymonthview.h>
-#include <gtest/gtest.h>
+#include "dayWidget/daymonthview.h"
 
-class ut_daymonthview : public QObject
-    , public ::testing::Test
+#include "gtest/gtest.h"
+
+#include <QObject>
+
+class ut_daymonthview : public ::testing::Test
 {
 public:
     ut_daymonthview();
-    ~ut_daymonthview();
+    void SetUp() override;
+    void TearDown() override;
 
 protected:
     CDayMonthView *mDayMonthView = nullptr;
+    QDateTime currentDateTime;
 };
 
 #endif // TEST_DAYMONTHVIEW_H

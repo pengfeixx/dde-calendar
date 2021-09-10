@@ -21,17 +21,20 @@
 #ifndef TEST_CWEEKDAYSCENETABKEYDEAL_H
 #define TEST_CWEEKDAYSCENETABKEYDEAL_H
 
-#include <QObject>
+#include "KeyPress/cweekdayscenetabkeydeal.h"
+#include "view/cgraphicsscene.h"
+#include "gtest/gtest.h"
 
-class ut_CWeekDaySceneTabKeyDeal : public QObject
+class ut_CWeekDaySceneTabKeyDeal : public ::testing::Test
 {
-    Q_OBJECT
 public:
-    explicit ut_CWeekDaySceneTabKeyDeal(QObject *parent = nullptr);
+    ut_CWeekDaySceneTabKeyDeal() {}
+    void SetUp() override;
+    void TearDown() override;
 
-signals:
-
-public slots:
+protected:
+    CWeekDaySceneTabKeyDeal *m_weekTabDeal = nullptr;
+    CGraphicsScene *m_scene = nullptr;
 };
 
 #endif // TEST_CWEEKDAYSCENETABKEYDEAL_H

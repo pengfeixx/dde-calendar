@@ -21,17 +21,20 @@
 #ifndef TEST_CKEYUPDEAL_H
 #define TEST_CKEYUPDEAL_H
 
-#include <QObject>
+#include "KeyPress/ckeyupdeal.h"
+#include "view/cgraphicsscene.h"
+#include "gtest/gtest.h"
 
-class ut_CKeyUpDeal : public QObject
+class ut_CKeyUpDeal : public ::testing::Test
 {
-    Q_OBJECT
 public:
-    explicit ut_CKeyUpDeal(QObject *parent = nullptr);
+    ut_CKeyUpDeal() {}
+    void SetUp() override;
+    void TearDown() override;
 
-signals:
-
-public slots:
+protected:
+    CKeyUpDeal *m_upDeal = nullptr;
+    CGraphicsScene *m_scene = nullptr;
 };
 
 #endif // TEST_CKEYUPDEAL_H

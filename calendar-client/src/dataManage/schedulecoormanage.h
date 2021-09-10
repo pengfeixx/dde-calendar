@@ -34,10 +34,7 @@ public:
     {
         return m_rightmagin;
     }
-    QRectF getDrawRegion(QDateTime begintime, QDateTime endtime);
-    QRectF getDrawRegion(QDateTime begintime, QDateTime endtime, int index, int coount);
     QRectF getDrawRegion(QDate date, QDateTime begintime, QDateTime endtime, int index, int coount, int maxNum, int type = 0);
-    QRectF getDrawRegionF(QDateTime begintime, QDateTime endtime);
     QRectF getAllDayDrawRegion(QDate begin, QDate end);
     QDateTime getDate(QPointF pos);
     QDate getsDate(QPointF pos);

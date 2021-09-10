@@ -20,11 +20,13 @@
 */
 #include "ut_graphicsscene.h"
 
+#include "view/graphicsItem/cfocusitem.h"
+#include "view/graphicsItem/cscenebackgrounditem.h"
+
 #include <QDate>
 #include <QFocusEvent>
 #include <QApplication>
 #include <QGraphicsRectItem>
-#include "view/graphicsItem/cfocusitem.h"
 
 ut_graphicsscene::ut_graphicsscene()
 {
@@ -44,53 +46,89 @@ void ut_graphicsscene::TearDown()
 TEST_F(ut_graphicsscene, getCurrentFocusItem)
 {
     QGraphicsItem *item = m_Scene->getCurrentFocusItem();
-    Q_UNUSED(item)
+    EXPECT_EQ(item, nullptr);
 }
 
 //setPrePage
 TEST_F(ut_graphicsscene, setPrePage)
 {
+    bool switchPre = false;
+    QObject::connect(m_Scene, &CGraphicsScene::signalSwitchPrePage, [&]() {
+        switchPre = true;
+    });
     m_Scene->setPrePage(QDate::currentDate(), false);
+    EXPECT_TRUE(switchPre);
 }
 
 //focusInDeal
-TEST_F(ut_graphicsscene, focusInDeal)
+TEST_F(ut_graphicsscene, focusInDeal_001)
 {
     m_Scene->setIsShowCurrentItem(true);
     QFocusEvent event(QEvent::FocusIn, Qt::TabFocusReason);
     QApplication::sendEvent(m_Scene, &event);
+    EXPECT_EQ(m_Scene->currentFocusItem, nullptr);
 }
 
-TEST_F(ut_graphicsscene, focusInDeal1)
+TEST_F(ut_graphicsscene, focusInDeal_002)
 {
     CFocusItem *item = new CFocusItem();
     m_Scene->setCurrentFocusItem(item);
     m_Scene->addItem(item);
     QFocusEvent event(QEvent::FocusIn, Qt::ActiveWindowFocusReason);
     QApplication::sendEvent(m_Scene, &event);
+    EXPECT_EQ(m_Scene->currentFocusItem, item);
     m_Scene->clear();
 }
 
 //focusOutDeal
-TEST_F(ut_graphicsscene, focusOutDeal)
+TEST_F(ut_graphicsscene, focusOutDeal_001)
 {
-    QFocusEvent event(QEvent::FocusOut, Qt::TabFocusReason);
-    m_Scene->setActiveSwitching(true);
+    CSceneBackgroundItem *item = new CSceneBackgroundItem(CSceneBackgroundItem::OnWeekView);
+    m_Scene->setCurrentFocusItem(item);
+    m_Scene->addItem(item);
+    QFocusEvent event(QEvent::FocusIn, Qt::ActiveWindowFocusReason);
     QApplication::sendEvent(m_Scene, &event);
+    QFocusEvent eventOut(QEvent::FocusOut, Qt::ActiveWindowFocusReason);
+    m_Scene->setActiveSwitching(true);
+    QApplication::sendEvent(m_Scene, &eventOut);
+    EXPECT_FALSE(item->getItemFocus());
+    m_Scene->clear();
 }
 
-//focusOutDeal
-TEST_F(ut_graphicsscene, focusOutDeal1)
+//focusOutDeal  TabFocusReason
+TEST_F(ut_graphicsscene, focusOutDeal_002)
 {
-    QFocusEvent event(QEvent::FocusOut, Qt::TabFocusReason);
-    m_Scene->setActiveSwitching(false);
+    CSceneBackgroundItem *item = new CSceneBackgroundItem(CSceneBackgroundItem::OnWeekView);
+    m_Scene->setCurrentFocusItem(item);
+    m_Scene->addItem(item);
+    QFocusEvent event(QEvent::FocusIn, Qt::ActiveWindowFocusReason);
     QApplication::sendEvent(m_Scene, &event);
+    QFocusEvent eventOut(QEvent::FocusOut, Qt::TabFocusReason);
+    m_Scene->setActiveSwitching(true);
+    QApplication::sendEvent(m_Scene, &eventOut);
+    EXPECT_EQ(m_Scene->currentFocusItem, item);
+    m_Scene->clear();
+}
+
+TEST_F(ut_graphicsscene, focusOutDeal_003)
+{
+    CSceneBackgroundItem *item = new CSceneBackgroundItem(CSceneBackgroundItem::OnWeekView);
+    m_Scene->setCurrentFocusItem(item);
+    m_Scene->addItem(item);
+    QFocusEvent event(QEvent::FocusIn, Qt::ActiveWindowFocusReason);
+    QApplication::sendEvent(m_Scene, &event);
+    QFocusEvent eventOut(QEvent::FocusOut, Qt::TabFocusReason);
+    m_Scene->setActiveSwitching(false);
+    QApplication::sendEvent(m_Scene, &eventOut);
+    EXPECT_EQ(m_Scene->currentFocusItem, nullptr);
+    m_Scene->clear();
 }
 
 //setIsContextMenu
 TEST_F(ut_graphicsscene, setIsContextMenu)
 {
     m_Scene->setIsShowCurrentItem(false);
+    EXPECT_EQ(m_Scene->m_isContextMenu, false);
 }
 
 //currentItemInit
@@ -101,10 +139,12 @@ TEST_F(ut_graphicsscene, currentItemInit)
     m_Scene->addItem(item);
     m_Scene->currentItemInit();
     m_Scene->clear();
+    EXPECT_EQ(m_Scene->currentFocusItem, nullptr);
 }
 
 //getActiveSwitching
 TEST_F(ut_graphicsscene, getActiveSwitching)
 {
-    m_Scene->getActiveSwitching();
+    m_Scene->setActiveSwitching(false);
+    EXPECT_FALSE(m_Scene->getActiveSwitching());
 }

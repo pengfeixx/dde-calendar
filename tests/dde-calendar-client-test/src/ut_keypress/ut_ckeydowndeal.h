@@ -21,17 +21,19 @@
 #ifndef TEST_CKEYDOWNDEAL_H
 #define TEST_CKEYDOWNDEAL_H
 
-#include <QObject>
+#include "KeyPress/ckeydowndeal.h"
+#include "view/cgraphicsscene.h"
+#include "gtest/gtest.h"
 
-class ut_CKeyDownDeal : public QObject
+class ut_CKeyDownDeal : public ::testing::Test
 {
-    Q_OBJECT
 public:
-    explicit ut_CKeyDownDeal(QObject *parent = nullptr);
+    ut_CKeyDownDeal() {}
+    void SetUp() override;
+    void TearDown() override;
 
-signals:
-
-public slots:
+protected:
+    CKeyDownDeal *m_DownDeal = nullptr;
+    CGraphicsScene *m_scene = nullptr;
 };
-
 #endif // TEST_CKEYDOWNDEAL_H

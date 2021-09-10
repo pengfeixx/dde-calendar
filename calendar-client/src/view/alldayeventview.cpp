@@ -59,7 +59,8 @@ void CAllDayEventWeekView::changeEvent(QEvent *event)
 
 bool CAllDayEventWeekView::MeetCreationConditions(const QDateTime &date)
 {
-    return qAbs(date.daysTo(m_PressDate) < 7);
+    //判断时间差是否小于7天
+    return qAbs(date.daysTo(m_PressDate)) < 7;
 }
 
 void CAllDayEventWeekView::slotCreate(const QDateTime &date)
@@ -121,7 +122,7 @@ QDateTime CAllDayEventWeekView::getDragScheduleInfoBeginTime(const QDateTime &mo
 
 QDateTime CAllDayEventWeekView::getDragScheduleInfoEndTime(const QDateTime &moveDateTime)
 {
-    return m_InfoBeginTime.daysTo(m_MoveDate) < 0 ? QDateTime(m_InfoBeginTime.date(), QTime(23, 59, 0)) : QDateTime(moveDateTime.date(), QTime(23, 59, 0));
+    return m_InfoBeginTime.daysTo(moveDateTime) < 0 ? QDateTime(m_InfoBeginTime.date(), QTime(23, 59, 0)) : QDateTime(moveDateTime.date(), QTime(23, 59, 0));
 }
 
 void CAllDayEventWeekView::updateHeight()

@@ -21,17 +21,20 @@
 #ifndef TEST_CKEYLEFTDEAL_H
 #define TEST_CKEYLEFTDEAL_H
 
-#include <QObject>
+#include "KeyPress/ckeyleftdeal.h"
+#include "view/cgraphicsscene.h"
+#include "gtest/gtest.h"
 
-class ut_CKeyLeftDeal : public QObject
+class ut_CKeyLeftDeal : public ::testing::Test
 {
-    Q_OBJECT
 public:
-    explicit ut_CKeyLeftDeal(QObject *parent = nullptr);
+    ut_CKeyLeftDeal() {}
+    void SetUp() override;
+    void TearDown() override;
 
-signals:
-
-public slots:
+protected:
+    CKeyLeftDeal *m_leftDeal = nullptr;
+    CGraphicsScene *m_scene = nullptr;
 };
 
 #endif // TEST_CKEYLEFTDEAL_H

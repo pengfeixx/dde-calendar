@@ -21,16 +21,15 @@
 #ifndef TEST_MONTHBREFWIDGET_H
 #define TEST_MONTHBREFWIDGET_H
 
-#include <QObject>
-#include <gtest/gtest.h>
 #include "customWidget/monthbrefwidget.h"
+#include "gtest/gtest.h"
 
-class ut_monthbrefwidget : public ::QObject
-    , public ::testing::Test
+#include <QObject>
+
+class ut_monthbrefwidget : public ::testing::Test
 {
 public:
     ut_monthbrefwidget();
-    ~ut_monthbrefwidget();
     void SetUp() override;
     void TearDown() override;
 protected:

@@ -21,22 +21,24 @@
 #include "ut_ckeyleftdeal.h"
 
 #include "../third-party_stub/stub.h"
-#include "gtest/gtest.h"
-#include "view/cgraphicsscene.h"
-#include "KeyPress/ckeyleftdeal.h"
 #include "view/graphicsItem/cweekdaybackgrounditem.h"
 #include "keypressstub.h"
 
-ut_CKeyLeftDeal::ut_CKeyLeftDeal(QObject *parent)
-    : QObject(parent)
+void ut_CKeyLeftDeal::SetUp()
 {
+    m_leftDeal = new CKeyLeftDeal();
+    m_scene = new CGraphicsScene();
 }
 
-TEST(LeftHandle_test, ut_CKeyLeftDeal)
+void ut_CKeyLeftDeal::TearDown()
 {
-    KeyPressStub stub;
-    CGraphicsScene *scene = new CGraphicsScene();
-    CKeyLeftDeal leftDeal(scene);
-    leftDeal.dealEvent();
-    delete scene;
+    delete m_leftDeal;
+    delete m_scene;
+}
+
+TEST_F(ut_CKeyLeftDeal, focusItemDeal)
+{
+    CSceneBackgroundItem item(CSceneBackgroundItem::OnDayView);
+    bool deal = m_leftDeal->focusItemDeal(&item, m_scene);
+    EXPECT_TRUE(deal);
 }

@@ -26,10 +26,8 @@
 
 #include <QObject>
 
-class ut_CWeekDayBackgroundItem : public QObject
-    , public testing::Test
+class ut_CWeekDayBackgroundItem : public testing::Test
 {
-    Q_OBJECT
 public:
     ut_CWeekDayBackgroundItem();
     // Sets up the test fixture.
@@ -37,10 +35,6 @@ public:
 
     // Tears down the test fixture.
     void TearDown() override;
-
-signals:
-
-public slots:
 
 public:
     CWeekDayBackgroundItem *m_weekItem;

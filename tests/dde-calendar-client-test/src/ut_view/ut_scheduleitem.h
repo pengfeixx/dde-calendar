@@ -21,16 +21,18 @@
 #ifndef TEST_SCHEDULEITEM_H
 #define TEST_SCHEDULEITEM_H
 
-#include <QObject>
-#include <gtest/gtest.h>
 #include "graphicsItem/scheduleitem.h"
 
-class ut_scheduleitem : public ::QObject
-    , public ::testing::Test
+#include "gtest/gtest.h"
+
+#include <QObject>
+
+class ut_scheduleitem : public ::testing::Test
 {
 public:
     ut_scheduleitem();
-    ~ut_scheduleitem();
+    void SetUp() override;
+    void TearDown() override;
 
 protected:
     CScheduleItem *mScheduleItem = nullptr;

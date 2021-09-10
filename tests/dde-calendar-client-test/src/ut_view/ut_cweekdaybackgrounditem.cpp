@@ -48,6 +48,7 @@ TEST_F(ut_CWeekDayBackgroundItem, showFocus)
 TEST_F(ut_CWeekDayBackgroundItem, setItemFocus)
 {
     m_weekItem->setItemFocus(true);
+    EXPECT_EQ(m_weekItem->m_showItemIndex, -1);
 }
 
 //hasNextSubItem

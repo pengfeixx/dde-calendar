@@ -23,7 +23,7 @@
 
 #include <QObject>
 #include <widget/touchgestureoperation.h>
-#include <gtest/gtest.h>
+#include "gtest/gtest.h"
 
 class ut_touchgestureoperation : public ::QObject
     , public ::testing::Test

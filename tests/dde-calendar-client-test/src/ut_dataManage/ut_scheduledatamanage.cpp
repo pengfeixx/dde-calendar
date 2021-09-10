@@ -22,51 +22,57 @@
 
 ut_scheduledatamanage::ut_scheduledatamanage()
 {
+}
+
+void ut_scheduledatamanage::SetUp()
+{
     datamanage = new CScheduleDataManage();
 }
 
-ut_scheduledatamanage::~ut_scheduledatamanage()
+void ut_scheduledatamanage::TearDown()
 {
     delete datamanage;
+    datamanage = nullptr;
 }
 
 //CSchedulesColor CScheduleDataManage::getScheduleColorByType(int type)
-TEST_F(ut_scheduledatamanage, getScheduleColorByType)
+TEST_F(ut_scheduledatamanage, getScheduleColorByType_001)
 {
+    datamanage->setTheMe(1);
     CSchedulesColor color = datamanage->getScheduleColorByType(1);
-    assert(1 == color.type);
+    EXPECT_EQ(color.type, 1);
+    EXPECT_EQ(color.textColor, QColor("#000000"));
 }
 
-//bool CScheduleDataManage::getSearchResult(QDate date)
-TEST_F(ut_scheduledatamanage, getSearchResult)
+TEST_F(ut_scheduledatamanage, getScheduleColorByType_002)
 {
-    //QDate date(2020, 12, 01);
-    //datamanage->getSearchResult(date);
+    datamanage->setTheMe(1);
+    CSchedulesColor color = datamanage->getScheduleColorByType(8);
+    EXPECT_EQ(color.type, -1);
 }
 
 //void CScheduleDataManage::setTheMe(int type)
-TEST_F(ut_scheduledatamanage, setTheMe)
+TEST_F(ut_scheduledatamanage, setTheMe_001)
 {
     datamanage->setTheMe(1);
+    EXPECT_EQ(1, datamanage->m_theme);
+}
+
+TEST_F(ut_scheduledatamanage, setTheMe_002)
+{
     datamanage->setTheMe(2);
+    EXPECT_EQ(2, datamanage->m_theme);
 }
 
 //CScheduleDataManage *CScheduleDataManage::getScheduleDataManage()
 TEST_F(ut_scheduledatamanage, getScheduleDataManage)
 {
-    datamanage->getScheduleDataManage();
+    EXPECT_NE(datamanage->getScheduleDataManage(), nullptr);
 }
 
 //QColor CScheduleDataManage::getSystemActiveColor()
 TEST_F(ut_scheduledatamanage, getSystemActiveColor)
 {
-    datamanage->getSystemActiveColor();
-}
-
-//int getTheme()
-TEST_F(ut_scheduledatamanage, getTheme)
-{
-    datamanage->m_theme = 1;
-    int theme = datamanage->getTheme();
-    assert(1 == theme);
+    QColor color = DGuiApplicationHelper::instance()->applicationPalette().highlight().color();
+    EXPECT_EQ(color, datamanage->getSystemActiveColor());
 }

@@ -21,16 +21,17 @@
 #ifndef TEST_TIMEEDIT_H
 #define TEST_TIMEEDIT_H
 
-#include <QObject>
-#include <gtest/gtest.h>
 #include "customWidget/timeedit.h"
+#include "gtest/gtest.h"
 
-class ut_timeedit : public QObject
-    , public testing::Test
+#include <QObject>
+
+class ut_timeedit : public testing::Test
 {
 public:
     ut_timeedit();
-    ~ut_timeedit();
+    void SetUp() override;
+    void TearDown() override;
 
 protected:
     CTimeEdit *mTimeEdit = nullptr;

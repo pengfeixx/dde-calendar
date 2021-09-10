@@ -25,19 +25,14 @@
 #include "gtest/gtest.h"
 #include "ckeypressprxy.h"
 
-#include <QObject>
 #include <QSharedPointer>
 
-class ut_CKeyPressPrxy : public QObject
-    , public ::testing::Test
+class ut_CKeyPressPrxy : public ::testing::Test
 {
-    Q_OBJECT
 public:
-    ut_CKeyPressPrxy();
-
-signals:
-
-public slots:
+    ut_CKeyPressPrxy() {}
+    void SetUp() override;
+    void TearDown() override;
 
 public:
     QSharedPointer<CKeyPressPrxy> keyPressPrxy;

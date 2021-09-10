@@ -28,10 +28,8 @@
 
 #include <QObject>
 
-class ut_CKeyEnableDeal : public QObject
-    , public ::testing::Test
+class ut_CKeyEnableDeal : public ::testing::Test
 {
-    Q_OBJECT
 public:
     ut_CKeyEnableDeal();
     void SetUp();

@@ -21,22 +21,30 @@
 #include "ut_cweekdayscenetabkeydeal.h"
 
 #include "../third-party_stub/stub.h"
-#include "gtest/gtest.h"
-#include "view/cgraphicsscene.h"
-#include "KeyPress/cweekdayscenetabkeydeal.h"
 #include "view/graphicsItem/cweekdaybackgrounditem.h"
 #include "keypressstub.h"
 
-ut_CWeekDaySceneTabKeyDeal::ut_CWeekDaySceneTabKeyDeal(QObject *parent)
-    : QObject(parent)
+void ut_CWeekDaySceneTabKeyDeal::SetUp()
 {
+    m_scene = new CGraphicsScene();
+    m_weekTabDeal = new CWeekDaySceneTabKeyDeal();
 }
 
-TEST(WeekDaySceneTabHandle_test, ut_CWeekDaySceneTabKeyDeal)
+void ut_CWeekDaySceneTabKeyDeal::TearDown()
 {
-    KeyPressStub stub;
-    CGraphicsScene *scene = new CGraphicsScene();
-    CWeekDaySceneTabKeyDeal weektabDeal(scene);
-    weektabDeal.dealEvent();
-    delete scene;
+    delete m_scene;
+    delete m_weekTabDeal;
+}
+
+TEST_F(ut_CWeekDaySceneTabKeyDeal, focusItemDeal_001)
+{
+    CWeekDayBackgroundItem item;
+    bool deal = m_weekTabDeal->focusItemDeal(&item, m_scene);
+    EXPECT_TRUE(deal);
+}
+
+TEST_F(ut_CWeekDaySceneTabKeyDeal, focusItemDeal_002)
+{
+    bool deal = m_weekTabDeal->focusItemDeal(nullptr, m_scene);
+    EXPECT_FALSE(deal);
 }

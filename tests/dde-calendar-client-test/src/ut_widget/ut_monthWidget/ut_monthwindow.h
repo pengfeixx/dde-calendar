@@ -26,15 +26,12 @@
 
 #include <QObject>
 
-class ut_monthWindow : public QObject
-    , public ::testing::Test
+class ut_monthWindow : public ::testing::Test
 {
-    Q_OBJECT
 public:
     explicit ut_monthWindow();
     void SetUp() override;
     void TearDown() override;
-
 public:
     CMonthWindow *m_monthWindow {nullptr};
 };

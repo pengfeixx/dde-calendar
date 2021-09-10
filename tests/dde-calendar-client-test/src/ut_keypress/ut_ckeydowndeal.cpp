@@ -21,16 +21,8 @@
 #include "ut_ckeydowndeal.h"
 
 #include "../third-party_stub/stub.h"
-#include "gtest/gtest.h"
-#include "view/cgraphicsscene.h"
-#include "KeyPress/ckeydowndeal.h"
-#include "view/graphicsItem/cweekdaybackgrounditem.h"
+#include "view/graphicsItem/cscenebackgrounditem.h"
 #include "keypressstub.h"
-
-ut_CKeyDownDeal::ut_CKeyDownDeal(QObject *parent)
-    : QObject(parent)
-{
-}
 
 TEST(DownHandle_test, ut_CKeyDownDeal)
 {
@@ -39,4 +31,24 @@ TEST(DownHandle_test, ut_CKeyDownDeal)
     CKeyDownDeal downDeal(scene);
     downDeal.dealEvent();
     delete scene;
+}
+
+void ut_CKeyDownDeal::SetUp()
+{
+    m_DownDeal = new CKeyDownDeal();
+    m_scene = new CGraphicsScene();
+}
+
+void ut_CKeyDownDeal::TearDown()
+{
+    delete m_DownDeal;
+    delete m_scene;
+}
+
+TEST_F(ut_CKeyDownDeal, focusItemDeal)
+{
+    KeyPressStub stub;
+    CSceneBackgroundItem item(CSceneBackgroundItem::OnWeekView);
+    bool deal = m_DownDeal->focusItemDeal(&item, m_scene);
+    EXPECT_TRUE(deal);
 }

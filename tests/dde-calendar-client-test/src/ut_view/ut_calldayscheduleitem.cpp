@@ -53,13 +53,20 @@ TEST_F(ut_CAlldayscheduleitem, paintBackground)
     m_allItem->m_vHoverflag = true;
     m_allItem->m_vSelectflag = false;
     m_allItem->paintBackground(&painter, pixmap.rect(), true);
+    EXPECT_EQ(pixmap.size(), m_rectF.toRect().size());
 }
 
 //hasSelectSchedule
-TEST_F(ut_CAlldayscheduleitem, hasSelectSchedule)
+TEST_F(ut_CAlldayscheduleitem, hasSelectSchedule_001)
 {
     m_allItem->setData(TestDataInfo::getScheduleItemDInfo().first());
 
     bool hasSelectInfo = m_allItem->hasSelectSchedule(TestDataInfo::getScheduleItemDInfo().first());
     ASSERT_TRUE(hasSelectInfo);
+}
+
+TEST_F(ut_CAlldayscheduleitem, hasSelectSchedule_002)
+{
+    bool hasSelectInfo = m_allItem->hasSelectSchedule(TestDataInfo::getScheduleItemDInfo().first());
+    EXPECT_FALSE(hasSelectInfo);
 }

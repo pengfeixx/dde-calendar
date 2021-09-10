@@ -20,12 +20,19 @@
 */
 #include "ut_daymonthview.h"
 
+#include "dayWidget/dayhuangliview.h"
+
 ut_daymonthview::ut_daymonthview()
 {
-    mDayMonthView = new CDayMonthView();
 }
 
-ut_daymonthview::~ut_daymonthview()
+void ut_daymonthview::SetUp()
+{
+    mDayMonthView = new CDayMonthView();
+    currentDateTime = QDateTime::currentDateTime();
+}
+
+void ut_daymonthview::TearDown()
 {
     delete mDayMonthView;
     mDayMonthView = nullptr;
@@ -75,69 +82,120 @@ QVector<bool> dayMonthViewGetLineFlag()
 //void CDayMonthView::setShowDate(const QVector<QDate> &showDate, const QDate &selectDate, const QDate &currentDate)
 TEST_F(ut_daymonthview, setShowDate)
 {
-    mDayMonthView->setShowDate(dayMonthviewGetDayList(), QDate::currentDate(), QDate::currentDate());
+    QDate selectDate = currentDateTime.date().addDays(2);
+    mDayMonthView->setShowDate(dayMonthviewGetDayList(), selectDate, currentDateTime.date());
+    EXPECT_EQ(mDayMonthView->m_selectDate, selectDate);
+    EXPECT_EQ(mDayMonthView->m_currentDate, currentDateTime.date());
 }
 
 //void CDayMonthView::setLunarVisible(bool visible)
 TEST_F(ut_daymonthview, setLunarVisible)
 {
-    mDayMonthView->setLunarVisible(true);
+    bool isVisible = false;
+    mDayMonthView->setLunarVisible(isVisible);
+    EXPECT_EQ(isVisible, mDayMonthView->m_huanglistate);
+    EXPECT_EQ(isVisible, mDayMonthView->m_yiLabel->isVisible());
+    EXPECT_EQ(isVisible, mDayMonthView->m_jiLabel->isVisible());
+    EXPECT_EQ(isVisible, mDayMonthView->m_currentLuna->isVisible());
+    EXPECT_EQ(isVisible, mDayMonthView->m_splitline->isVisible());
 }
 
 //void CDayMonthView::setTheMe(int type)
-TEST_F(ut_daymonthview, setTheMe)
+TEST_F(ut_daymonthview, setTheMe_001)
 {
-    mDayMonthView->setTheMe(1);
-    mDayMonthView->setTheMe(2);
+    int type = 1;
+    QColor currentMouthColor("#3B3B3B");
+    mDayMonthView->setTheMe(type);
+    EXPECT_EQ(currentMouthColor, mDayMonthView->m_currentMouth->m_tnormalColor);
+}
+
+TEST_F(ut_daymonthview, setTheMe_002)
+{
+    int type = 2;
+    QColor currentMouthColor("#C0C6D4");
+    mDayMonthView->setTheMe(type);
+    EXPECT_EQ(currentMouthColor, mDayMonthView->m_currentMouth->m_tnormalColor);
 }
 
 //void CDayMonthView::setSearchFlag(bool flag)
 TEST_F(ut_daymonthview, setSearchFlag)
 {
-    mDayMonthView->setSearchFlag(true);
+    bool flag = true;
+    mDayMonthView->setSearchFlag(flag);
+    EXPECT_EQ(flag, mDayMonthView->m_searchflag);
 }
 
 //void CDayMonthView::setHuangLiInfo(const CaHuangLiDayInfo &huangLiInfo)
 TEST_F(ut_daymonthview, setHuangLiInfo)
 {
-    mDayMonthView->setHuangLiInfo(dayMonthViewGetHuangLiDayInfo().value(QDate::currentDate()));
+    CaHuangLiDayInfo huangliInfo = dayMonthViewGetHuangLiDayInfo().value(currentDateTime.date());
+    mDayMonthView->setHuangLiInfo(huangliInfo);
+    EXPECT_EQ(huangliInfo.mSuit, mDayMonthView->m_huangLiInfo.mSuit);
 }
 
 //void CDayMonthView::setHasScheduleFlag(const QVector<bool> &hasScheduleFlag)
 TEST_F(ut_daymonthview, setHasScheduleFlag)
 {
-    mDayMonthView->setHasScheduleFlag(dayMonthViewGetLineFlag());
+    QVector<bool> hasScheduleFlag = dayMonthViewGetLineFlag();
+    mDayMonthView->setHasScheduleFlag(hasScheduleFlag);
+    EXPECT_EQ(hasScheduleFlag, mDayMonthView->m_dayMonthWidget->m_vlineflag);
 }
 
 //void CDayMonthView::updateDateLunarDay()
 TEST_F(ut_daymonthview, updateDateLunarDay)
 {
+    CaHuangLiDayInfo huangliInfo = dayMonthViewGetHuangLiDayInfo().value(currentDateTime.date());
+    mDayMonthView->setHuangLiInfo(huangliInfo);
     mDayMonthView->updateDateLunarDay();
+    EXPECT_EQ(huangliInfo.mSuit, mDayMonthView->m_yiLabel->toolTip());
+    EXPECT_EQ(huangliInfo.mAvoid, mDayMonthView->m_jiLabel->toolTip());
 }
 
 //void CDayMonthView::changeSelectDate(const QDate &date)
 TEST_F(ut_daymonthview, changeSelectDate)
 {
+    bool update = false;
+    QObject::connect(mDayMonthView, &CDayMonthView::signalChangeSelectDate, [&]() {
+        update = true;
+    });
     mDayMonthView->changeSelectDate(QDate::currentDate());
+    EXPECT_TRUE(update);
 }
 
 //void CDayMonthView::slotprev()
 TEST_F(ut_daymonthview, slotprev)
 {
-    mDayMonthView->setShowDate(dayMonthviewGetDayList(), QDate::currentDate().addDays(1), QDate::currentDate().addDays(1));
+    QDate selectDate = currentDateTime.date().addDays(2);
+    mDayMonthView->m_selectDate = selectDate;
+    QDate changeDate = currentDateTime.date();
+    QObject::connect(mDayMonthView, &CDayMonthView::signalChangeSelectDate, [&](const QDate &date) {
+        changeDate = date;
+    });
     mDayMonthView->slotprev();
+    EXPECT_EQ(changeDate, selectDate.addMonths(-1));
 }
 
 //void CDayMonthView::slotnext()
 TEST_F(ut_daymonthview, slotnext)
 {
-    mDayMonthView->setShowDate(dayMonthviewGetDayList(), QDate::currentDate().addDays(1), QDate::currentDate().addDays(1));
+    QDate selectDate = currentDateTime.date().addDays(2);
+    mDayMonthView->m_selectDate = selectDate;
+    QDate changeDate = currentDateTime.date();
+    QObject::connect(mDayMonthView, &CDayMonthView::signalChangeSelectDate, [&](const QDate &date) {
+        changeDate = date;
+    });
     mDayMonthView->slotnext();
+    EXPECT_EQ(changeDate, selectDate.addMonths(1));
 }
 
 //void CDayMonthView::slottoday()
 TEST_F(ut_daymonthview, slottoday)
 {
-    mDayMonthView->setShowDate(dayMonthviewGetDayList(), QDate::currentDate().addDays(1), QDate::currentDate().addDays(1));
+    mDayMonthView->m_currentDate = currentDateTime.date().addDays(2);
+    QDate changeDate = currentDateTime.date();
+    QObject::connect(mDayMonthView, &CDayMonthView::signalChangeSelectDate, [&](const QDate &date) {
+        changeDate = date;
+    });
     mDayMonthView->slottoday();
+    EXPECT_EQ(changeDate, currentDateTime.date().addDays(2));
 }

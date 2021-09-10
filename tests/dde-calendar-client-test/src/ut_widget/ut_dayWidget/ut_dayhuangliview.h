@@ -21,16 +21,18 @@
 #ifndef TEST_DAYHUANGLIVIEW_H
 #define TEST_DAYHUANGLIVIEW_H
 
-#include <QObject>
-#include <dayWidget/dayhuangliview.h>
-#include <gtest/gtest.h>
+#include "dayWidget/dayhuangliview.h"
 
-class ut_dayhuangliview : public QObject
-    , public ::testing::Test
+#include "gtest/gtest.h"
+
+#include <QObject>
+
+class ut_dayhuangliview : public ::testing::Test
 {
 public:
     ut_dayhuangliview();
-    ~ut_dayhuangliview();
+    void SetUp() override;
+    void TearDown() override;
 
 protected:
     CDayHuangLiLabel *mDayHuangLiLabel = nullptr;
