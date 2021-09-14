@@ -1,0 +1,2 @@
+ADD_SUBDIRECTORY(doa-lib)
+ADD_SUBDIRECTORY(doa-plugin)

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>icon_账号异常备份</title>
+    <defs>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="97.6283482%" id="linearGradient-1">
+            <stop stop-color="#FFDA32" offset="0%"></stop>
+            <stop stop-color="#FEC33A" offset="100%"></stop>
+        </linearGradient>
+        <path d="M8.28960434,3.32215284 L1.84036572,13.9633966 C1.26786545,14.908022 1.56953251,16.1378954 2.51415795,16.7103957 C2.82673792,16.8998381 3.18525534,17 3.55076138,17 L16.4492386,17 C17.5538081,17 18.4492386,16.1045695 18.4492386,15 C18.4492386,14.634494 18.3490767,14.2759765 18.1596343,13.9633966 L11.7103957,3.32215284 C11.1378954,2.3775274 9.90802201,2.07586035 8.96339657,2.64836061 C8.68779401,2.81539247 8.45663619,3.04655028 8.28960434,3.32215284 Z" id="path-2"></path>
+        <path d="M9.0062512,14.8812488 C9.2812504,15.1562504 9.6124984,15.2937512 10,15.2937512 C10.3875016,15.2937512 10.7187496,15.1562504 10.9937488,14.8812488 C11.2687504,14.6062496 11.4062512,14.2750016 11.4062512,13.8875 C11.4062512,13.5 11.2687504,13.1687504 10.9937488,12.8937512 C10.7312488,12.6312488 10.4000008,12.5 10,12.5 C9.5999992,12.5 9.2687512,12.6312488 9.0062512,12.8937512 C8.7312496,13.1687504 8.5937488,13.5 8.5937488,13.8875 C8.5937488,14.2750016 8.7312496,14.6062496 9.0062512,14.8812488 Z" id="path-3"></path>
+        <filter x="-44.4%" y="-44.7%" width="224.4%" height="225.3%" filterUnits="objectBoundingBox" id="filter-4">
+            <feOffset dx="0.5" dy="0.5" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="0.5" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.0767779584 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+        <rect id="path-5" x="9" y="6.5" width="2" height="5" rx="1"></rect>
+        <filter x="-62.5%" y="-25.0%" width="275.0%" height="170.0%" filterUnits="objectBoundingBox" id="filter-6">
+            <feOffset dx="0.5" dy="0.5" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="0.5" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.0767779584 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="桌面版" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="控制中心-网络账户-错误" transform="translate(-1385.000000, -307.000000)">
+            <g id="控制中心备份-3" transform="translate(975.000000, 223.000000)">
+                <g id="分组-9" transform="translate(198.000000, 60.000000)">
+                    <g id="分组-7备份" transform="translate(10.000000, 10.000000)">
+                        <g id="icon_账号异常备份" transform="translate(202.000000, 14.000000)">
+                            <rect id="矩形" fill="#D8D8D8" opacity="0" x="0" y="0" width="20" height="20"></rect>
+                            <g id="路径">
+                                <use fill="url(#linearGradient-1)" fill-rule="evenodd" xlink:href="#path-2"></use>
+                                <path stroke-opacity="0.05" stroke="#000000" stroke-width="1" d="M8.70424571,2.2207617 C9.29463661,1.86294903 9.97416749,1.77831365 10.5955538,1.93072917 C11.2169401,2.08314468 11.7801819,2.47261109 12.1379946,3.06300199 L12.1379946,3.06300199 L18.5872332,13.7042457 C18.8240362,14.0949707 18.9492386,14.5431174 18.9492386,15 C18.9492386,15.6903559 18.6694166,16.3153559 18.2170056,16.767767 C17.7645946,17.220178 17.1395946,17.5 16.4492386,17.5 L16.4492386,17.5 L3.55076138,17.5 C3.09387883,17.5 2.64573206,17.3747976 2.25500709,17.1379946 C1.66461619,16.7801819 1.27514978,16.2169401 1.12273427,15.5955538 C0.970318756,14.9741675 1.05495413,14.2946366 1.4127668,13.7042457 L1.4127668,13.7042457 L7.86200542,3.06300199 C8.07079524,2.71849878 8.35974251,2.42955152 8.70424571,2.2207617 Z"></path>
+                                <path stroke-opacity="0.12" stroke="#FFFFFF" stroke-width="1" d="M9.22254743,3.07595953 C9.57678197,2.86127193 9.9845005,2.8104907 10.3573323,2.90194001 C10.7301641,2.99338932 11.0681091,3.22706916 11.2827967,3.5813037 L11.2827967,3.5813037 L17.7320354,14.2225474 C17.8741172,14.4569824 17.9492386,14.7258705 17.9492386,15 C17.9492386,15.4142136 17.7813454,15.7892136 17.5098988,16.0606602 C17.2384522,16.3321068 16.8634522,16.5 16.4492386,16.5 L16.4492386,16.5 L3.55076138,16.5 C3.27663185,16.5 3.00774379,16.4248786 2.77330881,16.2827967 C2.41907427,16.0681091 2.18539442,15.7301641 2.09394511,15.3573323 C2.00249581,14.9845005 2.05327703,14.576782 2.26796463,14.2225474 L2.26796463,14.2225474 L8.71720325,3.5813037 C8.84247714,3.37460178 9.0158455,3.20123342 9.22254743,3.07595953 Z" stroke-linejoin="square"></path>
+                            </g>
+                            <g id="Path">
+                                <use fill="black" fill-opacity="1" filter="url(#filter-4)" xlink:href="#path-3"></use>
+                                <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-3"></use>
+                            </g>
+                            <g id="Rectangle-115">
+                                <use fill="black" fill-opacity="1" filter="url(#filter-6)" xlink:href="#path-5"></use>
+                                <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-5"></use>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

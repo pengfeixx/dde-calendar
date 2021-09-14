@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="42px" height="42px" viewBox="0 0 42 42" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>nav/网络账户</title>
+    <defs>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#13F6E8" offset="0%"></stop>
+            <stop stop-color="#00A2FF" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="0.667640019%" x2="50%" y2="98.1564892%" id="linearGradient-2">
+            <stop stop-color="#2BDDFF" offset="0%"></stop>
+            <stop stop-color="#0673F5" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="43.2384673%" y1="51.0119458%" x2="43.2384673%" y2="127.177734%" id="linearGradient-3">
+            <stop stop-color="#07B1F6" offset="0%"></stop>
+            <stop stop-color="#0365FB" offset="100%"></stop>
+        </linearGradient>
+        <path d="M19.721,30.389 C21.564,30.389 23.065,30.123 24.737,29.42 L24.737,28.185 C23.312,28.831 21.811,29.154 20.177,29.154 C16.339,29.154 13.907,26.76 13.907,22.998 C13.907,17.963 17.422,14.505 21.773,14.505 C25.592,14.505 27.948,16.614 27.948,19.996 C27.948,22.466 26.447,24.518 24.927,24.518 C24.3,24.518 23.996,24.176 23.996,23.416 C23.996,23.093 24.072,22.447 24.167,21.953 L24.965,17.754 C23.844,17.393 22.894,17.279 21.868,17.279 C19.151,17.279 16.719,20.224 16.719,23.302 C16.719,24.993 17.46,25.81 18.923,25.81 C20.082,25.81 21.336,24.841 22.229,23.53 L22.229,23.644 C22.229,25.126 22.894,25.734 24.471,25.734 C27.169,25.734 29.335,23.074 29.335,19.73 C29.335,15.93 26.371,13.327 21.963,13.327 C16.548,13.327 12.33,17.279 12.33,23.074 C12.33,27.52 15.237,30.389 19.721,30.389 Z M19.645,24.423 C18.999,24.423 18.695,24.043 18.695,23.131 C18.695,21.003 20.253,18.609 21.811,18.609 C22.248,18.609 22.59,18.647 22.913,18.742 L22.305,21.896 C21.431,23.416 20.405,24.423 19.645,24.423 Z" id="path-4"></path>
+        <filter x="-17.6%" y="-17.6%" width="135.3%" height="135.2%" filterUnits="objectBoundingBox" id="filter-5">
+            <feGaussianBlur stdDeviation="1" in="SourceGraphic"></feGaussianBlur>
+        </filter>
+        <linearGradient x1="50%" y1="29.9609375%" x2="50%" y2="113.085938%" id="linearGradient-6">
+            <stop stop-color="#FFFFFF" offset="0%"></stop>
+            <stop stop-color="#DCE6FF" offset="100%"></stop>
+        </linearGradient>
+        <path d="M19.721,29.889 C21.564,29.889 23.065,29.623 24.737,28.92 L24.737,27.685 C23.312,28.331 21.811,28.654 20.177,28.654 C16.339,28.654 13.907,26.26 13.907,22.498 C13.907,17.463 17.422,14.005 21.773,14.005 C25.592,14.005 27.948,16.114 27.948,19.496 C27.948,21.966 26.447,24.018 24.927,24.018 C24.3,24.018 23.996,23.676 23.996,22.916 C23.996,22.593 24.072,21.947 24.167,21.453 L24.965,17.254 C23.844,16.893 22.894,16.779 21.868,16.779 C19.151,16.779 16.719,19.724 16.719,22.802 C16.719,24.493 17.46,25.31 18.923,25.31 C20.082,25.31 21.336,24.341 22.229,23.03 L22.229,23.144 C22.229,24.626 22.894,25.234 24.471,25.234 C27.169,25.234 29.335,22.574 29.335,19.23 C29.335,15.43 26.371,12.827 21.963,12.827 C16.548,12.827 12.33,16.779 12.33,22.574 C12.33,27.02 15.237,29.889 19.721,29.889 Z M19.645,23.923 C18.999,23.923 18.695,23.543 18.695,22.631 C18.695,20.503 20.253,18.109 21.811,18.109 C22.248,18.109 22.59,18.147 22.913,18.242 L22.305,21.396 C21.431,22.916 20.405,23.923 19.645,23.923 Z" id="path-7"></path>
+    </defs>
+    <g id="nav/网络账户" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <image id="位图" x="3" y="7.5" width="36" height="32" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAgCAYAAAB6kdqOAAAABGdBTUEAALGOfPtRkwAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAJKADAAQAAAABAAAAIAAAAADfjkU8AAAFJElEQVRYCe1YO3NbRRQ+5+xePfxS7MRJxKSAQAEyDZM/oCItpfJ3HP0YGlxCRyMqCoahsiZFBig8aIIhjC1bj7uPw3euLY8zwRM7NlTemat93D27357H3e+I6VxRVbZuv9/n3d0OU69H+8MBxrrnZl2nOaDNTldpZ4e2toa6vb2tthozV3XVXixvYPp94gENZJ/uyzF1pKSRpKM25xVinfxZgV3Mv2rNS/dUjkjdykhr1M7LNMyb9EfuUjdvb5MuQHlb2MA8e7YjvzztyasXXT9pvS6a83ERec1nmbg8YSFaviqGN+dPpqSiWcu1xDqOo/rDcHDQCeNPKe4+28nAkA0ULzTzTZvcaESF0GFjGoqmpNBMKvVM7H1mR46upSFKpFE0CSrHeZ5dMW0WYZppbdZuU/hyRMk0VWnIzPTqxSdeaK1xXKutkItrGotVlrwE1LVEgKPXBARDMDG0Q2VKxUQljY+nNbdcHtKrg0MdtF7qNnWTY34uP9LE/d1Yr0dXX1ZOdzT5DejuLnS8Dg22hBngaIX5Gg9sjrWWiKQB0xXwJmYXc6r5GJY4QnNp//tNdZubW/Lb/Q+9zFcaOadVDX69AkOyzgIwKnBpbuKAeKSBmHiPRyEjDWioQQKfJnFEmSQKzBfKRnJl8jEWu99lb6FdDkcSWXzKWmfPTU7wYEFsKS8BXE1Z2OIAoN501Ev3IGoOS1mxjmfOwMMlWkfmp0HYK9XFsHj7zqSjLlfRxORZcx1SdckCIABD4gkBcOm9L5qoGccRA0WcOWbK9ayMvdjnyC6VbTYscOouVd+ZwOxLcubA8Bmo1KRNMzcA5gxkhpqwOpxTiB0wOm91DTorLGi6hO8LDIGPngYMWGhjZhVROMbNgjlFZQes1j7dC3va3osPbwXo7ACLhunnBOti5IZrbFvt8fay/w7o7Xn/28gtoHep+lZDtxp6lwbe9f7WhwgUwm56yqjtegNxO6+1iqCdH/jP2xlgRAAFN7/HnW/3P+gfFwpgAwxdWCCIew/4T060mFedcNG5Ym2bC0UQ6Gg3mESKYGbRl6C2cwBcoQsAmSrBX1mTXf4noCog6CoeA3rlYnICLFQKqzH+aRaeeeXS+ZD87EHe7Dw44dRna5s9PaWcwNdUSxbYGRkJ0gG8wVLgnsYd0D4TuXSjyr00i8gcMsdwojGY2nH0MotFDPfalLeGpyQfvFBlornKCpIPOMgM1hVAszsZjEoCowMCAEc0p7xKgemt4ISsINGaSyc6AYM84OQO6zFMaX4ntH7/KdMH35rJBiRHnym4YXKxKDPPp5TcGNJzMBbIERgmB7BOZAwO4OLJBpf8jQJ2aiVFEEZAgMlwplkR3LFSPA4r5Wzjr5fx8dMnebv3RL2lti9/2INtQSTzdDZ3fgwAEXzFwVAJ9g5JI7hkgV6p5MBqr1AcmYWqg1l2mqBqEHsJPpfz0q3O12g/PLq7l7aGX+H9c+Ve72v388Mv/Ou7G3Vf1ptlds0iIQh9adwyBpeDICpcmTEKk71HkTqcboxoX9V8RDn7SUyNcC+2WsPU6XQApl/l+Za5ekv696mXZgd7YdJC8jQvYvKWOoPxz+cptNaiO6IE/cBoe1eG41uPTg6xipDeIG29Jm18TLo6GmgXeT0N+2R/OhgYW7xKpau8fv2xHHz+RGa/IgFqjVgO2tr4iHKrTtmEN3f330s7tsnWVu+cbN+G3gBRDZz+VOnNIr/f7VCVitg78y0LQ/w5c6Hw+YVuqv0PDMW4/DR7xjcAAAAASUVORK5CYII="></image>
+        <path d="M11,9.5 L31,9.5 C33.209139,9.5 35,11.290861 35,13.5 L35,28 C35,30.209139 33.209139,32 31,32 L11.9235427,32 C11.7589617,32 11.5969248,32.0406212 11.4518071,32.1182599 L7.73586778,34.1063069 C7.49238198,34.2365731 7.18939613,34.1447904 7.05912996,33.9013046 C7.0203106,33.8287458 7,33.7477274 7,33.6654369 L7,30.9916992 L7,30.9916992 L7,13.5 C7,11.290861 8.790861,9.5 11,9.5 Z" id="矩形" fill="url(#linearGradient-1)" fill-rule="nonzero"></path>
+        <path d="M31,8.5 L11,8.5 C8.23857625,8.5 6,10.7385763 6,13.5 L6,33.6654369 C6,33.9123084 6.06093181,34.1553637 6.17738988,34.3730402 C6.5681884,35.1034976 7.47714593,35.3788455 8.20760333,34.988047 L11.9235427,33 L31,33 C33.7614237,33 36,30.7614237 36,28 L36,13.5 C36,10.7385763 33.7614237,8.5 31,8.5 Z M31,9.5 C33.209139,9.5 35,11.290861 35,13.5 L35,28 C35,30.209139 33.209139,32 31,32 L11.9235427,32 C11.7589617,32 11.5969248,32.0406212 11.4518071,32.1182599 L7.73586778,34.1063069 C7.49238198,34.2365731 7.18939613,34.1447904 7.05912996,33.9013046 C7.0203106,33.8287458 7,33.7477274 7,33.6654369 L7,13.5 C7,11.290861 8.790861,9.5 11,9.5 L31,9.5 Z" id="矩形" fill="url(#linearGradient-2)" fill-rule="nonzero"></path>
+        <g id="@" fill-rule="nonzero" filter="url(#filter-5)">
+            <use fill="#06BFF7" xlink:href="#path-4"></use>
+            <use fill="url(#linearGradient-3)" xlink:href="#path-4"></use>
+        </g>
+        <g id="@" fill-rule="nonzero">
+            <use fill="#FFFFFF" xlink:href="#path-7"></use>
+            <use fill="url(#linearGradient-6)" xlink:href="#path-7"></use>
+        </g>
+    </g>
+</svg>

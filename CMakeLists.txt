@@ -26,6 +26,8 @@ macro(SUBDIRLIST result curdir)
     set(${result} ${dirlist})
 endmacro()
 
+add_subdirectory(dde-online-accounts)
+
 ADD_SUBDIRECTORY(calendar-basicstruct)
 ADD_SUBDIRECTORY(calendar-client)
 ADD_SUBDIRECTORY(calendar-service)
@@ -69,6 +71,6 @@ qt5_create_translation(DTNG_QM_FILES
      ${DTNG_QM_FILES}
      )
      
- set(CMAKE_INSTALL_PREFIX /usr)
- file(GLOB APP_QM_FILES "translations/*.qm")
- install(FILES ${APP_QM_FILES} DESTINATION share/dde-calendar/translations)
+set(CMAKE_INSTALL_PREFIX /usr)
+file(GLOB APP_QM_FILES "translations/${PROJECT_NAME}*.qm")
+install(FILES ${APP_QM_FILES} DESTINATION share/dde-calendar/translations)

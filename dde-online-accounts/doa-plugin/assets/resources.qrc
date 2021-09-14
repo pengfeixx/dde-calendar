@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/icons/deepin">
+        <file>builtin/icons/doa_caldav_32px.svg</file>
+        <file>builtin/icons/doa_error_32px.svg</file>
+        <file>builtin/icons/doa_onlineAccount_42px.svg</file>
+    </qresource>
+</RCC>
