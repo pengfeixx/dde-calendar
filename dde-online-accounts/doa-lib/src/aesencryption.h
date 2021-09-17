@@ -21,20 +21,36 @@
 #ifndef AESENCRYPTION_H
 #define AESENCRYPTION_H
 
-#include <QObject>
+#include <QString>
+#include <QByteArray>
 
-//传输数据加密密钥
+//传输密钥 用于接口间密码加密
 #define TKEY "8ccaab0576dd5c9ff4ccaf8cbed55aad"
-//数据库数据加密密钥
+//数据库密钥 用于数据库存储密钥加密
 #define SKEY "7ffaab0576dad5c3fa4deaf1cb8d51ae"
+
+#define GCRY_CIPHER GCRY_CIPHER_AES128 // Pick the cipher here
+#define GCRY_MODE GCRY_CIPHER_MODE_ECB // Pick the cipher mode here
 
 class AESEncryption
 {
 public:
-    AESEncryption();
+    /**
+     * @brief AESEncryption::ecb_encrypt
+     * @param orgData 源数据
+     * @param destData 目标数据
+     * @param key  加解密钥
+     * @param enc  加解密标志 true:加密，false:解密
+     * @return
+     * AES 加解密数据
+     */
+    static bool ecb_encrypt(const QString &orgData, QString &destData, const QString &key, bool enc);
+
+private:
+    //填充数据
     static QByteArray PKCS7Padding(const QByteArray &in, int alignSize);
+    //解除填充数据
     static QByteArray PKCS7UnPadding(const QByteArray &orgData);
-    static bool ecb_encrypt(const QByteArray &orgData, QByteArray &destData, const QByteArray &key, bool enc);
 };
 
 #endif // AESENCRYPTION_H

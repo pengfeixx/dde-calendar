@@ -159,7 +159,7 @@ void DOAAddAccountDialog::getAddAccountInfo()
 {
     m_addInfo.type = m_loginModel->currentIndex() + 1;
     m_addInfo.accountName = m_accountName->text();
-    QByteArray orgarray;
+    QString orgarray;
     //加密
     AESEncryption::ecb_encrypt(m_passwordEdit->text().toLatin1(), orgarray, QByteArray::fromHex(TKEY), true);
 

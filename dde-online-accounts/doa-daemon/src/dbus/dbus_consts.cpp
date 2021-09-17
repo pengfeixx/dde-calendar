@@ -1,8 +1,6 @@
 /*
  * Copyright (C) 2017 ~ 2018 Deepin Technology Co., Ltd.
  *
- * Author:     rekols <rekols@foxmail.com>
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -17,17 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UTILS_H
-#define UTILS_H
+#include "dbus/dbus_consts.h"
 
-#include <QString>
-
-class Utils
-{
-public:
-
-    //创建多级目录
-    static QString mkMutiDir(const QString &path);
-};
-
-#endif
+const char kAccountsNotifyServiceService[] = "com.dde.onlineaccount";
+const char kAccountsService[] = "com.dde.onlineaccount";
+const char kAccountsServicePath[] = "/com/dde/onlineaccount";
+const char kAccountsServiceManagerPath[] = "/com/dde/onlineaccount/manager";
+const char kAccountsServiceManagerIface[] = "com.dde.onlineaccount.manager";
+const char kAccountsServiceAccountIface[] = "com.dde.onlineaccount.account";
+const char kAccountsNotifyServiceIface[] = "/com/dde/online/accounts/accountNotify";

@@ -1,2 +1,3 @@
 ADD_SUBDIRECTORY(doa-lib)
+ADD_SUBDIRECTORY(doa-daemon)
 ADD_SUBDIRECTORY(doa-plugin)

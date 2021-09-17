@@ -1,8 +1,6 @@
 /*
  * Copyright (C) 2017 ~ 2018 Deepin Technology Co., Ltd.
  *
- * Author:     rekols <rekols@foxmail.com>
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -17,17 +15,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UTILS_H
-#define UTILS_H
+#include "controller/doamanager.h"
 
-#include <QString>
+#include <DLog>
 
-class Utils
+#include <QCoreApplication>
+#include <QDebug>
+
+int main(int argc, char **argv)
 {
-public:
+    QCoreApplication app(argc, argv);
 
-    //创建多级目录
-    static QString mkMutiDir(const QString &path);
-};
+    qDebug() << Dtk::Core::DLogManager::getlogFilePath();
 
-#endif
+    Dtk::Core::DLogManager::registerFileAppender();
+    Dtk::Core::DLogManager::registerConsoleAppender();
+
+    DOAManager doaManager;
+
+    return app.exec();
+}

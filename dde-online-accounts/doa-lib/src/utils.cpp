@@ -20,18 +20,8 @@
 
 #include "utils.h"
 
-#include <QCryptographicHash>
 #include <QDir>
 #include <QDebug>
-
-Utils::Utils(QObject *parent)
-    : QObject(parent)
-{
-}
-
-Utils::~Utils()
-{
-}
 
 QString Utils::mkMutiDir(const QString &path)
 {
