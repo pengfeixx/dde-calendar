@@ -36,6 +36,7 @@ DOAAccountManager::DOAAccountManager(QObject *parent)
 {
     this->setObjectName("DOAAccountManager");
 
+    //当前对象初始化信号槽
     //数据库查询结果信号
     connect(m_accountDBManager, &AccountDBManager::sign_selectAccountResult, this, &DOAAccountManager::onSelectAccountResult);
     //数据库增加结果信号
@@ -61,7 +62,7 @@ void DOAAccountManager::initAccountPropertiesChange(DOAAccountsadapter *accountA
     //帐户删除信号
     connect(accountAdapter, &DOAAccountsadapter::sign_remove, this, &DOAAccountManager::onRemoveAccount);
 
-    connect(this, &DOAAccountManager::sign_changeAccountStat, accountAdapter, &DOAAccountsadapter::CheckAccountState, Qt::QueuedConnection);
+    connect(this, &DOAAccountManager::sign_checkAccountStat, accountAdapter, &DOAAccountsadapter::CheckAccountState, Qt::QueuedConnection);
     connect(accountAdapter, &DOAAccountsadapter::sign_accountState, m_doaNotifyProxy, &DoaNotifyProxy::accountStateNotify);
 }
 
@@ -149,11 +150,11 @@ void DOAAccountManager::onSelectAccountResult(const AccountResultList &result)
         iface->deleteLater();
     }
 
-    emit this->sign_changeAccountStat();
+    emit this->sign_checkAccountStat();
 }
 
 /**
- * @brief DOAAccountManager::onGetAllAccount
+ * @brief DOAAccountManager::getAllAccount
  * @return
  * 获取帐户列表
  */
@@ -218,7 +219,7 @@ void DOAAccountManager::creatAccountDbus(DOAAccountsadapter *accountAdapter)
  */
 void DOAAccountManager::loginCancle(const QString &uuid)
 {
-    QMutexLocker m_lock(&m_mutex);
+    QMutexLocker m_lock(&m_mutex); //单线程处理这个后续删除
     QMap<QString, DOAProvider *>::iterator it;
     //从登录队列中,取出数据删除
     for (it = m_doaProviderLoginingMap.begin(); it != m_doaProviderLoginingMap.end(); it++) {
@@ -250,13 +251,26 @@ int DOAAccountManager::addAccount(const QString &accountData)
         return DOAProvider::DatatError;
     }
 
+    //验证请求报文帐户ID是否为空
     if (accountadapter->m_doaProvider->getAccountID().isEmpty()) {
         qCritical() << "request data error";
         accountadapter->m_doaProvider->deleteLater();
+        accountadapter->m_doaProvider = nullptr;
         return DOAProvider::DatatError;
     }
 
     //验证重复登录
+    QMap<QString, DOAAccountsadapter *>::iterator itProviderMap;
+    //从MAP中取出数据
+    for (itProviderMap = m_doaProviderMap.begin(); itProviderMap != m_doaProviderMap.end(); itProviderMap++) {
+        //帐户名称和服务器地址一样判断为重复登录
+        if (itProviderMap.value()->m_doaProvider->getAccountName() == accountadapter->m_doaProvider->getAccountName() && itProviderMap.value()->m_doaProvider->getUrl() == accountadapter->m_doaProvider->getUrl()) {
+            qCritical() << "Repeat login";
+            accountadapter->m_doaProvider->deleteLater();
+            accountadapter->m_doaProvider = nullptr;
+            return DOAProvider::RepeatLogin;
+        }
+    }
 
     m_doaProviderLoginingMap.insert(accountadapter->m_doaProvider->getAccountID(), accountadapter->m_doaProvider);
 
@@ -275,6 +289,7 @@ int DOAAccountManager::addAccount(const QString &accountData)
         for (it = m_doaProviderLoginingMap.begin(); it != m_doaProviderLoginingMap.end(); it++) {
             if (it.key() == accountadapter->m_doaProvider->getAccountID()) {
                 accountadapter->m_doaProvider->deleteLater();
+                accountadapter->m_doaProvider = nullptr;
                 m_doaProviderLoginingMap.erase(it);
                 break;
             }
@@ -293,6 +308,7 @@ int DOAAccountManager::addAccount(const QString &accountData)
         }
     }
 
+    //重置AccountID
     accountadapter->m_doaProvider->setAccountID("");
     accountadapter->m_doaProvider->setAccountStat(loginstate);
 
@@ -304,6 +320,7 @@ int DOAAccountManager::addAccount(const QString &accountData)
     if (!result) {
         qCritical() << "password desc fail";
         accountadapter->m_doaProvider->deleteLater();
+        accountadapter->m_doaProvider = nullptr;
         return DOAProvider::PassWordError;
     }
 
@@ -314,6 +331,7 @@ int DOAAccountManager::addAccount(const QString &accountData)
     if (!result) {
         qCritical() << "password enc fail";
         accountadapter->m_doaProvider->deleteLater();
+        accountadapter->m_doaProvider = nullptr;
         return DOAProvider::PassWordError;
     }
 
@@ -364,17 +382,21 @@ int DOAAccountManager::addAccount(const QString &accountData)
  */
 void DOAAccountManager::onRemoveAccount(DOAAccountsadapter *doaAccountAdapter)
 {
-    //TODO
+    //删除当前帐户所有信号连接
     doaAccountAdapter->disconnect();
-    disconnect(this, &DOAAccountManager::sign_changeAccountStat, doaAccountAdapter, &DOAAccountsadapter::CheckAccountState);
+    //当前帐户槽连接
+    disconnect(this, &DOAAccountManager::sign_checkAccountStat, doaAccountAdapter, &DOAAccountsadapter::CheckAccountState);
 
     QDBusConnection sessionBus = QDBusConnection::sessionBus();
     if (sessionBus.registerService(kAccountsService)) {
+        //删除当前帐户dbus路径
         sessionBus.unregisterObject(doaAccountAdapter->m_doaProvider->getPath(), QDBusConnection::UnregisterNode);
     }
 
+    //删除数据库数据
     emit this->sign_deleteAccount(doaAccountAdapter->m_doaProvider->getAccountID());
 
+    //从缓存中删除数据
     QMap<QString, DOAAccountsadapter *>::iterator it;
     for (it = m_doaProviderMap.begin(); it != m_doaProviderMap.end(); it++) {
         if (it.key() == doaAccountAdapter->m_doaProvider->getAccountID()) {
@@ -382,15 +404,18 @@ void DOAAccountManager::onRemoveAccount(DOAAccountsadapter *doaAccountAdapter)
             break;
         }
     }
-    //发送删除信号
+    //发送删除信号通知给前端
     QMap<QString, QVariant> delAccountMap;
     delAccountMap.insert("accountid", doaAccountAdapter->m_doaProvider->getAccountID());
     delAccountMap.insert("stat", 0);
+    delAccountMap.insert("iterfaceoper", "DEL");
     QString strJson = QJsonUtils::getJsonString(delAccountMap);
 
-    doaAccountAdapter->m_doaProvider->deleteLater();
+    emit this->InterfaceAccountInfo(strJson);
 
-    emit this->sign_AccountChange("DEL", strJson);
+    //删除帐户
+    doaAccountAdapter->m_doaProvider->deleteLater();
+    doaAccountAdapter->m_doaProvider = nullptr;
 }
 
 /**
@@ -411,10 +436,11 @@ void DOAAccountManager::onChangeProperty(const QString &propertyName, DOAProvide
         changeAccountMap.insert("stat", 0);
         changeAccountMap.insert("accountid", doaProvider->getAccountID());
         changeAccountMap.insert("calendardisable", doaProvider->getCalendarDisabled());
+        changeAccountMap.insert("iterfaceoper", "MODIFY");
 
         QString strJson = QJsonUtils::getJsonString(changeAccountMap);
 
-        emit this->sign_AccountChange("MODIFY", strJson);
+        emit this->InterfaceAccountInfo(strJson);
     } else if (propertyName == "UserName") {
         value = QVariant::fromValue(doaProvider->getDisplayName());
         emit m_accountDBManager->sign_updateProperty(doaProvider->getAccountID(), propertyName, value);
@@ -424,10 +450,11 @@ void DOAAccountManager::onChangeProperty(const QString &propertyName, DOAProvide
         changeAccountMap.insert("stat", 0);
         changeAccountMap.insert("accountid", doaProvider->getAccountID());
         changeAccountMap.insert("accountusername", doaProvider->getDisplayName());
+        changeAccountMap.insert("iterfaceoper", "MODIFY");
 
         QString strJson = QJsonUtils::getJsonString(changeAccountMap);
 
-        emit this->sign_AccountChange("MODIFY", strJson);
+        emit this->InterfaceAccountInfo(strJson);
     } else if (propertyName == "Status") {
         int state = doaProvider->getAccountStat();
         value = QVariant::fromValue(state);
@@ -439,7 +466,7 @@ void DOAAccountManager::onChangeProperty(const QString &propertyName, DOAProvide
 }
 
 /**
- * @brief DOAAccountManager::addResult
+ * @brief DOAAccountManager::onAddResult
  * @param accountID
  * @param result
  * 数据库增加成功
@@ -462,21 +489,23 @@ void DOAAccountManager::onAddResult(const QString &accountID, bool result)
         addAccountMap.insert("accountstat", accountadapter->m_doaProvider->getAccountStat());
         addAccountMap.insert("calendardisable", accountadapter->m_doaProvider->getCalendarDisabled());
         addAccountMap.insert("accounturi", accountadapter->m_doaProvider->getUri());
+        addAccountMap.insert("iterfaceoper", "ADD");
 
         QString strJson = QJsonUtils::getJsonString(addAccountMap);
 
-        //TODO 密码验证成功发送帐户信息信号-->DoaNotifyProxy::accountInfoNotify
-        emit this->sign_AccountChange("ADD", strJson);
+        //密码验证成功发送帐户信息信号
+        emit this->InterfaceAccountInfo(strJson);
     } else {
-        //TODO 失败发送帐户信息信号-->DoaNotifyProxy::accountInfoNotify
+        //失败发送帐户信息信号
         QMap<QString, QVariant> addAccountMap;
         addAccountMap.insert("accountname", accountadapter->m_doaProvider->getAccountName());
         addAccountMap.insert("stat", "F001");
         addAccountMap.insert("msg", "数据库错误");
+        addAccountMap.insert("iterfaceoper", "ADD");
 
         QString strJson = QJsonUtils::getJsonString(addAccountMap);
 
-        emit this->sign_AccountChange("ADD", strJson);
+        emit this->InterfaceAccountInfo(strJson);
     }
 }
 

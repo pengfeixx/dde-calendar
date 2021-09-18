@@ -14,16 +14,6 @@
 
 #include <QtCore/QObject>
 #include <QtDBus/QtDBus>
-QT_BEGIN_NAMESPACE
-class QByteArray;
-template<class T>
-class QList;
-template<class Key, class Value>
-class QMap;
-class QString;
-class QStringList;
-class QVariant;
-QT_END_NAMESPACE
 
 /*
  * Adaptor class for interface com.dde.onlineaccount.calendar
@@ -33,10 +23,11 @@ class DOAAccountsCalendardapter : public QDBusAbstractAdaptor
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "com.dde.onlineaccount.calendar")
 public:
-    DOAAccountsCalendardapter(QObject *parent);
+    explicit DOAAccountsCalendardapter(QObject *parent);
     virtual ~DOAAccountsCalendardapter();
 
 public: // PROPERTIES
+    //获取日历请求路径
     Q_PROPERTY(QString url READ url)
     QString url() const;
 

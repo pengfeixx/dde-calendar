@@ -215,6 +215,7 @@ DOAProvider::LoginState DOAQQProvider::getPropname()
     QString authorization = "Basic ";
     authorization.append(QString(getAccountName() + ":" + relPassword).toLocal8Bit().toBase64());
 
+    //设置请求头
     QNetworkRequest request;
     request.setUrl(getUri());
     request.setRawHeader("Authorization", authorization.toUtf8());
@@ -223,12 +224,14 @@ DOAProvider::LoginState DOAQQProvider::getPropname()
     request.setRawHeader("Content-Type", "text/xml; charset=utf-8");
     request.setRawHeader("Content-Length", contentlength);
 
+    //设置ssl认证方式
     if (getSSL()) {
         QSslConfiguration conf = request.sslConfiguration();
         conf.setPeerVerifyMode(QSslSocket::VerifyNone);
         request.setSslConfiguration(conf);
     }
 
+    //发送请求
     m_reply = m_manager->sendCustomRequest(request, QByteArray("PROPFIND"), buffer);
 
     QEventLoop eventLoop;
@@ -241,6 +244,7 @@ DOAProvider::LoginState DOAQQProvider::getPropname()
 
     if (m_timer.isActive()) {
         m_timer.stop();
+        //网络请求返回
         QByteArray replyData = m_reply->readAll();
         int statusCode = m_reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
 
@@ -274,9 +278,13 @@ DOAProvider::LoginState DOAQQProvider::getPropname()
     return SUCCESS;
 }
 
+/**
+ * @brief DOAQQProvider::loginCancel
+ * 取消登录
+ */
 void DOAQQProvider::loginCancel()
 {
     isUserCancle = true;
+    m_timer.setInterval(0);
     m_reply->abort();
-    m_timer.stop();
 }

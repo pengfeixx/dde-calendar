@@ -30,8 +30,6 @@ DOAManager::DOAManager(QObject *parent)
     : QObject(parent)
     , m_doaaccountManager(new DOAAccountManager(this))
 {
-    // m_doaaccountManager->registerService();
-
     QDBusConnection sessionBus = QDBusConnection::sessionBus();
 
     //创建帐户管理dbus服务对象
@@ -41,11 +39,6 @@ DOAManager::DOAManager(QObject *parent)
         sessionBus.registerObject(kAccountsServiceManagerPath, m_doaaccountManager, QDBusConnection::ExportScriptableSlots | QDBusConnection::ExportScriptableSignals | QDBusConnection::ExportAllProperties);
     }
 
-    //创建帐户使用sign_AccountChange与通知模块帐户改变槽绑定
-    //connect(this, &DOAAccountManager::sign_AccountChange, m_doaNotifyProxy, &DoaNotifyProxy::accountInfoNotify);
-    //  connect(this, &DOAAccountManager::sign_AccountChange, adapter, &DOAManagerAdapter::InterfaceAccountInfo);
-    //   connect(this, &DOAAccountManager::sign_accountState, m_doaNotifyProxy, &DoaNotifyProxy::accountStateNotify);
-
-    //TODO 从数据库中查询帐户信息生成dbus服务
+    //从数据库中查询帐户信息生成dbus服务
     m_doaaccountManager->creatAllAccountDbusFromDB();
 }

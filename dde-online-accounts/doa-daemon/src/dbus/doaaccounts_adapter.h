@@ -17,17 +17,6 @@
 #include <QtCore/QObject>
 #include <QtDBus/QtDBus>
 
-QT_BEGIN_NAMESPACE
-class QByteArray;
-template<class T>
-class QList;
-template<class Key, class Value>
-class QMap;
-class QString;
-class QStringList;
-class QVariant;
-QT_END_NAMESPACE
-
 /*
  * Adaptor class for interface com.dde.onlineaccount.account
  */
@@ -41,20 +30,25 @@ public:
     virtual ~DOAAccountsadapter();
 
 public: // PROPERTIES
+    //获取/修改同步状态
     Q_PROPERTY(bool CalendarDisabled READ calendarDisabled WRITE setCalendarDisabled)
     bool calendarDisabled() const;
     void setCalendarDisabled(bool value);
 
+    //获取帐户ID
     Q_PROPERTY(QString Id READ id)
     QString id() const;
 
+    //获取和修改用户名称
     Q_PROPERTY(QString UserName READ userName WRITE setUserName)
     QString userName() const;
     void setUserName(QString &userName);
 
+    //获取服务商名称
     Q_PROPERTY(QString ProviderName READ providerName)
     QString providerName() const;
 
+    //获取协议类型
     Q_PROPERTY(QString ProviderType READ providerType)
     QString providerType() const;
 

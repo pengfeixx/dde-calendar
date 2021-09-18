@@ -41,7 +41,6 @@ class DOAAccountManager : public QObject
 public:
     explicit DOAAccountManager(QObject *parent = nullptr);
 
-    //void registerService();
     //从数据中取出帐户数据并创建dbus服务
     void creatAllAccountDbusFromDB();
 
@@ -56,26 +55,34 @@ public slots:
 
 signals: //内部处理信号
     //增加帐户变化信号
-    void sign_AccountChange(const QString &IterfaceOper, const QString &accountData);
+
     void sign_accountState(const QString &stateType, const QString &accountState);
-
+    //增加帐户信号->>数据库管理类增加帐户信号->>数据库对象槽
     bool sign_addAccount(const AccountInfo &accountInfo);
-    void sign_changeAccountStat();
+    //检查帐户状态信号->>各个帐户检查状态槽
+    void sign_checkAccountStat();
 
+    //修改帐户属性信号->>数据库管理类修改帐户属性信号->>数据库对象槽
     void sign_updateProperty(const QString &accountID, const QString &property, QVariant value);
+    //删除帐户属性信号->>数据库管理类删除帐户属性信号->>数据库对象槽
     void sign_deleteAccount(const QString &accountID);
 
 public Q_SLOTS: // METHODS
+    //dbus接口 增加帐户
     Q_SCRIPTABLE int addAccount(const QString &accountData);
+    //dbus接口 获取所有帐户
     Q_SCRIPTABLE QString getAllAccount();
+    //dbus接口 临时接口
     Q_SCRIPTABLE QString encPassword(const QString &password);
+    //dbus接口 取消当前登录
     Q_SCRIPTABLE void loginCancle(const QString &uuid);
 Q_SIGNALS: // SIGNALS dbus公共信号
-    Q_SCRIPTABLE void InterfaceAccountInfo(const QString &IterfaceOper, const QString &accountInfo);
+    //属性变化通知信号
+    Q_SCRIPTABLE void InterfaceAccountInfo(const QString &accountInfo);
+
     Q_SCRIPTABLE void InterfaceAccountStatus(const QString &stateType, const QString &accountState);
 
 private:
-    QString encPassWord(const QString &password);
 
     /**
      * @brief passwordPro

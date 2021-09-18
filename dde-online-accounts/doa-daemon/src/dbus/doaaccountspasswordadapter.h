@@ -24,16 +24,6 @@
 
 #include <QtCore/QObject>
 #include <QtDBus/QtDBus>
-QT_BEGIN_NAMESPACE
-class QByteArray;
-template<class T>
-class QList;
-template<class Key, class Value>
-class QMap;
-class QString;
-class QStringList;
-class QVariant;
-QT_END_NAMESPACE
 
 #include <QObject>
 
@@ -47,7 +37,9 @@ public:
 signals:
     void sign_changeProperty(const QString &propertyName, DOAProvider *doaProvider);
 public Q_SLOTS: // METHODS
+    //修改密码
     bool ChangePassword(const QString &password);
+    //获取密码使用传输密钥加密
     QString getPassword();
 };
 

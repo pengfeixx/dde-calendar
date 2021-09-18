@@ -197,11 +197,12 @@ void AccountDB::queryAccountList()
     QSqlQuery query(p_->db);
 
     AccountResultList accountResult;
-    bool calendarDisable = false;
+
     qWarning() << "=======>" << kAccountInfoSelectContent;
 
     if (query.exec(kAccountInfoSelectContent)) {
         while (query.next()) {
+            bool calendarDisable = false;
             qDebug() << "queryAccountList===> " << query.value(0).toString();
             QSqlQuery syncquery(p_->db);
             const QString sql =

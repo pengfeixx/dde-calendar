@@ -63,7 +63,8 @@ public:
         PassWordError, //密码错误 格式、加解密失败
         AccountNameEmpty, //帐户名为空
         PassWordEmpty, //密码为空
-        DatatError //请求数据错误
+        DatatError, //请求数据错误
+        RepeatLogin //重复登录
     };
     Q_ENUM(LoginState)
 
@@ -256,13 +257,13 @@ private:
     //帐户编号唯一
     QString m_accountID = "";
     //登录类型 自动 高级 手动
-    LoginType m_loginType;
+    LoginType m_loginType {AUTO};
     //帐户Dbus类型
     QString m_accountDbusPath = "";
     //帐户服务商名称
-    AccountType m_accountProviderType;
+    AccountType m_accountProviderType {QQ};
     //帐户状态
-    LoginState m_accountStat;
+    LoginState m_accountStat {ServerError};
     //是否使用SSL 默认true
     bool m_isSSL {true};
     //是否禁用同步日历 默认false

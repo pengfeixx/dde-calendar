@@ -27,7 +27,7 @@ class DoaNotifyProxy : public QObject
 {
     Q_OBJECT
 public:
-    DoaNotifyProxy(QObject *parent = nullptr);
+    explicit DoaNotifyProxy(QObject *parent = nullptr);
 
     ~DoaNotifyProxy() override;
 

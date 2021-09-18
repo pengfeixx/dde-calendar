@@ -16,6 +16,7 @@
  */
 
 #include "controller/doamanager.h"
+#include "dbus/dbus_consts.h"
 
 #include <DLog>
 
@@ -25,11 +26,19 @@
 int main(int argc, char **argv)
 {
     QCoreApplication app(argc, argv);
+    app.setOrganizationName("deepin");
+    app.setApplicationName("dde-online-account-service");
 
     qDebug() << Dtk::Core::DLogManager::getlogFilePath();
 
     Dtk::Core::DLogManager::registerFileAppender();
     Dtk::Core::DLogManager::registerConsoleAppender();
+
+    QDBusConnection sessionBus = QDBusConnection::sessionBus();
+    if (!sessionBus.registerService(kAccountsService)) {
+        qCritical() << "registerService failed:" << sessionBus.lastError();
+        exit(0x0001);
+    }
 
     DOAManager doaManager;
 

@@ -39,6 +39,7 @@ DOAAccountsadapter::~DOAAccountsadapter()
     qWarning() << "~DOAAccountsadapter";
     if (m_doaProvider != nullptr) {
         delete m_doaProvider;
+        m_doaProvider = nullptr;
     }
 }
 
@@ -50,6 +51,7 @@ void DOAAccountsadapter::CheckAccountState()
 {
     //登录验证
     DOAProvider::LoginState ret = m_doaProvider->login();
+
     if (ret != DOAProvider::SUCCESS) {
         emit this->sign_accountState("AccountStat", QString("%1:%2").arg(DOAProvider::TIMEOUT).arg(QMetaEnum::fromType<DOAProvider::LoginState>().valueToKey(ret)));
     }

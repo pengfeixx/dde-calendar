@@ -42,6 +42,7 @@ bool DOAAccountsPassWordadapter::ChangePassword(const QString &password)
 
     if (qobject_cast<DOAAccountsadapter *>(parent())->m_doaProvider->login() != DOAProvider::SUCCESS) {
         qCritical() << "password verification fail";
+        return false;
     }
 
     //使用传输密钥解出明文
@@ -50,16 +51,6 @@ bool DOAAccountsPassWordadapter::ChangePassword(const QString &password)
         qCritical() << "password desc error";
         return false;
     }
-
-    int descPasswordStringLen = descPasswordString.mid(0, 2).toInt();
-
-    //验证密码长度是否正确
-    if (descPasswordStringLen != descPasswordString.length() - 2) {
-        qCritical() << "password format error";
-        return false;
-    }
-
-    QString relPassword = descPasswordString.mid(2, descPasswordStringLen);
 
     //使用数据库密钥加密
     QString encPassWordString;
