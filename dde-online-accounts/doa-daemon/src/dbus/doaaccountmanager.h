@@ -23,13 +23,14 @@
 
 #include "doaprovider.h"
 #include "controller/accountdbmanager.h"
-#include "dbus/doa_notify_proxy.h"
 #include "dbus/doaaccounts_adapter.h"
 #include "dbus/doaaccountscalendar_adapter.h"
 #include "db/account_result.h"
 #include "dbus/doaaccountspasswordadapter.h"
 
 #include <QObject>
+#include <QNetworkConfiguration>
+#include <QNetworkConfigurationManager>
 
 #define DOAMANAGERINTFACE "com.dde.onlineaccount.manager"
 
@@ -52,11 +53,13 @@ public slots:
     void onAddResult(const QString &accountID, bool result);
     //帐户属性改变
     void onChangeProperty(const QString &propertyName, DOAProvider *doaProvider);
+    //网络状态变化槽
+    void netWorkStateNotify(const QNetworkConfiguration &config);
 
 signals: //内部处理信号
-    //增加帐户变化信号
 
-    void sign_accountState(const QString &stateType, const QString &accountState);
+    //帐户状态变化信号->>InterfaceAccountStatus
+    void sign_accountState(const QString &accountState);
     //增加帐户信号->>数据库管理类增加帐户信号->>数据库对象槽
     bool sign_addAccount(const AccountInfo &accountInfo);
     //检查帐户状态信号->>各个帐户检查状态槽
@@ -78,9 +81,11 @@ public Q_SLOTS: // METHODS
     Q_SCRIPTABLE void loginCancle(const QString &uuid);
 Q_SIGNALS: // SIGNALS dbus公共信号
     //属性变化通知信号
+    /**
+     * @brief InterfaceAccountInfo
+     * @param accountInfo JSON格式,其中iterfaceoper值为ADD(增加)DEL(删除)
+     */
     Q_SCRIPTABLE void InterfaceAccountInfo(const QString &accountInfo);
-
-    Q_SCRIPTABLE void InterfaceAccountStatus(const QString &stateType, const QString &accountState);
 
 private:
 
@@ -102,8 +107,6 @@ private:
      */
     void creatAccountDbus(DOAAccountsadapter *accountAdapter);
 
-    //通知类
-    DoaNotifyProxy *m_doaNotifyProxy;
     //数据库对象
     AccountDBManager *m_accountDBManager;
     //各个帐户集合
@@ -119,7 +122,11 @@ private:
     QMetaEnum accountTypemetaEnum = QMetaEnum::fromType<DOAProvider::AccountType>();
     QMetaEnum loginTypemetaEnum = QMetaEnum::fromType<DOAProvider::LoginType>();
 
+    //检测网络状态
+    QNetworkConfigurationManager *m_netManager;
+
     QMutex m_mutex;
+    QEventLoop eventLoop;
 };
 
 #endif // DOAACCOUNTMANAGER_H

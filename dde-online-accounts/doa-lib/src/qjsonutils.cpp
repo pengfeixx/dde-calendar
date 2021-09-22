@@ -64,6 +64,36 @@ QJsonObject QJsonUtils::doaProvider2JsonObject(const DOAProvider *doaProvider)
     return accountObject;
 }
 
+QString QJsonUtils::doaProvider2String(const DOAProvider *doaProvider, QJsonUtils::IterfaceOper iterfaceoper)
+{
+    QJsonObject resultObject;
+
+    switch (iterfaceoper) {
+    case QJsonUtils::ADD: {
+        QJsonObject accountObject = doaProvider2JsonObject(doaProvider);
+        resultObject.insert("iterfaceoper", "ADD");
+        resultObject.insert("stat", "0");
+        resultObject.insert("iterfacecontent", accountObject);
+        break;
+    }
+    case QJsonUtils::DEL: {
+        QJsonObject accountObject;
+        accountObject.insert("accountid", doaProvider->getAccountID());
+        resultObject.insert("iterfaceoper", "DEL");
+        resultObject.insert("stat", "0");
+        resultObject.insert("iterfacecontent", accountObject);
+        break;
+    }
+    default:
+        break;
+    }
+
+    QJsonDocument doc;
+    doc.setObject(resultObject);
+
+    return doc.toJson(QJsonDocument::Compact);
+}
+
 bool QJsonUtils::jsonString2DoaProvider(const QString jsonString, DOAProvider *doaProvider)
 {
     QJsonParseError jsonerror;

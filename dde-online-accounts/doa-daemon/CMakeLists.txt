@@ -100,8 +100,6 @@ src/controller/accountdbmanager.h
 set(DBUS_FILES
 src/dbus/dbus_consts.cpp
 src/dbus/dbus_consts.h
-src/dbus/doa_notify_proxy.h
-src/dbus/doa_notify_proxy.cpp
 src/dbus/doaaccountmanager.cpp
 src/dbus/doaaccountmanager.h
 src/dbus/doaaccounts_adapter.h

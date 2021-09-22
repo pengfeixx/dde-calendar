@@ -139,7 +139,7 @@ DOAProvider::LoginState DOAQQProvider::getCalendarUri()
 
     m_timer.setInterval(20000);
     m_timer.setSingleShot(true);
-    //connect(&m_timer, &QTimer::timeout, &eventLoop, &QEventLoop::quit);
+    connect(&m_timer, &QTimer::timeout, &eventLoop, &QEventLoop::quit);
     connect(m_reply, &QNetworkReply::finished, &eventLoop, &QEventLoop::quit);
     m_timer.start();
     eventLoop.exec(QEventLoop::ExcludeUserInputEvents);
@@ -265,11 +265,11 @@ DOAProvider::LoginState DOAQQProvider::getPropname()
         delete buffer;
 
         if (isUserCancle) {
-            qCritical() << "UserCancel";
+            qCritical() << "UserCancel" << getAccountID();
             isUserCancle = false;
             return UserCancel;
         }
-        qCritical() << "network timeout";
+        qCritical() << "network timeout" << getAccountID();
         return TIMEOUT;
     }
     m_reply->deleteLater();
@@ -286,5 +286,7 @@ void DOAQQProvider::loginCancel()
 {
     isUserCancle = true;
     m_timer.setInterval(0);
-    m_reply->abort();
+    if (m_reply) {
+        m_reply->abort();
+    }
 }

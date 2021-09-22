@@ -32,6 +32,12 @@
 class QJsonUtils
 {
 public:
+    enum IterfaceOper {
+        ADD,
+        MODIFY,
+        DEL
+    };
+
     /**
      * @brief getJsonString
      * @param jsonMap
@@ -63,6 +69,8 @@ public:
      * DOAProvider对象写入JsonArray
      */
     static void accountAddJsonArray(const DOAProvider *doaProvider, QJsonArray &jsonarray);
+
+    static QString doaProvider2String(const DOAProvider *doaProvider, QJsonUtils::IterfaceOper iterfaceoper);
 };
 
 #endif // QJSONUTILS_H

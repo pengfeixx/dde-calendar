@@ -12,6 +12,7 @@
 #include "dbus_consts.h"
 #include "utils.h"
 #include "aesencryption.h"
+#include "qjsonutils.h"
 
 #include <QtCore/QMetaObject>
 #include <QtCore/QByteArray>
@@ -52,14 +53,14 @@ void DOAAccountsadapter::CheckAccountState()
     //登录验证
     DOAProvider::LoginState ret = m_doaProvider->login();
 
-    if (ret != DOAProvider::SUCCESS) {
-        emit this->sign_accountState("AccountStat", QString("%1:%2").arg(DOAProvider::TIMEOUT).arg(QMetaEnum::fromType<DOAProvider::LoginState>().valueToKey(ret)));
-    }
-
     if (ret != m_doaProvider->getAccountStat()) {
         m_doaProvider->setAccountStat(ret);
         //更新数据库
         emit this->sign_changeProperty("Status", m_doaProvider);
+
+        QVariantMap changed_properties;
+        changed_properties.insert("status", ret);
+        sendPropertiesChanged(changed_properties);
     }
 }
 
@@ -88,6 +89,10 @@ void DOAAccountsadapter::setCalendarDisabled(bool value)
         m_doaProvider->setCalendarDisabled(value);
         //更新数据库
         emit this->sign_changeProperty("CalendarDisable", m_doaProvider);
+
+        QVariantMap changed_properties;
+        changed_properties.insert("CalendarDisable", value);
+        sendPropertiesChanged(changed_properties);
     }
 }
 
@@ -95,6 +100,12 @@ QString DOAAccountsadapter::id() const
 {
     // get the value of property Id
     return m_doaProvider->getAccountID();
+}
+
+QString DOAAccountsadapter::status() const
+{
+    // get the value of property Id
+    return QString::number(m_doaProvider->getAccountStat());
 }
 
 /**
@@ -112,6 +123,10 @@ void DOAAccountsadapter::setUserName(QString &userName)
     m_doaProvider->setDisplayName(userName);
     //更新数据库
     emit this->sign_changeProperty("UserName", m_doaProvider);
+
+    QVariantMap changed_properties;
+    changed_properties.insert("UserName", userName);
+    sendPropertiesChanged(changed_properties);
 }
 
 QString DOAAccountsadapter::providerName() const
@@ -143,4 +158,15 @@ bool DOAAccountsadapter::Remove()
 void DOAAccountsadapter::loginCancle()
 {
     m_doaProvider->loginCancel();
+}
+
+void DOAAccountsadapter::sendPropertiesChanged(QVariantMap changed_properties)
+{
+    QDBusMessage dbusMsg = QDBusMessage::createSignal(
+        m_doaProvider->getPath(),
+        "org.freedesktop.DBus.Properties", "PropertiesChanged");
+    dbusMsg << "com.dde.onlineaccount.account";
+    dbusMsg << changed_properties;
+    dbusMsg << QStringList();
+    QDBusConnection::sessionBus().send(dbusMsg);
 }

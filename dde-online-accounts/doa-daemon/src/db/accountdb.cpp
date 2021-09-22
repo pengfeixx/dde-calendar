@@ -251,12 +251,12 @@ void AccountDB::deleteAccount(const QString &accountID)
 
     QSqlQuery query(p_->db);
     if (!query.exec(sql)) {
-        qCritical() << "Failed to insert search entry:" << query.lastError().text();
+        qCritical() << "Failed to insert accountinfo entry:" << query.lastError().text();
     }
     //删除同步对象
     sql = QString("delete from accountsyncobject where accountid = '%1'").arg(accountID);
     if (!query.exec(sql)) {
-        qCritical() << "Failed to insert search entry:" << query.lastError().text();
+        qCritical() << "Failed to insert accountsyncobject entry:" << query.lastError().text();
     }
 }
 
@@ -281,7 +281,7 @@ void AccountDB::updateProperty(const QString &accountID, const QString &property
 
     QSqlQuery query(p_->db);
     if (!query.exec(sql)) {
-        qCritical() << "Failed to insert search entry:" << query.lastError().text();
+        qCritical() << "Failed to update property entry:" << property << query.lastError().text();
     }
 }
 
@@ -324,7 +324,7 @@ bool AccountDB::addAccount(const AccountInfo &accountInfo)
 
     if (!ok) {
         p_->db.rollback();
-        qCritical() << "Failed to insert search entry:" << query.lastError().text();
+        qCritical() << "Failed to insert accountinfo entry:" << query.lastError().text();
         emit this->addAccountResult(accountInfo.m_accountID, ok);
         return false;
     }
@@ -339,12 +339,12 @@ bool AccountDB::addAccount(const AccountInfo &accountInfo)
 
     if (!ok) {
         p_->db.rollback();
-        qCritical() << "Failed to insert search entry:" << query.lastError().text();
+        qCritical() << "Failed to insert accountinfo entry:" << query.lastError().text();
         emit this->addAccountResult(accountInfo.m_accountID, ok);
         return false;
     } else {
         p_->db.commit();
     }
-    emit this->addAccountResult(accountInfo.m_accountID, ok);
+    //emit this->addAccountResult(accountInfo.m_accountID, ok);
     return true;
 }

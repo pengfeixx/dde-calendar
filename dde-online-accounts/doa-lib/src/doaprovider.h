@@ -64,7 +64,8 @@ public:
         AccountNameEmpty, //帐户名为空
         PassWordEmpty, //密码为空
         DatatError, //请求数据错误
-        RepeatLogin //重复登录
+        RepeatLogin, //重复登录
+        DBError //数据库错误
     };
     Q_ENUM(LoginState)
 

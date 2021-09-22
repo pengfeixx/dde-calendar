@@ -39,6 +39,10 @@ public: // PROPERTIES
     Q_PROPERTY(QString Id READ id)
     QString id() const;
 
+    //获取帐户状态
+    Q_PROPERTY(QString status READ status)
+    QString status() const;
+
     //获取和修改用户名称
     Q_PROPERTY(QString UserName READ userName WRITE setUserName)
     QString userName() const;
@@ -60,12 +64,14 @@ signals:
     void sign_changeProperty(const QString &propertyName, DOAProvider *doaProvider);
     void sign_remove(DOAAccountsadapter *doaAccountAdapter);
     //状态改变
-    void sign_accountState(const QString &stateType, const QString &accountState);
+    void sign_accountState(const QString &accountState);
 
 public:
     DOAProvider *m_doaProvider {nullptr};
 
 private:
+    void sendPropertiesChanged(QVariantMap changed_properties);
+
     QTimer *m_checkAccountCalendarTimer {nullptr};
 };
 

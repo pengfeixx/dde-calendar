@@ -33,20 +33,16 @@ AccountDBManager::AccountDBManager(QObject *parent)
 
 AccountDBManager::~AccountDBManager()
 {
-    db_thread_->quit();
-    db_thread_->wait();
-    delete db_thread_;
-    db_thread_ = nullptr;
     delete db_;
     db_ = nullptr;
 }
 
 void AccountDBManager::initDbManager()
 {
-    db_thread_ = new QThread(this);
+    //db_thread_ = new QThread(this);
     db_ = new AccountDB();
-    db_thread_->start();
-    db_->moveToThread(db_thread_);
+    //db_thread_->start();
+    //db_->moveToThread(db_thread_);
 
     connect(this, &AccountDBManager::sign_selectAccountList, db_, &AccountDB::queryAccountList);
     connect(this, &AccountDBManager::sign_addAccount, db_, &AccountDB::addAccount);
