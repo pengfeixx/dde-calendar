@@ -25,7 +25,6 @@
 #include <QFont>
 #include <QFontMetrics>
 
-class QSvgRenderer;
 class DOAAccountListItemDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
@@ -55,7 +54,6 @@ signals:
     void signalSelectItem(QString accountID);
 public slots:
 private:
-    QSvgRenderer *m_typeSvg = nullptr;
     QFont m_userNameFont; //用户名字体
     QFont m_accountNameFont; //帐户字体
     QFontMetrics m_userNameMetrics;

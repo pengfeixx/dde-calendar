@@ -38,14 +38,13 @@ DOAAccountListWidget::DOAAccountListWidget(QWidget *parent)
     , m_addAccountBtn(new DFloatingButton(DStyle::SP_IncreaseElement, this))
     , m_listView(new DListView(this))
     , m_promptLbl(new QLabel(this))
-    , m_accountModel(new QStandardItemModel(this))
     , m_listModel(new DOAAccountListModel(m_listView))
     , m_listDelegate(new DOAAccountListItemDelegate(m_listView))
     , m_stackedWidget(new DStackedWidget)
 {
     initWidget();
 
-    connect(m_addAccountBtn, &DFloatingButton::clicked, this, &DOAAccountListWidget::slotAddAccount);
+    connect(m_addAccountBtn, &DFloatingButton::clicked, this, &DOAAccountListWidget::slotClickeAddAccount);
     connect(m_listDelegate, &DOAAccountListItemDelegate::signalSelectItem, this, &DOAAccountListWidget::slotSelectItem);
 }
 
@@ -56,22 +55,22 @@ DOAAccountListWidget::~DOAAccountListWidget()
 
 void DOAAccountListWidget::setModel(DOAAccountModel *model)
 {
-    if (model) {
+    if (model && m_model != model) {
+        if (m_model) {
+            //解除连接
+            disconnect(m_model, &DOAAccountModel::signalDeleteAccount, this, &DOAAccountListWidget::slotGetDeleteAccount);
+            disconnect(m_model, &DOAAccountModel::signalAddAccountInfo, this, &DOAAccountListWidget::slotGetAddAccount);
+            disconnect(m_model, &DOAAccountModel::signalChangeState, this, &DOAAccountListWidget::slotShowStateChanged);
+            disconnect(m_model, &DOAAccountModel::signalGetAccountListSuccess, this, &DOAAccountListWidget::slotGetAccountListSuccess);
+        }
         m_model = model;
         //添加信号连接
-        if (m_model->getAccountMap().size() > 0) {
-            addAccount();
-            QModelIndex index = m_listModel->index(0);
-            m_listView->setCurrentIndex(index);
-            QVariant value = index.data(Qt::UserRole);
-            AccountItemData accountData = value.value<AccountItemData>();
-            slotSelectItem(accountData.accountId);
-            m_stackedWidget->setCurrentIndex(1);
-            m_addAccountBtn->setEnabled(true);
-        } else {
-            m_stackedWidget->setCurrentIndex(0);
-            m_addAccountBtn->setEnabled(false);
-        }
+        connect(m_model, &DOAAccountModel::signalDeleteAccount, this, &DOAAccountListWidget::slotGetDeleteAccount);
+        connect(m_model, &DOAAccountModel::signalAddAccountInfo, this, &DOAAccountListWidget::slotGetAddAccount);
+        connect(m_model, &DOAAccountModel::signalChangeState, this, &DOAAccountListWidget::slotShowStateChanged);
+        connect(m_model, &DOAAccountModel::signalUserNameChanged, this, &DOAAccountListWidget::slotUserNameChanged);
+        slotGetAccountListSuccess();
+        connect(m_model, &DOAAccountModel::signalGetAccountListSuccess, this, &DOAAccountListWidget::slotGetAccountListSuccess);
     }
 }
 
@@ -115,7 +114,8 @@ void DOAAccountListWidget::slotSelectItem(QString accountID)
     m_model->setState(DOAAccountModel::Account_Details);
 }
 
-void DOAAccountListWidget::slotAddAccount()
+//点击添加帐户事件
+void DOAAccountListWidget::slotClickeAddAccount()
 {
     if (m_model) {
         m_model->setState(DOAAccountModel::Account_Create);
@@ -124,21 +124,105 @@ void DOAAccountListWidget::slotAddAccount()
     }
 }
 
-void DOAAccountListWidget::addAccount()
+//添加获取到添加的帐户信息
+void DOAAccountListWidget::slotGetAddAccount(const DOAAccount *info)
+{
+    AccountItemData itemData = getItemData(info);
+    m_listModel->addAccount(itemData);
+    qDebug() << info->getAccountID();
+    qDebug() << info->getUserName();
+    QModelIndex index;
+    int count = m_listModel->rowCount(index);
+    //设置刚刚添加的为选中状态
+    index = m_listModel->index(count - 1);
+    m_listView->setCurrentIndex(index);
+}
+
+//移除获取到需要移除的帐户ID
+void DOAAccountListWidget::slotGetDeleteAccount(const QString &accountID)
+{
+    m_listModel->removeAccount(accountID);
+    QModelIndex index;
+    if (m_listModel->rowCount(index) > 0) {
+        //设置第一个为选中状态
+        index = m_listModel->index(0);
+        m_listView->setCurrentIndex(index);
+    }
+}
+
+//页面显示状态
+void DOAAccountListWidget::slotShowStateChanged()
 {
     if (m_model) {
+        DOAAccountModel::AccountWidgetState state = m_model->state();
+        switch (state) {
+        case DOAAccountModel::Account_Init:
+            m_stackedWidget->setCurrentIndex(0);
+            m_addAccountBtn->setEnabled(false);
+            break;
+        default:
+            m_stackedWidget->setCurrentIndex(1);
+            m_addAccountBtn->setEnabled(true);
+            break;
+        }
+    }
+}
+
+//用户名称改变处理
+void DOAAccountListWidget::slotUserNameChanged(const QString &accountID)
+{
+    if (m_model) {
+        DOAAccount *account = m_model->getAccount(accountID);
+        AccountItemData itemData = getItemData(account);
+        m_listModel->changeAccount(itemData);
+    }
+}
+
+//所有用户信息获取成功处理
+void DOAAccountListWidget::slotGetAccountListSuccess()
+{
+    if (m_model->getAccountMap().size() > 0) {
+        getAccountList();
+        QModelIndex index = m_listModel->index(0);
+        m_listView->setCurrentIndex(index);
+        QVariant value = index.data(Qt::UserRole);
+        AccountItemData accountData = value.value<AccountItemData>();
+        slotSelectItem(accountData.accountId);
+        m_stackedWidget->setCurrentIndex(1);
+        m_addAccountBtn->setEnabled(true);
+    } else {
+        m_stackedWidget->setCurrentIndex(0);
+        m_addAccountBtn->setEnabled(false);
+    }
+}
+
+//获取帐户列表信息
+void DOAAccountListWidget::getAccountList()
+{
+    if (m_model) {
+        //先清空
+        m_listModel->clearAccount();
         //获取所有的帐户信息
         QMap<QString, DOAAccount *> accountMap = m_model->getAccountMap();
         QMap<QString, DOAAccount *>::iterator iter = accountMap.begin();
         for (; iter != accountMap.end(); ++iter) {
-            AccountItemData itemData;
-            itemData.accountId = iter.value()->getAccountID();
-            itemData.accountName = iter.value()->getAccountName();
-            //如果帐户状态为登录成功则不显示错误标志
-            itemData.accountState = iter.value()->getAccountState() == DOAAccount::AccountState::Account_Success ? false : true;
-            itemData.accountDisplayName = iter.value()->getDisplayName();
-            itemData.accountTypeFileName = "doa_caldav";
+            AccountItemData itemData = getItemData(iter.value());
             m_listModel->addAccount(itemData);
         }
     }
+}
+
+AccountItemData DOAAccountListWidget::getItemData(const DOAAccount *account)
+{
+    AccountItemData itemData {};
+    if (account) {
+        itemData.accountId = account->getAccountID();
+        itemData.accountName = account->getAccountName();
+        //如果帐户状态为登录成功则不显示错误标志
+        itemData.accountState = account->getAccountState() == DOAAccount::AccountState::Account_Success ? false : true;
+        itemData.accountDisplayName = account->getUserName();
+        //TODO 根据具体协议显示不同的协议图标
+        itemData.accountTypeFileName = "doa_caldav";
+    }
+    return itemData;
 }

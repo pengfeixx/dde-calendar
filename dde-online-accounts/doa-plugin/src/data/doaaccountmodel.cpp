@@ -27,18 +27,13 @@ DOAAccountModel::DOAAccountModel(QObject *parent)
     : QObject(parent)
 {
     m_accountDBus = new DOAAccountManageDBus(this);
+
+    connect(m_accountDBus, &DOAAccountManageDBus::signalAddAccountResults, this, &DOAAccountModel::signalAddAccountResults);
+    connect(m_accountDBus, &DOAAccountManageDBus::signalGetAccountList, this, &DOAAccountModel::slotGetAccountList);
+    connect(m_accountDBus, &DOAAccountManageDBus::signalAddAccountInfo, this, &DOAAccountModel::slotGetAccountInfo);
+    connect(m_accountDBus, &DOAAccountManageDBus::signalDeleteAccount, this, &DOAAccountModel::slotGetDeleteAccountID);
     //获取帐户信息
-    DOAAccountList::AccountInfoList accountList = m_accountDBus->getAccountList();
-    std::sort(accountList.m_infoList.begin(), accountList.m_infoList.end());
-    for (int i = 0; i < accountList.accountCount; ++i) {
-        DOAAccount *account = new DOAAccount(this);
-        account->setAccountInfo(accountList.m_infoList.at(i));
-        m_accounts[account->getAccountID()] = account;
-    }
-    //如果帐号数不为空，则这只第一个为默认帐号
-    if (m_accounts.size() > 0) {
-        m_currentAccount = m_accounts.begin().value();
-    }
+    m_accountDBus->getAccountList();
 }
 
 //获取帐户界面的状态
@@ -57,6 +52,7 @@ void DOAAccountModel::setState(const AccountWidgetState &state)
     }
 }
 
+//获取帐户信息
 DOAAccount *DOAAccountModel::getAccount(QString accountID)
 {
     DOAAccount *account = nullptr;
@@ -66,6 +62,7 @@ DOAAccount *DOAAccountModel::getAccount(QString accountID)
     return account;
 }
 
+//获取所有帐户信息
 QMap<QString, DOAAccount *> DOAAccountModel::getAccountMap()
 {
     return m_accounts;
@@ -81,7 +78,7 @@ bool DOAAccountModel::setCurrentAccountByID(QString accountID)
             return true;
         }
         m_currentAccount = m_accounts[accountID];
-        emit signalSelectAccountChange();
+        emit signalSelectAccountChanged();
         return true;
     }
     //若不包含则设置为空
@@ -89,17 +86,91 @@ bool DOAAccountModel::setCurrentAccountByID(QString accountID)
     return false;
 }
 
+//获取当前帐户信息
 DOAAccount *DOAAccountModel::getCurrentAccount()
 {
     return m_currentAccount;
 }
 
-qint32 DOAAccountModel::slotAddAccount(const AddAccountInfo &info)
+DOAAccount *DOAAccountModel::createAccount(const DOAAccountList::AccountInfo &info)
 {
-    return m_accountDBus->addAccount(info);
+    DOAAccount *account = new DOAAccount(this);
+    account->setAccountInfo(info);
+    connect(account, &DOAAccount::signalUserNameChanged, this, &DOAAccountModel::signalUserNameChanged);
+    connect(account, &DOAAccount::signalPasswordChanged, this, &DOAAccountModel::slotAccountPasswordChange);
+    return account;
 }
 
+//添加帐户
+void DOAAccountModel::slotAddAccount(const AddAccountInfo &info)
+{
+    m_accountDBus->addAccount(info);
+}
+
+//取消登录
 void DOAAccountModel::slotCancleLogin(const QString &uuid)
 {
     m_accountDBus->loginCancle(uuid);
+}
+
+//处理获取到的所有帐户信息
+void DOAAccountModel::slotGetAccountList(const DOAAccountList::AccountInfoList &infoList)
+{
+    DOAAccountList::AccountInfoList accountList = infoList;
+    //进行排序，按照添加时间
+    std::sort(accountList.m_infoList.begin(), accountList.m_infoList.end());
+    for (int i = 0; i < accountList.accountCount; ++i) {
+        DOAAccount *account = createAccount(accountList.m_infoList.at(i));
+        m_accounts[account->getAccountID()] = account;
+    }
+    //如果帐号数不为空，则设置第一个为默认帐号
+    if (m_accounts.size() > 0) {
+        m_currentAccount = m_accounts.begin().value();
+        setState(Account_Details);
+    } else {
+        setState(Account_Init);
+    }
+    emit signalGetAccountListSuccess();
+    emit signalSelectAccountChanged();
+}
+
+//处理获取到添加的帐户信息
+void DOAAccountModel::slotGetAccountInfo(const DOAAccountList::AccountInfo &info)
+{
+    //如果列表中包含对应的帐户id则退出
+    if (m_accounts.contains(info.accountID)) {
+        qWarning() << "The list contains the corresponding account," << info.accountID;
+        return;
+    }
+    DOAAccount *account = createAccount(info);
+    m_accounts[account->getAccountID()] = account;
+    m_currentAccount = account;
+    emit signalAddAccountInfo(account);
+    setState(Account_Details);
+    emit signalSelectAccountChanged();
+}
+
+//处理获取到的移除帐户id
+void DOAAccountModel::slotGetDeleteAccountID(const QString &accountID)
+{
+    if (m_accounts.contains(accountID)) {
+        m_accounts[accountID]->deleteLater();
+        m_accounts.remove(accountID);
+        emit signalDeleteAccount(accountID);
+        //如果帐号数不为空，则这只第一个为默认帐号
+        if (m_accounts.size() > 0) {
+            m_currentAccount = m_accounts.begin().value();
+            emit signalSelectAccountChanged();
+        } else {
+            setState(Account_Init);
+        }
+    }
+}
+
+void DOAAccountModel::slotAccountPasswordChange(const QString &accountID)
+{
+    if (m_currentAccount == m_accounts.find(accountID).value()) {
+        //只有当前详情帐户密码改变时才发送通知
+        emit signalPasswordChanged(accountID);
+    }
 }

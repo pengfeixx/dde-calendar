@@ -27,13 +27,11 @@
 
 #include <QMouseEvent>
 #include <QPainter>
-#include <QSvgRenderer>
 
 DGUI_USE_NAMESPACE
 DWIDGET_USE_NAMESPACE
 DOAAccountListItemDelegate::DOAAccountListItemDelegate(QObject *parent)
     : QStyledItemDelegate(parent)
-    , m_typeSvg(new QSvgRenderer(this))
     , m_userNameFont(DFontSizeManager::instance()->get(DFontSizeManager::T7, QFont::Medium))
     , m_accountNameFont(DFontSizeManager::instance()->get(DFontSizeManager::T8, QFont::Normal))
     , m_userNameMetrics(m_userNameFont)

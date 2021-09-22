@@ -24,8 +24,9 @@
 #include "consts.h"
 
 #include <QString>
-//数据转换 序列化和反序列化
 
+class QJsonObject;
+//数据转换 序列化和反序列化
 /**
  * @brief addAccountInfoToJson      添加帐户信息序列化
  * @param info                      帐户信息
@@ -46,4 +47,26 @@ DOAAccountList::AccountInfoList accountListJsonToAccountInfoList(const QString &
  * @return
  */
 QDateTime fromeConverDateTime(const QString &dateTimeStr);
+
+/**
+ * @brief accountJsonObjectToInfo           将帐户信息jsonObject转换为AccountInfo结构体
+ * @param jsonObject                        帐户信息jsonObject
+ * @return
+ */
+DOAAccountList::AccountInfo accountJsonObjectToInfo(const QJsonObject &jsonObject);
+DOAAccountList::AccountInfo accountJsonObjectToInfo(const QVariant &json);
+
+/**
+ * @brief accountListChangeParameterAnalysis        帐户列表信息改变参数解析
+ * @param msg
+ * @return
+ */
+QList<QVariant> accountListChangeParameterAnalysis(const QString &msg);
+
+/**
+ * @brief remvoeAccountJsonObjectToInfo         移除帐户jsonObject解析
+ * @param json
+ * @return
+ */
+QString remvoeAccountJsonObjectToInfo(const QVariant &json);
 #endif // DOADATACONVERSION_H

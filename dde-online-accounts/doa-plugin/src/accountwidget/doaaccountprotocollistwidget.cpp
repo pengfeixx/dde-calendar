@@ -79,19 +79,17 @@ void DOAAccountProtocolListWidget::slotAccountItemClicked(ProtocolType type)
 {
     //根据类型弹出对应登录框
     if (type == ProtocolType::Type_CalDAV) {
-        DOAAddAccountDialog addAccount;
-        connect(&addAccount, &DOAAddAccountDialog::signalAddAccountInfo, this, &DOAAccountProtocolListWidget::slotAddAccount);
-        connect(&addAccount, &DOAAddAccountDialog::signalCaneclLogin, m_dataModel, &DOAAccountModel::slotCancleLogin);
-        addAccount.exec();
+        DOAAddAccountDialog addAccountDialog(this);
+        connect(&addAccountDialog, &DOAAddAccountDialog::signalAddAccountInfo, this, &DOAAccountProtocolListWidget::slotAddAccount);
+        connect(&addAccountDialog, &DOAAddAccountDialog::signalCaneclLogin, m_dataModel, &DOAAccountModel::slotCancleLogin);
+        connect(m_dataModel, &DOAAccountModel::signalAddAccountResults, &addAccountDialog, &DOAAddAccountDialog::slotAddAccountResults);
+        addAccountDialog.exec();
     }
 }
 
 void DOAAccountProtocolListWidget::slotAddAccount(const AddAccountInfo &info)
 {
     if (m_dataModel) {
-        int result = m_dataModel->slotAddAccount(info);
-        emit signalLoginState(result);
-        //TODO: 根据返回结果做对应操作
-        qDebug() << "add account result:" << result;
+        m_dataModel->slotAddAccount(info);
     }
 }

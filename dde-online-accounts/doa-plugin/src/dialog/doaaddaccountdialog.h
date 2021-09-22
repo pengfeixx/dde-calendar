@@ -119,18 +119,6 @@ public slots:
     void slotAccountFocusChanged(bool onFocus);
 
     /**
-     * @brief slotPasswordFocusChanged  密码输入框焦点改变事件
-     * @param onFocus
-     */
-    void slotPasswordFocusChanged(bool onFocus);
-
-    /**
-     * @brief slotServerIPFocusChanged      服务器输入框焦点改变事件
-     * @param onFocus
-     */
-    void slotServerIPFocusChanged(bool onFocus);
-
-    /**
      * @brief slotbuttonClicked     ddialog按钮点击
      * @param index                 按钮编号
      * @param text                  按钮显示文字
@@ -156,10 +144,10 @@ public slots:
     void slotServerIPTextChanged(const QString &text);
 
     /**
-     * @brief slotLoginState           处理登录状态
-     * @param state
+     * @brief slotAddAccountResults     添加帐户返回结果处理
+     * @param results                   返回结果
      */
-    void slotLoginState(int state);
+    void slotAddAccountResults(int results);
 
 private:
     Dtk::Widget::DLabel *m_titleLbl = nullptr;

@@ -108,8 +108,25 @@ const QString illegalEmail = QObject::tr("Illegal email address");
 
 //登录验证界面
 const QString verification = QObject::tr("Verifying the account...");
+
+//登录超时
+const QString loginTimeout = QObject::tr("Login timeout");
+//服务器异常
+const QString serverError = QObject::tr("Server error, please try again");
+//认证失败
+const QString loginError = QObject::tr("Cannot verify the account and password");
 } // namespace LoginWidget
 
+namespace RemoveAccountWidget {
+//您确定要删除此帐户吗？
+const QString deleteAccount = QObject::tr("Are you sure you want to delete this account?");
+//您即将删除此设备中与之关联的所有内容，请谨慎操作
+const QString deletePrompt = QObject::tr("You will lose all data associated with the account on this device");
+//取消
+const QString cancel = QObject::tr("Cancel");
+//删除
+const QString deletebtn = QObject::tr("Delete");
+} // namespace RemoveAccountWidget
 } // namespace DOA
 
 #endif // DISPLAYTEXT_H

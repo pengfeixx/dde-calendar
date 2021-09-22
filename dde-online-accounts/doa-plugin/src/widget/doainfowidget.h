@@ -41,7 +41,7 @@ public:
     /**
      * @brief setShowData       设置显示信息
      */
-    void setShowData(const QString &userName, const QString &url, const QString &accountName);
+    void setShowData(const QString &userName, const QString &url, const QString &accountName, const QString &password);
 
 private:
     /**
@@ -49,13 +49,19 @@ private:
      */
     void initWidget();
 signals:
-    void updateUserName(const QString &name);
+    void signalUpdateUserName(const QString &name);
 public slots:
+    /**
+     * @brief slotUserNameFocusChanged      用户名编辑框处理
+     * @param onFocus
+     */
+    void slotUserNameFocusChanged(const bool onFocus);
+
 private:
     DLineEdit *m_userName = nullptr;
     QLabel *m_serverAddressLbl = nullptr;
     QLabel *m_accountName = nullptr;
-    QLineEdit *m_passwordEdit = nullptr;
+    DPasswordEdit *m_passwordEdit = nullptr;
     QString m_displayName = ""; //用户名
 };
 

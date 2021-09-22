@@ -51,6 +51,7 @@ void DOAApplyToItem::setApplyObject(const DOAApplyToObject &app)
     QPixmap pixmap = icon.pixmap(size * ratio).scaled(size * ratio, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     pixmap.setDevicePixelRatio(ratio);
     m_appIcon->setPixmap(pixmap);
+    //TODO: 根据应用名，获取应用显示名称
     m_appName->setText(m_ApplyObject.appName());
     m_switchBtn->setChecked(m_ApplyObject.isApply());
 }

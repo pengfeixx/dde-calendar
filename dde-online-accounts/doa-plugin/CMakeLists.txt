@@ -53,8 +53,11 @@ file(GLOB_RECURSE onlineAccount_Plugin_SRC ${CMAKE_CURRENT_LIST_DIR}/src/*.cpp)
 
 find_package(PkgConfig REQUIRED)
 find_package(DtkWidget REQUIRED)
-find_package(Qt5Svg REQUIRED)
+find_package(DtkGui REQUIRED)
+find_package(DtkCore REQUIRED)
 find_package(Qt5DBus REQUIRED)
+find_package(Qt5Gui REQUIRED)
+find_package(Qt5Widgets REQUIRED)
 
 
 include_directories(${Qt5Gui_PRIVATE_INCLUDE_DIRS})
@@ -67,13 +70,18 @@ SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES VERSION 1.2.3 SOVERSION 1)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
     "/usr/include/dde-control-center"
-    ${DtkWidget_INCLUDE_DIRS} ${OBJECT_BINARY_DIR})
+    ${DtkWidget_INCLUDE_DIRS}
+    ${OBJECT_BINARY_DIR})
 
 target_link_libraries(${PROJECT_NAME}
-    ${Qt5Svg_LIBRARIES}
     ${Qt5DBus_LIBRARIES}
     ${DtkWidget_LIBRARIES}
+    ${DtkCore_LIBRARIES}
+    ${DtkGui_LIBRARIES}
+    ${Qt5Widgets_LIBRARIES}
+    ${Qt5DBus_LIBRARIES}
     doa-lib
+    dccwidgets
 )
 
 

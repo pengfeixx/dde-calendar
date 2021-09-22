@@ -24,7 +24,6 @@
 
 #include <QPainter>
 #include <QEvent>
-#include <QSvgRenderer>
 
 DGUI_USE_NAMESPACE
 DWIDGET_USE_NAMESPACE

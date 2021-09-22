@@ -20,6 +20,7 @@
 */
 #include "doaaccountinfowidget.h"
 #include "displaytext.h"
+#include "dialog/doaaccountremovedialog.h"
 
 #include <DWarningButton>
 #include <DFontSizeManager>
@@ -28,6 +29,7 @@
 #include <QVBoxLayout>
 #include <QScroller>
 #include <QEvent>
+#include <QResizeEvent>
 
 DWIDGET_USE_NAMESPACE
 
@@ -36,7 +38,7 @@ DOAAccountInfoWidget::DOAAccountInfoWidget(QWidget *parent)
     , m_content(new QWidget(this))
     , m_scrollArea(new QScrollArea(this))
     , m_accountInfo(new DOAInfoWidget(this))
-    , m_accountProtocolLbl(new QLabel("doa_caldav", this))
+    , m_accountProtocolLbl(new QLabel("CalDAV", this))
     , m_applyToWidget(new DOAApplyToWidget(this))
     , m_errorWidget(new DOAErrorWidget)
     , m_accountModel(nullptr)
@@ -46,12 +48,16 @@ DOAAccountInfoWidget::DOAAccountInfoWidget(QWidget *parent)
 
 void DOAAccountInfoWidget::setModel(DOAAccountModel *model)
 {
-    if (model) {
+    if (model && m_accountModel != model) {
+        if (m_accountModel) {
+            disconnect(m_accountModel, &DOAAccountModel::signalSelectAccountChanged, this, &DOAAccountInfoWidget::slotUpdateCurrentAccount);
+            disconnect(m_accountModel, &DOAAccountModel::signalPasswordChanged, this, &DOAAccountInfoWidget::slotPropertyChanged);
+        }
         m_accountModel = model;
+        connect(m_accountModel, &DOAAccountModel::signalSelectAccountChanged, this, &DOAAccountInfoWidget::slotUpdateCurrentAccount);
+        connect(m_accountModel, &DOAAccountModel::signalPasswordChanged, this, &DOAAccountInfoWidget::slotPropertyChanged);
     }
     slotUpdateCurrentAccount();
-
-    connect(m_accountModel, &DOAAccountModel::signalSelectAccountChange, this, &DOAAccountInfoWidget::slotUpdateCurrentAccount);
 }
 
 void DOAAccountInfoWidget::slotUpdateCurrentAccount()
@@ -60,11 +66,36 @@ void DOAAccountInfoWidget::slotUpdateCurrentAccount()
     m_Account = m_accountModel->getCurrentAccount();
     if (m_Account) {
         //设置帐户信息
-        m_accountInfo->setShowData(m_Account->getDisplayName(), m_Account->getUrl(), m_Account->getAccountName());
+        m_accountInfo->setShowData(m_Account->getUserName(), m_Account->getUrl(), m_Account->getAccountName(), m_Account->getAccountPassword());
         m_applyToWidget->clearApp();
         //设置应用于应用
         for (int i = 0; i < m_Account->getApplyObject().size(); ++i) {
             m_applyToWidget->addApp(m_Account->getApplyObject().at(i));
+        }
+    }
+}
+
+//移除当前帐户
+void DOAAccountInfoWidget::slotDeleteCurrentAccount()
+{
+    //删除提示对话框
+    DOAAccountRemoveDialog removeDialog(this);
+    connect(&removeDialog, &DOAAccountRemoveDialog::signalDeleteAccount, m_Account, &DOAAccount::slotRemove);
+    removeDialog.exec();
+}
+
+//更新显示名称
+void DOAAccountInfoWidget::slotUpdateUserName(const QString &userName)
+{
+    //更新显示名称
+    m_Account->updateUserName(userName);
+}
+
+void DOAAccountInfoWidget::slotPropertyChanged(const QString &accountID)
+{
+    if (m_Account) {
+        if (m_Account->getAccountID() == accountID) {
+            m_accountInfo->setShowData(m_Account->getUserName(), m_Account->getUrl(), m_Account->getAccountName(), m_Account->getAccountPassword());
         }
     }
 }
@@ -85,6 +116,7 @@ void DOAAccountInfoWidget::initWidget()
     //删除按钮
     DWarningButton *warningBtn = new DWarningButton(this);
     warningBtn->setText(DOA::AccountInfo::deleteAccount);
+    connect(warningBtn, &DWarningButton::clicked, this, &DOAAccountInfoWidget::slotDeleteCurrentAccount);
 
     DFontSizeManager::instance()->bind(m_accountProtocolLbl, DFontSizeManager::T3, QFont::Bold);
 
@@ -106,4 +138,12 @@ void DOAAccountInfoWidget::initWidget()
     mainLayout->addWidget(m_scrollArea);
     mainLayout->setSpacing(0);
     this->setLayout(mainLayout);
+
+    connect(m_accountInfo, &DOAInfoWidget::signalUpdateUserName, this, &DOAAccountInfoWidget::slotUpdateUserName);
+}
+
+void DOAAccountInfoWidget::resizeEvent(QResizeEvent *event)
+{
+    if (m_content)
+        m_content->setFixedWidth(event->size().width());
 }

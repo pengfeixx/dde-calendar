@@ -31,6 +31,9 @@ DOAInformationWidget::DOAInformationWidget(QWidget *parent)
 void DOAInformationWidget::setModel(DOAAccountModel *model)
 {
     if (m_accountModel != model) {
+        if (m_accountModel) {
+            disconnect(m_accountModel, &DOAAccountModel::signalChangeState, this, &DOAInformationWidget::slotShowStateChange);
+        }
         m_accountModel = model;
         m_accountInfoWidget->setModel(m_accountModel);
         m_accountProWidget->setModel(m_accountModel);

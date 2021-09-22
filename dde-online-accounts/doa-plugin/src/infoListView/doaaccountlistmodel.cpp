@@ -64,16 +64,49 @@ bool DOAAccountListModel::setData(const QModelIndex &index, const QVariant &valu
     return ret;
 }
 
+//添加帐户信息
 void DOAAccountListModel::addAccount(const AccountItemData &account)
 {
+    beginResetModel();
     if (m_accountList.contains(account))
         return;
     m_accountList.append(account);
+    endResetModel();
 }
 
-void DOAAccountListModel::removeAccount(const AccountItemData &account)
+//移除帐户信息
+void DOAAccountListModel::removeAccount(const QString &accountID)
 {
-    if (m_accountList.contains(account)) {
-        m_accountList.removeOne(account);
+    beginResetModel();
+    for (int i = 0; i < m_accountList.size(); ++i) {
+        if (m_accountList.at(i).accountId == accountID) {
+            m_accountList.removeAt(i);
+            break;
+        }
     }
+    endResetModel();
+}
+
+//修改帐户信息
+void DOAAccountListModel::changeAccount(const AccountItemData &account)
+{
+    beginResetModel();
+    //更新状态
+    for (int i = 0; i < m_accountList.size(); ++i) {
+        if (m_accountList.at(i).accountId == account.accountId) {
+            m_accountList[i].accountName = account.accountName;
+            m_accountList[i].accountDisplayName = account.accountDisplayName;
+            m_accountList[i].accountState = account.accountState;
+            break;
+        }
+    }
+    endResetModel();
+}
+
+//清空帐户信息
+void DOAAccountListModel::clearAccount()
+{
+    beginResetModel();
+    m_accountList.clear();
+    endResetModel();
 }

@@ -28,6 +28,9 @@
 DOAAccountDBus::DOAAccountDBus(const QString &path, QObject *parent)
     : QDBusAbstractInterface(ACCOUNT_DBUS_NAME, path, ACCOUNT_DBUS_INTEERFACENAME, QDBusConnection::sessionBus(), parent)
 {
+    if (!this->isValid()) {
+        qWarning() << "Error connecting remote object, service:" << this->service() << ",path:" << this->path() << ",interface" << this->interface();
+    }
     //关联后端dbus属性
     if (!QDBusConnection::sessionBus().connect(this->service(), this->path(), "org.freedesktop.DBus.Properties", "PropertiesChanged", "sa{sv}as", this, SLOT(propertiesChanged(QDBusMessage)))) {
         qWarning() << "the connection was fail!";
@@ -79,6 +82,7 @@ QString DOAAccountDBus::getUserName()
     return getPropertyByName("UserName").toString();
 }
 
+//设置用户名
 bool DOAAccountDBus::setUserName(const QString &userName)
 {
     return setPropertyByName("UserName", userName);

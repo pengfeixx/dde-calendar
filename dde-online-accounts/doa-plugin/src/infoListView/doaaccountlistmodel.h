@@ -44,9 +44,20 @@ public:
 
     /**
      * @brief removeAccount     移除帐户信息
+     * @param accountID         帐户id
+     */
+    void removeAccount(const QString &accountID);
+
+    /**
+     * @brief changeAccount     修改帐户信息
      * @param account           帐户信息
      */
-    void removeAccount(const AccountItemData &account);
+    void changeAccount(const AccountItemData &account);
+
+    /**
+     * @brief clearAccount      清空帐户信息
+     */
+    void clearAccount();
 signals:
 
 public slots:

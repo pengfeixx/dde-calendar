@@ -25,6 +25,7 @@
 
 #include <QDBusAbstractInterface>
 #include <QDBusPendingReply>
+#include <QDBusError>
 
 #define DBUS_INTEERFACENAME "com.dde.onlineaccount.manager"
 #define DBUS_NAME "com.dde.onlineaccount"
@@ -38,30 +39,84 @@ class DOAAccountManageDBus : public QDBusAbstractInterface
     Q_OBJECT
 public:
     explicit DOAAccountManageDBus(QObject *parent = nullptr);
-
 public:
     /**
      * @brief addAccount        添加帐户
      * @param info              帐户信息
-     * @return                  返回结果
      */
-    qint32 addAccount(const AddAccountInfo &info);
+    void addAccount(const AddAccountInfo &info);
 
     /**
      * @brief getAccountList        获取所有帐户信息
-     * @return
      */
-    DOAAccountList::AccountInfoList getAccountList();
+    void getAccountList();
 
+    /**
+     * @brief loginCancle           取消登录
+     * @param uuid                  对应的uuid
+     */
     void loginCancle(const QString &uuid);
-signals:
 
+private:
+    /**
+     * @brief accountListChangeHandle     帐户列表信息改变处理
+     * @param infoStr               改变信息
+     */
+    void accountListChangeHandle(const QString &infoStr);
+
+    /**
+     * @brief accountStateHandle        帐户当前状态处理
+     * @param state                     当前状态
+     */
+    void accountStateHandle(const QString &state);
+
+signals:
+    /**
+     * @brief signalAddAccountResults       发送添加帐户返回结果
+     * @param results
+     */
+    void signalAddAccountResults(int results);
+
+    /**
+     * @brief signalGetAccountList          发送获取所有帐户信息
+     * @param infoList
+     */
+    void signalGetAccountList(const DOAAccountList::AccountInfoList &infoList);
+
+    /**
+     * @brief signalLoginCancle             发送取消登录成功信息
+     */
+    void signalLoginCancle();
+
+    /**
+     * @brief signalAddAccountInfo          发送增加的帐户信息
+     * @param info
+     */
+    void signalAddAccountInfo(const DOAAccountList::AccountInfo &info);
+
+    /**
+     * @brief signalDeleteAccount           发送移除的帐户id
+     * @param accountID
+     */
+    void signalDeleteAccount(const QString &accountID);
 public slots:
     /**
      * @brief propertyChanged  关联的dbus服务属性改变
      * @param msg
      */
     void propertyChanged(const QDBusMessage &msg);
+
+    /**
+     * @brief slotDBusError     服务对象错误信息处理
+     * @param error             错误信息
+     */
+    void slotDBusError(const QDBusError &error);
+
+    /**
+     * @brief slotGetAccountList        处理获取到的所有帐户信息
+     * @param infoList                  所有帐户信息
+     */
+    void slotGetAccountList(const QString &infoList);
 };
 
 #endif // DOAACCOUNTMANAGEDBUS_H

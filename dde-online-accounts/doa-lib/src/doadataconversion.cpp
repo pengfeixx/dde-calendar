@@ -60,23 +60,7 @@ DOAAccountList::AccountInfoList accountListJsonToAccountInfoList(const QString &
     QJsonObject accountlistObj = jsonDoc.object();
     QJsonArray accountArray = accountlistObj.value("accountlist").toArray();
     for (int i = 0; i < accountArray.size(); ++i) {
-        DOAAccountList::AccountInfo accountInfo;
-        QJsonObject accountInfoObj = accountArray.at(i).toObject();
-        accountInfo.accountID = accountInfoObj.value("accountid").toString();
-        accountInfo.accountName = accountInfoObj.value("accountname").toString();
-        accountInfo.accountState = accountInfoObj.value("accountstat").toInt();
-        accountInfo.accountDBusPath = accountInfoObj.value("accountdbuspath").toString();
-        accountInfo.accountType = accountInfoObj.value("accounttype").toInt();
-        accountInfo.accountFlag = accountInfoObj.value("accountflag").toInt();
-        accountInfo.displayName = accountInfoObj.value("username").toString();
-        accountInfo.accountAddTime = fromeConverDateTime(accountInfoObj.value("createtime").toString());
-        accountInfo.serverIP = accountInfoObj.value("accounturl").toString();
-        //
-        if (accountInfoObj.contains("calendardisable")) {
-            accountInfo.applyToCalendarState.isValid = true;
-            accountInfo.applyToCalendarState.disEnable = accountInfoObj.value("calendardisable").toBool();
-        }
-        accountList.m_infoList.append(accountInfo);
+        accountList.m_infoList.append(accountJsonObjectToInfo(accountArray.at(i).toObject()));
     }
     accountList.accountCount = accountlistObj.value("accountcnt").toInt();
     accountList.interfaceStatus = accountlistObj.value("stat").toInt();
@@ -86,4 +70,53 @@ DOAAccountList::AccountInfoList accountListJsonToAccountInfoList(const QString &
 QDateTime fromeConverDateTime(const QString &dateTimeStr)
 {
     return QDateTime::fromString(dateTimeStr, Qt::ISODate);
+}
+
+//将帐户信息jsonObject转换为AccountInfo结构体
+DOAAccountList::AccountInfo accountJsonObjectToInfo(const QJsonObject &jsonObject)
+{
+    DOAAccountList::AccountInfo accountInfo;
+    accountInfo.accountID = jsonObject.value("accountid").toString();
+    accountInfo.accountName = jsonObject.value("accountname").toString();
+    accountInfo.accountState = jsonObject.value("accountstat").toInt();
+    accountInfo.accountDBusPath = jsonObject.value("accountdbuspath").toString();
+    accountInfo.accountType = jsonObject.value("accounttype").toInt();
+    accountInfo.accountFlag = jsonObject.value("accountflag").toInt();
+    accountInfo.displayName = jsonObject.value("username").toString();
+    accountInfo.accountAddTime = fromeConverDateTime(jsonObject.value("createtime").toString());
+    accountInfo.serverIP = jsonObject.value("accounturl").toString();
+    //
+    if (jsonObject.contains("calendardisable")) {
+        accountInfo.applyToCalendarState.isValid = true;
+        accountInfo.applyToCalendarState.disEnable = jsonObject.value("calendardisable").toBool();
+    }
+    return accountInfo;
+}
+
+QList<QVariant> accountListChangeParameterAnalysis(const QString &msg)
+{
+    QJsonParseError json_error;
+    QJsonDocument jsonDoc(QJsonDocument::fromJson(msg.toLocal8Bit(), &json_error));
+    if (json_error.error != QJsonParseError::NoError) {
+        qWarning() << json_error.errorString();
+        return QList<QVariant> {};
+    }
+    QList<QVariant> result {};
+    QJsonObject accountlistObj = jsonDoc.object();
+    QString iterfaceoper = accountlistObj.value("iterfaceoper").toString();
+    int stat = accountlistObj.value("stat").toInt();
+    QJsonObject accountContent = accountlistObj.value("iterfacecontent").toObject();
+    result << iterfaceoper << stat << accountContent;
+    return result;
+}
+
+DOAAccountList::AccountInfo accountJsonObjectToInfo(const QVariant &json)
+{
+    return accountJsonObjectToInfo(json.toJsonObject());
+}
+
+QString remvoeAccountJsonObjectToInfo(const QVariant &json)
+{
+    QJsonObject jsonObject = json.toJsonObject();
+    return jsonObject.value("accountid").toString();
 }

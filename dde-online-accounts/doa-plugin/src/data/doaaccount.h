@@ -29,6 +29,7 @@
 #include <QDateTime>
 
 class DOAAccountDBus;
+class DOAAccountPassword;
 /**
  * @brief The account class 网络帐户数据
  */
@@ -84,13 +85,13 @@ public:
      * @brief getDisplayName        获取显示名称
      * @return                      返回显示名称
      */
-    QString getDisplayName() const;
+    QString getUserName() const;
 
     /**
-     * @brief setDisplayName        设置帐户显示名称
+     * @brief setUserName        设置帐户显示名称
      * @param value                 帐户显示名称
      */
-    void setDisplayName(const QString &value);
+    void setUserName(const QString &value);
 
     /**
      * @brief getUrl        获取服务器地址
@@ -188,6 +189,12 @@ public:
      */
     void setAccountInfo(const DOAAccountList::AccountInfo &info);
 
+    /**
+     * @brief updateUserName            更新用户名
+     * @param userName
+     */
+    void updateUserName(const QString &userName);
+
 public:
     //信息调试打印
     friend QDebug operator<<(QDebug debug, const DOAAccount &account);
@@ -213,7 +220,9 @@ private:
      */
     AccountState getStateByIndex(const int index);
 signals:
+    void signalUserNameChanged(const QString &accountID) const;
 
+    void signalPasswordChanged(const QString &accountID) const;
 public slots:
     /**
      * @brief slotUserNameChanged       用户名改变
@@ -227,6 +236,17 @@ public slots:
      */
     void slotCalendarDisabled(bool disabled);
 
+    /**
+     * @brief slotGetPassword       处理加密后的密码
+     * @param password              加密后的密码
+     */
+    void slotGetPassword(const QString &password);
+
+    /**
+     * @brief slotRemove            移除该帐户
+     */
+    void slotRemove();
+
 private:
     QString m_accountID = ""; //帐户id
     QString m_accountName = ""; //帐户名称
@@ -239,7 +259,8 @@ private:
     AccountState m_state = Account_Success; //帐户状态
     QDateTime m_addDateTime; //添加帐户时间
     QVector<DOAApplyToObject> m_applyObject {}; //应用于相关应用集
-    DOAAccountDBus *m_DBus = nullptr; //每个帐户对应一个DBus服务
+    DOAAccountDBus *m_accountDBus = nullptr; //每个帐户对应一个帐户信息DBus服务
+    DOAAccountPassword *m_passwordDBus = nullptr; //每个帐户对应一个密码相关的DBus服务
 };
 
 #endif // DOAACCOUNT_H

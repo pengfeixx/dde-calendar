@@ -22,6 +22,7 @@
 #include "displaytext.h"
 #include "doaloginverificationdialog.h"
 #include "aesencryption.h"
+#include "widget/doalabel.h"
 
 #include <DPasswordEdit>
 #include <DLineEdit>
@@ -45,6 +46,7 @@ DOAAddAccountDialog::DOAAddAccountDialog(QWidget *parent)
 void DOAAddAccountDialog::initWidget()
 {
     setOnButtonClickedClose(false);
+    //设置控制中心图标
     setIcon(QIcon::fromTheme("preferences-system", QIcon::fromTheme("application-x-desktop")));
     QVBoxLayout *layout = new QVBoxLayout;
     //标题
@@ -75,19 +77,23 @@ void DOAAddAccountDialog::initWidget()
     //密码
     {
         m_passwordEdit = new DPasswordEdit();
+        //添加密码限制，只能输入字母，数字和特殊字符
+        QRegExp exp("^[A-Za-z0-9\\S^\\u4e00-\\u9fa5]+$");
+        QRegExpValidator *validator = new QRegExpValidator(exp, this);
+        m_passwordEdit->lineEdit()->setValidator(validator);
         layout->addWidget(addItemWidget(DOA::LoginWidget::accountPassword, m_passwordEdit));
         m_passwordEdit->setPlaceholderText(DOA::LoginWidget::accountPasswordPlaceholder);
-        connect(m_passwordEdit, &DLineEdit::focusChanged, this, &DOAAddAccountDialog::slotPasswordFocusChanged);
         connect(m_passwordEdit, &DLineEdit::textChanged, this, &DOAAddAccountDialog::slotPasswordTextChanged);
     }
     //服务器地址
     {
         m_serverIP = new DLineEdit();
+        //TODO:添加服务器地址限制
+
         m_serverWidget = addItemWidget(DOA::LoginWidget::serverIp, m_serverIP);
         layout->addWidget(m_serverWidget);
         m_serverWidget->setVisible(false);
         m_serverIP->setPlaceholderText(DOA::LoginWidget::serveripPlaceholder);
-        connect(m_serverIP, &DLineEdit::focusChanged, this, &DOAAddAccountDialog::slotServerIPFocusChanged);
         connect(m_serverIP, &DLineEdit::textChanged, this, &DOAAddAccountDialog::slotPasswordTextChanged);
     }
     layout->addStretch();
@@ -118,7 +124,7 @@ void DOAAddAccountDialog::initWidget()
 
 QWidget *DOAAddAccountDialog::addItemWidget(const QString &displayName, QWidget *widget)
 {
-    QLabel *label = new QLabel(displayName, this);
+    DOALabel *label = new DOALabel(displayName, this);
     label->setToolTip(displayName);
     label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     label->setFixedWidth(70);
@@ -161,7 +167,7 @@ void DOAAddAccountDialog::getAddAccountInfo()
     m_addInfo.accountName = m_accountName->text();
     QString orgarray;
     //加密
-    AESEncryption::ecb_encrypt(m_passwordEdit->text().toLatin1(), orgarray, QByteArray::fromHex(TKEY), true);
+    AESEncryption::ecb_encrypt(m_passwordEdit->text(), orgarray, TKEY, true);
 
     m_addInfo.accountPassword = orgarray;
 
@@ -221,7 +227,7 @@ void DOAAddAccountDialog::slotAccountFocusChanged(bool onFocus)
                 m_accountName->setAlert(true);
                 //提示目前只支持QQ帐号
                 m_loginError->setText(DOA::LoginWidget::supportQQ);
-                m_accountName->showAlertMessage(DOA::LoginWidget::supportQQ);
+                m_accountName->showAlertMessage(DOA::LoginWidget::supportQQ, m_accountName);
             } else if (matchEmail(accountName)) {
                 //合格的邮箱帐号,判断是否为QQ帐号
                 QRegularExpression reg("@qq.com$", QRegularExpression::CaseInsensitiveOption);
@@ -231,39 +237,15 @@ void DOAAddAccountDialog::slotAccountFocusChanged(bool onFocus)
                     m_accountIsOk = true;
                 } else {
                     //提示目前只支持QQ
-                    m_accountName->showAlertMessage(DOA::LoginWidget::supportQQ);
+                    m_accountName->showAlertMessage(DOA::LoginWidget::supportQQ, m_accountName);
                     m_loginError->setText(DOA::LoginWidget::supportQQ);
                 }
             } else {
                 m_accountName->setAlert(true);
                 //提示邮箱不合法
-                m_accountName->showAlertMessage(DOA::LoginWidget::illegalEmail);
+                m_accountName->showAlertMessage(DOA::LoginWidget::illegalEmail, m_accountName);
                 m_loginError->setText(DOA::LoginWidget::illegalEmail);
             }
-        }
-    }
-}
-
-//密码输入框焦点改变事件
-void DOAAddAccountDialog::slotPasswordFocusChanged(bool onFocus)
-{
-    if (!onFocus) {
-        if (!m_passwordEdit->text().isEmpty()) {
-            //密码不为空
-
-            m_passwordEdit->setAlert(false);
-            m_passwordIsOk = true;
-        }
-    }
-}
-
-//服务器输入框焦点改变事件
-void DOAAddAccountDialog::slotServerIPFocusChanged(bool onFocus)
-{
-    if (!onFocus) {
-        if (!m_passwordEdit->text().isEmpty()) {
-            //不为空
-            m_serverIP->setAlert(false);
         }
     }
 }
@@ -274,10 +256,15 @@ void DOAAddAccountDialog::slotbuttonClicked(int index, const QString &text)
     Q_UNUSED(text)
     //如果为登录按钮
     if (index == 1) {
+        //如果帐户输入不合法则退出
+        if (!m_accountIsOk)
+            return;
         //获取窗口中的帐户信息
         getAddAccountInfo();
         //发送添加帐户信息
         emit signalAddAccountInfo(m_addInfo);
+        //TODO 添加对后端没有反馈信号的超时处理
+
         //弹出验证窗口
         DOALoginVerificationDialog dialog(this);
         connect(this, &DOAAddAccountDialog::signalCloseVerificationWidget, &dialog, &DOALoginVerificationDialog::slotClose);
@@ -316,16 +303,37 @@ void DOAAddAccountDialog::slotServerIPTextChanged(const QString &text)
     setLoginEnableByInputs();
 }
 
-void DOAAddAccountDialog::slotLoginState(int state)
+//添加帐户返回结果处理
+void DOAAddAccountDialog::slotAddAccountResults(int results)
 {
     //关闭登录验证对话框
     emit signalCloseVerificationWidget();
     //根据返回状态决定是关闭登录对话框还是提示错误信息
-    switch (state) {
-    case 1:
-
-        break;
-    default:
-        break;
+    switch (results) {
+    case 0: {
+        // 成功, 成功后关闭登录框
+        close();
+    } break;
+    case 1: {
+        //登录超时
+        m_loginError->setText(DOA::LoginWidget::loginTimeout);
+    } break;
+    case 2: {
+        //用户取消
+        m_loginError->setText("");
+    } break;
+    case 3: {
+        //服务器异常
+        m_loginError->setText(DOA::LoginWidget::serverError);
+    } break;
+    case 4: {
+        //认证失败
+        m_loginError->setText(DOA::LoginWidget::loginError);
+    } break;
+    default: {
+        qWarning() << "Other status :" << results;
+        //TODO 其他的状态按服务器异常状态错误显示，待后续状态补充后再更新
+        m_loginError->setText(DOA::LoginWidget::serverError);
+    } break;
     }
 }

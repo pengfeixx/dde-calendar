@@ -58,19 +58,51 @@ public slots:
     void slotSelectItem(QString accountID);
 
     /**
-     * @brief slotAddAccount    点击添加帐户事件
+     * @brief slotClickeAddAccount    点击添加帐户事件
      */
-    void slotAddAccount();
+    void slotClickeAddAccount();
+
+    /**
+     * @brief slotGetAddAccount         添加获取到添加的帐户信息
+     * @param info
+     */
+    void slotGetAddAccount(const DOAAccount *info);
+
+    /**
+     * @brief slotGetDeleteAccount      移除获取到需要移除的帐户ID
+     * @param accountID
+     */
+    void slotGetDeleteAccount(const QString &accountID);
+
+    /**
+     * @brief slotShowStateChanged           页面显示状态
+     */
+    void slotShowStateChanged();
+
+    /**
+     * @brief slotUserNameChanged       用户名称改变处理
+     * @param accountID
+     */
+    void slotUserNameChanged(const QString &accountID);
+
+    /**
+     * @brief slotGetAccountListSuccess     所有用户信息获取成功处理
+     */
+    void slotGetAccountListSuccess();
 
 private:
-    void addAccount();
+    /**
+     * @brief getAccountList        获取帐户列表信息
+     */
+    void getAccountList();
+
+    AccountItemData getItemData(const DOAAccount *account);
 
 private:
     DOAAccountModel *m_model;
     DFloatingButton *m_addAccountBtn; //添加用户按钮
     DListView *m_listView; //帐户信息列表
     QLabel *m_promptLbl; //无帐户信息提示
-    QStandardItemModel *m_accountModel;
     DOAAccountListModel *m_listModel;
     DOAAccountListItemDelegate *m_listDelegate;
     DStackedWidget *m_stackedWidget;

@@ -36,14 +36,14 @@ DOAInfoWidget::DOAInfoWidget(QWidget *parent)
     initWidget();
 }
 
-void DOAInfoWidget::setShowData(const QString &userName, const QString &url, const QString &accountName)
+void DOAInfoWidget::setShowData(const QString &userName, const QString &url, const QString &accountName, const QString &password)
 {
     //存储用户名，若用户删除后需要设置
     m_displayName = userName;
     m_userName->setText(m_displayName);
     m_serverAddressLbl->setText(url);
     m_accountName->setText(accountName);
-    //    m_passwordEdit->setText()
+    m_passwordEdit->setText(password);
 }
 
 void DOAInfoWidget::initWidget()
@@ -58,6 +58,7 @@ void DOAInfoWidget::initWidget()
         //用户名
         m_userName = new DLineEdit(this);
         DOAInfoItem *userNameItem = new DOAInfoItem(DOA::AccountInfo::displayName, m_userName);
+        connect(m_userName, &DLineEdit::focusChanged, this, &DOAInfoWidget::slotUserNameFocusChanged);
         vboxlayout->addWidget(userNameItem);
     }
 
@@ -79,8 +80,8 @@ void DOAInfoWidget::initWidget()
 
     {
         //密码
-        m_passwordEdit = new QLineEdit(this);
-        m_passwordEdit->setEchoMode(QLineEdit::Password);
+        m_passwordEdit = new DPasswordEdit(this);
+
         DOAInfoItem *passwordItem = new DOAInfoItem(DOA::AccountInfo::password, m_passwordEdit);
         vboxlayout->addWidget(passwordItem);
     }
@@ -98,4 +99,29 @@ void DOAInfoWidget::initWidget()
     mainLayout->addSpacing(10);
     mainLayout->addWidget(group);
     this->setLayout(mainLayout);
+}
+
+void DOAInfoWidget::slotUserNameFocusChanged(const bool onFocus)
+{
+    if (onFocus) {
+        m_userName->setAlert(false);
+    } else {
+        //如果内容多于32则提示
+        if (m_userName->lineEdit()->text().size() >= 32) {
+            m_userName->setAlert(true);
+            m_userName->setAlertMessageAlignment(Qt::AlignTop);
+            m_userName->showAlertMessage("error");
+            return;
+        }
+        //如果内容为空则设置为之前的用户名
+        if (m_userName->lineEdit()->text().isEmpty()) {
+            m_userName->setText(m_displayName);
+            return;
+        }
+        //如果内容为上次保存内容则退出
+        if (m_userName->lineEdit()->text() == m_displayName)
+            return;
+        m_displayName = m_userName->lineEdit()->text();
+        emit signalUpdateUserName(m_displayName);
+    }
 }

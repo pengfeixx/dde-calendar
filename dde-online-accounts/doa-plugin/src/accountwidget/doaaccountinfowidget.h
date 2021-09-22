@@ -43,13 +43,32 @@ public:
 signals:
 
 public slots:
+    /**
+     * @brief slotUpdateCurrentAccount      更新显示当前帐户信息
+     */
     void slotUpdateCurrentAccount();
+
+    /**
+     * @brief slotDeleteCurrentAccount      移除当前帐户
+     */
+    void slotDeleteCurrentAccount();
+
+    /**
+     * @brief slotUpdateUserName        更新显示名称
+     * @param userName                  显示名称
+     */
+    void slotUpdateUserName(const QString &userName);
+
+    void slotPropertyChanged(const QString &accountID);
 
 private:
     /**
      * @brief initWidget    初始化界面
      */
     void initWidget();
+
+protected:
+    void resizeEvent(QResizeEvent *event) override;
 
 private:
     QWidget *m_content;

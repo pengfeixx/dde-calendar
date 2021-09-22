@@ -20,6 +20,8 @@
 */
 #include "doaaccount.h"
 #include "dbus/doaaccountdbus.h"
+#include "dbus/doaaccountpassword.h"
+#include "aesencryption.h"
 
 #include <QDebug>
 
@@ -54,13 +56,13 @@ void DOAAccount::setAccountPassword(const QString &value)
 }
 
 //获取显示名称
-QString DOAAccount::getDisplayName() const
+QString DOAAccount::getUserName() const
 {
     return m_displayName;
 }
 
 //设置帐户显示名称
-void DOAAccount::setDisplayName(const QString &value)
+void DOAAccount::setUserName(const QString &value)
 {
     m_displayName = value;
 }
@@ -165,7 +167,7 @@ void DOAAccount::setAccountInfo(const DOAAccountList::AccountInfo &info)
     //将从后端获取到的数据转换为帐户数据
     setAccountID(info.accountID);
     setAccountName(info.accountName);
-    setDisplayName(info.displayName);
+    setUserName(info.displayName);
     setProtocol(getProtocolByindex(info.accountType));
     setAccountState(getStateByIndex(info.accountState));
     setAddAccountDateTime(info.accountAddTime);
@@ -187,19 +189,42 @@ void DOAAccount::setAccountInfo(const DOAAccountList::AccountInfo &info)
     setAccountDBusPath(info.accountDBusPath);
     //根据获取到的帐户DBus路径创建对应的dbus接口
     createDBus();
+    //如果密码DBus创建成功，获取对应密码
+    if (m_passwordDBus) {
+        m_passwordDBus->getPassword();
+    }
+}
+
+void DOAAccount::updateUserName(const QString &userName)
+{
+    if (m_accountDBus) {
+        if (!m_accountDBus->setUserName(userName)) {
+            qWarning() << "set username error";
+            //            setUserName(userName);
+        }
+    }
 }
 
 //创建与帐户关联的DBus
 void DOAAccount::createDBus()
 {
-    m_DBus = new DOAAccountDBus(m_DBusPath, this);
-    if (m_DBus->isValid()) {
-        connect(m_DBus, &DOAAccountDBus::signalUserNameChanged, this, &DOAAccount::slotUserNameChanged);
-        connect(m_DBus, &DOAAccountDBus::signalCalendarDisabled, this, &DOAAccount::slotCalendarDisabled);
+    m_accountDBus = new DOAAccountDBus(m_DBusPath, this);
+    if (m_accountDBus->isValid()) {
+        connect(m_accountDBus, &DOAAccountDBus::signalUserNameChanged, this, &DOAAccount::slotUserNameChanged);
+        connect(m_accountDBus, &DOAAccountDBus::signalCalendarDisabled, this, &DOAAccount::slotCalendarDisabled);
     } else {
-        qWarning() << "m_DBusPath DBus create error";
-        delete m_DBus;
-        m_DBus = nullptr;
+        qWarning() << "m_accountDBus DBus create error";
+        delete m_accountDBus;
+        m_accountDBus = nullptr;
+    }
+
+    m_passwordDBus = new DOAAccountPassword(m_DBusPath, this);
+    if (m_passwordDBus->isValid()) {
+        connect(m_passwordDBus, &DOAAccountPassword::signalPassword, this, &DOAAccount::slotGetPassword);
+    } else {
+        qWarning() << "m_passwordDBus DBus create error";
+        delete m_passwordDBus;
+        m_passwordDBus = nullptr;
     }
 }
 
@@ -234,7 +259,10 @@ DOAAccount::AccountState DOAAccount::getStateByIndex(const int index)
 //用户名改变
 void DOAAccount::slotUserNameChanged(const QString &userName)
 {
-    m_displayName = userName;
+    if (getUserName() != userName) {
+        setUserName(userName);
+        emit signalUserNameChanged(getAccountID());
+    }
 }
 
 //是否应用于日历属性改变
@@ -248,11 +276,30 @@ void DOAAccount::slotCalendarDisabled(bool disabled)
     }
 }
 
+//处理加密后的密码
+void DOAAccount::slotGetPassword(const QString &password)
+{
+    QString ecbPassword;
+    AESEncryption::ecb_encrypt(password, ecbPassword, TKEY, false);
+    if (getAccountPassword() != ecbPassword) {
+        setAccountPassword(ecbPassword);
+        emit signalPasswordChanged(getAccountID());
+    }
+}
+
+//移除该帐户
+void DOAAccount::slotRemove()
+{
+    if (m_accountDBus) {
+        m_accountDBus->remove();
+    }
+}
+
 QDebug operator<<(QDebug debug, const DOAAccount &account)
 {
     debug << "accountID:" << account.getAccountID()
           << ",accountName:" << account.getAccountName()
-          << ",displayName:" << account.getDisplayName()
+          << ",displayName:" << account.getUserName()
           << ",url:" << account.getUrl();
     return debug;
 }
@@ -261,7 +308,7 @@ QDebug operator<<(QDebug debug, const DOAAccount *account)
 {
     debug << "accountID:" << account->getAccountID()
           << ",accountName:" << account->getAccountName()
-          << ",displayName:" << account->getDisplayName()
+          << ",displayName:" << account->getUserName()
           << ",url:" << account->getUrl();
     return debug;
 }
