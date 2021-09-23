@@ -76,9 +76,7 @@ bool AESEncryption::ecb_encrypt(const QString &instr, QString &outstr, const QSt
     size_t keyLength_ = gcry_cipher_get_algo_keylen(GCRY_CIPHER);
     gcry_cipher_setkey(handle, key, keyLength_);
 
-    std::vector<char> outVector;
     size_t outLength = 0;
-    std::string outstrstd;
     QByteArray destData;
     if (enc) {
         QString relPasswordtmp = QString("%1%2").arg(instr.length()).arg(instr);
@@ -86,34 +84,32 @@ bool AESEncryption::ecb_encrypt(const QString &instr, QString &outstr, const QSt
         //源数据补位32位
         QByteArray paddingArray = PKCS7Padding(orgData, 32);
         //计算补位数据长度
-        outLength = paddingArray.size() + 1;
+        outLength = paddingArray.size();
         //设置大小
-        outVector.resize(outLength);
+        destData.resize(outLength);
 
         //加密数据
-        gcry_cipher_encrypt(handle, outVector.data(), outLength, paddingArray, paddingArray.size());
-        //vector转string
-        outstrstd.assign(outVector.begin(), outVector.end());
-        destData = outstrstd.data();
+        gcry_cipher_encrypt(handle, destData.data(), outLength, paddingArray, paddingArray.size());
+
         if (destData.size() <= 0) {
             qCritical() << "encrypt error";
+            gcry_cipher_close(handle);
             return false;
         }
         outstr = destData.toHex();
     } else {
         orgData = QByteArray::fromHex(instr.toUtf8());
         //计算源数据大小
-        outLength = orgData.size() + 1;
+        outLength = orgData.size();
         //设置大小
-        outVector.resize(outLength);
+        destData.resize(outLength);
 
         //解密数据
-        gcry_cipher_decrypt(handle, outVector.data(), outLength, orgData, orgData.size());
-        //vector转string
-        outstrstd.assign(outVector.begin(), outVector.end());
-        destData = outstrstd.data();
+        gcry_cipher_decrypt(handle, destData.data(), outLength, orgData, orgData.size());
+
         if (destData.size() <= 0) {
             qCritical() << "decrypt error";
+            gcry_cipher_close(handle);
             return false;
         }
         //解除PKCS7Padding填充
@@ -127,6 +123,7 @@ bool AESEncryption::ecb_encrypt(const QString &instr, QString &outstr, const QSt
         //验证密码长度是否正确
         if (descPasswordStringLen != relPasswordStr.length() - 2) {
             qCritical() << "password format error";
+            gcry_cipher_close(handle);
             return false;
         }
 
