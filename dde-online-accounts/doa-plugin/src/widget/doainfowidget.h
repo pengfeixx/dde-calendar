@@ -27,6 +27,7 @@
 #include <QWidget>
 #include <QLabel>
 
+class DOAPasswordEdit;
 DWIDGET_USE_NAMESPACE
 
 /**
@@ -52,17 +53,24 @@ signals:
     void signalUpdateUserName(const QString &name);
 public slots:
     /**
-     * @brief slotUserNameFocusChanged      用户名编辑框处理
+     * @brief slotUserNameFocusChanged      用户名编辑框焦点离开处理
      * @param onFocus
      */
     void slotUserNameFocusChanged(const bool onFocus);
+
+    /**
+     * @brief slotUserNameTextChanged       用户名编辑框编辑处理
+     * @param text
+     */
+    void slotUserNameTextChanged(const QString &text);
 
 private:
     DLineEdit *m_userName = nullptr;
     QLabel *m_serverAddressLbl = nullptr;
     QLabel *m_accountName = nullptr;
-    DPasswordEdit *m_passwordEdit = nullptr;
+    DOAPasswordEdit *m_passwordEdit = nullptr;
     QString m_displayName = ""; //用户名
+    QString m_password = ""; //密码
 };
 
 #endif // DOAINFOWIDGET_H

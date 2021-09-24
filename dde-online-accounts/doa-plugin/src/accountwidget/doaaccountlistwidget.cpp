@@ -172,9 +172,12 @@ void DOAAccountListWidget::slotShowStateChanged()
 void DOAAccountListWidget::slotUserNameChanged(const QString &accountID)
 {
     if (m_model) {
+        //数据更新时会取消item选中状态，先获取当前选中项，待数据更新后重新设置当期选中项
+        QModelIndex index = m_listView->currentIndex();
         DOAAccount *account = m_model->getAccount(accountID);
         AccountItemData itemData = getItemData(account);
         m_listModel->changeAccount(itemData);
+        m_listView->setCurrentIndex(index);
     }
 }
 

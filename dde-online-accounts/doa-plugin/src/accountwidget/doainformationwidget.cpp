@@ -56,6 +56,8 @@ void DOAInformationWidget::slotShowStateChange()
         DOAAccountModel::AccountWidgetState state = m_accountModel->state();
         if (state == DOAAccountModel::Account_Details) {
             setCurrentWidget(m_accountInfoWidget);
+            //更新当前帐户信息
+            m_accountInfoWidget->slotUpdateCurrentAccount();
         } else {
             setCurrentWidget(m_accountProWidget);
         }

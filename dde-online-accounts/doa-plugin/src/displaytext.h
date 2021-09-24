@@ -61,6 +61,8 @@ const QString serverError = QObject::tr("Server error, please");
 const QString accountInfo = QObject::tr("Account Info");
 //用户名
 const QString displayName = QObject::tr("User Name");
+//用户名称过长提醒
+const QString userNameTooLong = QObject::tr("No more than 32 characters please");
 //服务器地址
 const QString serverAddress = QObject::tr("Server IP");
 //帐户
@@ -115,6 +117,8 @@ const QString loginTimeout = QObject::tr("Login timeout");
 const QString serverError = QObject::tr("Server error, please try again");
 //认证失败
 const QString loginError = QObject::tr("Cannot verify the account and password");
+//重复登录
+const QString repeatAdd = QObject::tr("Account added already");
 } // namespace LoginWidget
 
 namespace RemoveAccountWidget {

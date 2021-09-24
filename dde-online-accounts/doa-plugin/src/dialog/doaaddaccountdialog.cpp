@@ -107,9 +107,9 @@ void DOAAddAccountDialog::initWidget()
         DFontSizeManager::instance()->bind(m_titleLbl, DFontSizeManager::T8, QFont::Normal);
     }
 
-    QWidget *widget = new QWidget();
-    widget->setLayout(layout);
-    addContent(widget);
+    m_ContentWidget = new QWidget();
+    m_ContentWidget->setLayout(layout);
+    addContent(m_ContentWidget);
     //添加按钮
     {
         addButton(DOA::LoginWidget::CancelBtn);
@@ -224,27 +224,26 @@ void DOAAddAccountDialog::slotAccountFocusChanged(bool onFocus)
 
             //先判断是否为合格的手机号
             if (matchPhoneNumber(accountName)) {
+                //TODO 由于目前只支持QQ，故提示目前只支持QQ帐号
                 m_accountName->setAlert(true);
-                //提示目前只支持QQ帐号
-                m_loginError->setText(DOA::LoginWidget::supportQQ);
-                m_accountName->showAlertMessage(DOA::LoginWidget::supportQQ, m_accountName);
+                m_accountName->showAlertMessage(DOA::LoginWidget::supportQQ, m_ContentWidget);
             } else if (matchEmail(accountName)) {
                 //合格的邮箱帐号,判断是否为QQ帐号
                 QRegularExpression reg("@qq.com$", QRegularExpression::CaseInsensitiveOption);
                 QRegularExpressionMatch match = reg.match(accountName);
                 if (match.hasMatch()) {
                     m_accountName->setAlert(false);
+                    m_accountName->hideAlertMessage();
                     m_accountIsOk = true;
                 } else {
                     //提示目前只支持QQ
-                    m_accountName->showAlertMessage(DOA::LoginWidget::supportQQ, m_accountName);
-                    m_loginError->setText(DOA::LoginWidget::supportQQ);
+                    m_accountName->setAlert(true);
+                    m_accountName->showAlertMessage(DOA::LoginWidget::supportQQ, m_ContentWidget);
                 }
             } else {
                 m_accountName->setAlert(true);
                 //提示邮箱不合法
-                m_accountName->showAlertMessage(DOA::LoginWidget::illegalEmail, m_accountName);
-                m_loginError->setText(DOA::LoginWidget::illegalEmail);
+                m_accountName->showAlertMessage(DOA::LoginWidget::illegalEmail, m_ContentWidget);
             }
         }
     }
@@ -280,8 +279,10 @@ void DOAAddAccountDialog::slotbuttonClicked(int index, const QString &text)
 void DOAAddAccountDialog::slotAccountTextChanged(const QString &text)
 {
     Q_UNUSED(text)
-    if (m_accountName->isAlert())
+    if (m_accountName->isAlert()) {
         m_accountName->setAlert(false);
+        m_accountName->hideAlertMessage();
+    }
     setLoginEnableByInputs();
 }
 
@@ -329,6 +330,10 @@ void DOAAddAccountDialog::slotAddAccountResults(int results)
     case 4: {
         //认证失败
         m_loginError->setText(DOA::LoginWidget::loginError);
+    } break;
+    case 10: {
+        //重复登录
+        m_loginError->setText(DOA::LoginWidget::repeatAdd);
     } break;
     default: {
         qWarning() << "Other status :" << results;

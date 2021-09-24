@@ -122,7 +122,7 @@ void DOAAccountListItemDelegate::paint(QPainter *painter, const QStyleOptionView
             painter->setFont(m_userNameFont);
             painter->setPen(textColor);
             //若显示文字过多则多余的显示。。。
-            painter->drawText(userNameRect, Qt::AlignLeft, getStringByWidth(accountData.accountDisplayName, m_accountNameMetrics, static_cast<int>(accountNameWidth)));
+            painter->drawText(userNameRect, Qt::AlignLeft, getStringByWidth(accountData.accountDisplayName, m_accountNameMetrics, static_cast<int>(accountNameWidth - 10)));
             painter->restore();
         }
         //绘制帐户名称
@@ -136,7 +136,7 @@ void DOAAccountListItemDelegate::paint(QPainter *painter, const QStyleOptionView
             painter->setFont(m_accountNameFont);
             painter->setPen(textColor);
             //若显示文字过多则多余的显示。。。
-            painter->drawText(accountNameRect, Qt::AlignLeft, getStringByWidth(accountData.accountName, m_accountNameMetrics, static_cast<int>(accountNameWidth)));
+            painter->drawText(accountNameRect, Qt::AlignLeft, getStringByWidth(accountData.accountName, m_accountNameMetrics, static_cast<int>(accountNameWidth - 10)));
             painter->restore();
         }
         //如果状态异常则绘制异常图标
@@ -162,6 +162,10 @@ bool DOAAccountListItemDelegate::editorEvent(QEvent *event, QAbstractItemModel *
 
         AccountItemData accountData = value.value<AccountItemData>();
         emit signalSelectItem(accountData.accountId);
+    }
+    //过滤鼠标点击移动选中item
+    if (event->type() == QEvent::MouseMove) {
+        return true;
     }
 
     return QStyledItemDelegate::editorEvent(event, model, option, index);

@@ -18,33 +18,39 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef DOALABEL_H
-#define DOALABEL_H
+#ifndef DOAPASSWORDEDIT_H
+#define DOAPASSWORDEDIT_H
 
-#include <QLabel>
+#include <DPasswordEdit>
+#include <DSuggestButton>
 
-class DOALabel : public QLabel
+DWIDGET_USE_NAMESPACE
+class DOAPasswordEdit : public DPasswordEdit
 {
     Q_OBJECT
 public:
-    explicit DOALabel(QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
-    explicit DOALabel(const QString &text, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
-    void setShowText(const QString &text);
+    explicit DOAPasswordEdit(QWidget *parent = nullptr);
+    void setPasswordButtonAutoHide(const bool isAutoHide);
+    bool getPasswordButtonAutoHide() const;
+    void setText(const QString &text);
+
+private:
+    void focusOutHandle();
 
 protected:
-    void changeEvent(QEvent *e) override;
-    void resizeEvent(QResizeEvent *event) override;
-
-private:
-    /**
-     * @brief setTextByWidth        根据宽度设置显示字符
-     */
-    void setTextByWidth();
+    bool eventFilter(QObject *watched, QEvent *event) override;
 signals:
-
+    /**
+     * @brief signalePasswordChanged    密码改变信号，该信号只有在设置按钮自动隐藏时才有效
+     */
+    void signalePasswordChanged();
 public slots:
+    void slotTextChanged(const QString &str);
+
 private:
-    QString m_text;
+    DSuggestButton *m_PasswordBtn = nullptr;
+    bool m_PasswordBtnAutoHide = false;
+    QString m_password = "";
 };
 
-#endif // DOALABEL_H
+#endif // DOAPASSWORDEDIT_H

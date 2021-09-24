@@ -162,6 +162,7 @@ private:
     bool m_serverIPIsOk = false; //服务器地址是否输入正确
     AddAccountInfo m_addInfo; //需要新增的帐户信息
     bool m_loginSuccess = false; //是否登录成功
+    QWidget *m_ContentWidget = nullptr;
 };
 
 #endif // DOAADDACCOUNTDIALOG_H
