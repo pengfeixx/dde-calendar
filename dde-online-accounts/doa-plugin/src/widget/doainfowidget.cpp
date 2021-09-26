@@ -85,6 +85,7 @@ void DOAInfoWidget::initWidget()
         //密码
         m_passwordEdit = new DOAPasswordEdit(this);
         m_passwordEdit->setPasswordButtonAutoHide(true);
+        connect(m_passwordEdit, &DOAPasswordEdit::signalePasswordChanged, this, &DOAInfoWidget::signalUpdatePassword);
         DOAInfoItem *passwordItem = new DOAInfoItem(DOA::AccountInfo::password, m_passwordEdit);
         vboxlayout->addWidget(passwordItem);
     }

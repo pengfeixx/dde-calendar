@@ -21,7 +21,14 @@
 #ifndef DOAERRORWIDGET_H
 #define DOAERRORWIDGET_H
 
+#include <data/doaaccount.h>
+
+#include <DCommandLinkButton>
+
 #include <QWidget>
+#include <QLabel>
+
+DWIDGET_USE_NAMESPACE
 
 /**
  * @brief The DOAErrorWidget class      帐户详情错误显示模块
@@ -33,9 +40,20 @@ class DOAErrorWidget : public QWidget
 public:
     explicit DOAErrorWidget(QWidget *parent = nullptr);
 
+    /**
+     * @brief DOAErrorWidget::setErrorMsg 设置错误信息
+     * @param errorMsg
+     */
+    void setErrorMsg(const DOAAccount::AccountState);
 signals:
 
 public slots:
+
+private:
+    //错误信息label
+    QLabel *m_errorMessageLabel;
+    //重试按钮
+    DCommandLinkButton *m_tryAginLink;
 };
 
 #endif // DOAERRORWIDGET_H

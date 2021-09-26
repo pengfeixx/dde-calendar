@@ -40,7 +40,7 @@ public: // PROPERTIES
     QString id() const;
 
     //获取帐户状态
-    Q_PROPERTY(QString status READ status)
+    Q_PROPERTY(QString Status READ status)
     QString status() const;
 
     //获取和修改用户名称
@@ -72,7 +72,7 @@ public:
 private:
     void sendPropertiesChanged(QVariantMap changed_properties);
 
-    QTimer *m_checkAccountCalendarTimer {nullptr};
+    QTimer m_checkAccountCalendarTimer;
 };
 
 #endif

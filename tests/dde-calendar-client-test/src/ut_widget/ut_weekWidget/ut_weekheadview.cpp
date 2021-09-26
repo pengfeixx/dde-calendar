@@ -102,7 +102,7 @@ TEST_F(ut_weekheadview, getCellDayNum)
 {
     mWeekHeadView->setWeekDay(getDayList(), QDate::currentDate());
     QString str = mWeekHeadView->getCellDayNum(4);
-    ASSERT_EQ(str, QString::number(QDate::currentDate().day() + 4));
+    EXPECT_EQ(str, QString::number(getDayList().at(4).day()));
 }
 
 //const QDate CWeekHeadView::getCellDate(int pos)

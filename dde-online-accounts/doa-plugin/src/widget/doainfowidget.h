@@ -51,6 +51,7 @@ private:
     void initWidget();
 signals:
     void signalUpdateUserName(const QString &name);
+    void signalUpdatePassword(const QString &passwrd);
 public slots:
     /**
      * @brief slotUserNameFocusChanged      用户名编辑框焦点离开处理

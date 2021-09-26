@@ -43,7 +43,7 @@ signals:
     /**
      * @brief signalePasswordChanged    密码改变信号，该信号只有在设置按钮自动隐藏时才有效
      */
-    void signalePasswordChanged();
+    void signalePasswordChanged(const QString &password);
 public slots:
     void slotTextChanged(const QString &str);
 

@@ -52,16 +52,11 @@ bool DOAAccountDBus::remove()
     return result.value();
 }
 
-//更新帐户状态
+//检测帐户状态
 void DOAAccountDBus::checkAccountState()
 {
     QList<QVariant> argumentList;
     QDBusPendingCall pCall = asyncCallWithArgumentList(QStringLiteral("CheckAccountState"), argumentList);
-    pCall.waitForFinished();
-    QDBusMessage reply = pCall.reply();
-    if (reply.type() != QDBusMessage::ReplyMessage) {
-        qWarning() << "CheckAccountState error :" << reply;
-    }
 }
 
 //获取是否应用于日历
@@ -139,6 +134,8 @@ void DOAAccountDBus::propertiesChanged(const QDBusMessage &msg)
         } else if (prop == "UserName") {
             QString userName = changedProps[prop].toString();
             emit signalUserNameChanged(userName);
+        } else if (prop == "Status") {
+            emit signalStatusChanged(changedProps[prop].toInt());
         }
     }
 }

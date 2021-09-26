@@ -240,6 +240,24 @@ public:
      */
     void setSSL(const bool &value);
 
+    /**
+     * @brief getAccountPort 获取端口号
+     * @return 端口号
+     */
+    inline QString getAccountPort() const
+    {
+        return m_accountPort;
+    }
+
+    /**
+     * @brief setAccountPort 设置端口号
+     * @param accountPort 端口号
+     */
+    inline void setAccountPort(const QString &accountPort)
+    {
+        m_accountPort = accountPort;
+    }
+
 private:
     //帐户类型
     ProtocolType m_accountType {CALDAV};

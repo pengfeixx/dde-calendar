@@ -195,6 +195,10 @@ public:
      */
     void updateUserName(const QString &userName);
 
+    void updateApplyTo(const DOAApplyToObject &app);
+
+    void updatePassword(const QString &password);
+
 public:
     //信息调试打印
     friend QDebug operator<<(QDebug debug, const DOAAccount &account);
@@ -223,6 +227,8 @@ signals:
     void signalUserNameChanged(const QString &accountID) const;
 
     void signalPasswordChanged(const QString &accountID) const;
+
+    void signalAccountStatusChanged(const QString &accountID) const;
 public slots:
     /**
      * @brief slotUserNameChanged       用户名改变
@@ -246,6 +252,16 @@ public slots:
      * @brief slotRemove            移除该帐户
      */
     void slotRemove();
+
+    /**
+     * @brief slotAccountStatus            更新状态
+     */
+    void slotAccountStatus(int accountStatus);
+
+    /**
+     * @brief slotCheckState            检测状态
+     */
+    void slotCheckState();
 
 private:
     QString m_accountID = ""; //帐户id

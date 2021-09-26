@@ -91,9 +91,27 @@ void DOAOnlineAccount::createInformationWidget()
 
 int DOAOnlineAccount::load(const QString &path)
 {
-    Q_UNUSED(path)
-    createListWidget();
-    createProtocolListWidget();
+    if (!m_accountListWidget) {
+        active();
+    }
+
+    QEventLoop eventLoop;
+    QTimer timer;
+    timer.setInterval(20000);
+    timer.setSingleShot(true);
+    connect(&timer, &QTimer::timeout, &eventLoop, &QEventLoop::quit);
+    connect(m_accountModel, &DOAAccountModel::signalChangeState, &eventLoop, &QEventLoop::quit);
+    eventLoop.exec(QEventLoop::ExcludeUserInputEvents);
+
+    QStringList searchList;
+    searchList << "Accounts Detail"
+               << "create account";
+    if (path == searchList[1]) {
+        m_accountModel->signalSelectAccountChanged();
+        m_accountListWidget->slotClickeAddAccount();
+        return 0;
+    }
+
     qDebug() << Q_FUNC_INFO;
     return 0;
 }

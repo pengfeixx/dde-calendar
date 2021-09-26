@@ -22,6 +22,7 @@
 #include "doaprovider.h"
 
 #include <QDebug>
+#include <QUrl>
 
 QString QJsonUtils::getJsonString(const QMap<QString, QVariant> &jsonMap)
 {
@@ -64,19 +65,26 @@ QJsonObject QJsonUtils::doaProvider2JsonObject(const DOAProvider *doaProvider)
     return accountObject;
 }
 
+/**
+ * @brief QJsonUtils::doaProvider2String
+ * @param doaProvider 帐户对象
+ * @param iterfaceoper 操作对象 ADD/DEL
+ * @return
+ * 生成增加/删除 JSON字符串
+ */
 QString QJsonUtils::doaProvider2String(const DOAProvider *doaProvider, QJsonUtils::IterfaceOper iterfaceoper)
 {
     QJsonObject resultObject;
 
     switch (iterfaceoper) {
-    case QJsonUtils::ADD: {
+    case QJsonUtils::ADD: { //增加
         QJsonObject accountObject = doaProvider2JsonObject(doaProvider);
         resultObject.insert("iterfaceoper", "ADD");
         resultObject.insert("stat", "0");
         resultObject.insert("iterfacecontent", accountObject);
         break;
     }
-    case QJsonUtils::DEL: {
+    case QJsonUtils::DEL: { //删除
         QJsonObject accountObject;
         accountObject.insert("accountid", doaProvider->getAccountID());
         resultObject.insert("iterfaceoper", "DEL");
@@ -129,8 +137,24 @@ bool QJsonUtils::jsonString2DoaProvider(const QString jsonString, DOAProvider *d
                     doaProvider->setAccountPassword(it.value().toString());
                 } else if (it.key() == "accounturl") { //服务器名称
                     if (!it.value().toString().isEmpty()) {
-                        doaProvider->setUrl(it.value().toString());
-                        if (!doaProvider->getUrl().toLower().startsWith("https")) {
+                        //解析url
+                        QUrl tmp_url(it.value().toString());
+
+                        //是否存在uri路径
+                        if (tmp_url.path() != "") { //存在
+                            doaProvider->setUri(it.value().toString());
+                            doaProvider->setUrl(QString("%1://%2").arg(tmp_url.scheme()).arg(tmp_url.host()));
+                        } else {
+                            doaProvider->setUrl(QString("%1://%2").arg(tmp_url.scheme()).arg(tmp_url.host()));
+                        }
+
+                        //判断端口
+                        if (tmp_url.port() != -1) {
+                            doaProvider->setAccountPort(QString::number(tmp_url.port()));
+                        }
+
+                        //判断ssl
+                        if (tmp_url.scheme() != "https") {
                             doaProvider->setSSL(false);
                         }
                     }
@@ -144,7 +168,7 @@ bool QJsonUtils::jsonString2DoaProvider(const QString jsonString, DOAProvider *d
             default:
                 break;
             }
-            it++;
+            ++it;
         }
     }
 

@@ -40,10 +40,11 @@ bool DOAAccountsPassWordadapter::ChangePassword(const QString &password)
 
     qobject_cast<DOAAccountsadapter *>(parent())->m_doaProvider->setAccountPassword(password);
 
-    if (qobject_cast<DOAAccountsadapter *>(parent())->m_doaProvider->login() != DOAProvider::SUCCESS) {
-        qCritical() << "password verification fail";
-        return false;
-    }
+    //    if (qobject_cast<DOAAccountsadapter *>(parent())->m_doaProvider->login() != DOAProvider::SUCCESS) {
+    //        qCritical() << "password verification fail";
+    //        qobject_cast<DOAAccountsadapter *>(parent())->CheckAccountState();
+    //        return false;
+    //    }
 
     //使用传输密钥解出明文
     QString descPasswordString;
@@ -63,6 +64,7 @@ bool DOAAccountsPassWordadapter::ChangePassword(const QString &password)
     //保存数据库
     emit this->sign_changeProperty("Password", qobject_cast<DOAAccountsadapter *>(parent())->m_doaProvider);
     qobject_cast<DOAAccountsadapter *>(parent())->m_doaProvider->setAccountPassword(password);
+    qobject_cast<DOAAccountsadapter *>(parent())->CheckAccountState();
     return true;
 }
 

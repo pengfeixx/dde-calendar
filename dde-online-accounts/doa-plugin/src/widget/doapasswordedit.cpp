@@ -58,8 +58,10 @@ void DOAPasswordEdit::focusOutHandle()
     setEchoButtonIsVisible(false);
     if (text().isEmpty())
         DPasswordEdit::setText(m_password);
-    if (text() != m_password)
-        emit signalePasswordChanged();
+    if (text() != m_password) {
+        m_password = text();
+        emit signalePasswordChanged(text());
+    }
 }
 
 bool DOAPasswordEdit::eventFilter(QObject *watched, QEvent *event)

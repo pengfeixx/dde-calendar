@@ -57,6 +57,9 @@ const QString networkError = QObject::tr("Network error, please check and");
 //服务器异常
 const QString serverError = QObject::tr("Server error, please");
 
+//密码异常
+const QString passwordError = QObject::tr("Cannot connect to the account, please check your password");
+
 //********帐户信息
 const QString accountInfo = QObject::tr("Account Info");
 //用户名

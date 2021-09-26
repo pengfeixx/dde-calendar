@@ -135,6 +135,12 @@ signals:
     void signalUserNameChanged(const QString &accountID);
 
     void signalGetAccountListSuccess();
+
+    /**
+     * @brief signalAccountStatusChanged         状态改变信号
+     * @param accountID                     对应的用户id
+     */
+    void signalAccountStatusChanged(const QString &accountID);
 public slots:
     /**
      * @brief addAccount    调用DBUS接口添加帐户
@@ -166,7 +172,17 @@ public slots:
      */
     void slotGetDeleteAccountID(const QString &accountID);
 
+    /**
+     * @brief slotAccountPasswordChange        处理帐户密码改变
+     * @param accountID
+     */
     void slotAccountPasswordChange(const QString &accountID);
+
+    /**
+     * @brief slotAccountStatusChange        处理帐户状态改变
+     * @param accountID
+     */
+    void slotAccountStatusChange(const QString &accountID);
 
 private:
     QMap<QString, DOAAccount *> m_accounts = {}; //帐户列表

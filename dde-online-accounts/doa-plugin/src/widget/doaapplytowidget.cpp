@@ -50,6 +50,7 @@ void DOAApplyToWidget::addApp(const DOAApplyToObject &app)
     item->setApplyObject(app);
     m_mainLayout->addWidget(item);
     m_itemVector.append(item);
+    connect(item, &DOAApplyToItem::signalChange, this, &DOAApplyToWidget::signApplyToItemChange);
 }
 
 void DOAApplyToWidget::initWidget()

@@ -70,6 +70,13 @@ public:
      */
     static void accountAddJsonArray(const DOAProvider *doaProvider, QJsonArray &jsonarray);
 
+    /**
+     * @brief QJsonUtils::doaProvider2String
+     * @param doaProvider 帐户对象
+     * @param iterfaceoper 操作对象 ADD/DEL
+     * @return
+     * 生成增加/删除 JSON字符串
+     */
     static QString doaProvider2String(const DOAProvider *doaProvider, QJsonUtils::IterfaceOper iterfaceoper);
 };
 

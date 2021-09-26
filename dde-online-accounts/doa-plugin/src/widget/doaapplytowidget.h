@@ -47,7 +47,11 @@ public:
      */
     void addApp(const DOAApplyToObject &app);
 signals:
-
+    /**
+     * @brief signApplyToItemChange       应用于改变信号
+     * @param app
+     */
+    void signApplyToItemChange(const DOAApplyToObject &app);
 public slots:
 
 private:

@@ -28,10 +28,9 @@
 
 DOAAccountsadapter::DOAAccountsadapter(QObject *parent)
     : QObject(parent)
-    , m_checkAccountCalendarTimer(new QTimer(this))
 {
     //定时验证当前帐户状态
-    connect(m_checkAccountCalendarTimer, &QTimer::timeout, this, &DOAAccountsadapter::CheckAccountState);
+    connect(&m_checkAccountCalendarTimer, &QTimer::timeout, this, &DOAAccountsadapter::CheckAccountState);
 }
 
 DOAAccountsadapter::~DOAAccountsadapter()
@@ -52,6 +51,7 @@ void DOAAccountsadapter::CheckAccountState()
 {
     //登录验证
     DOAProvider::LoginState ret = m_doaProvider->login();
+    qWarning() << m_doaProvider->getAccountID() << "time is A:" << m_checkAccountCalendarTimer.isActive();
 
     if (ret != m_doaProvider->getAccountStat()) {
         m_doaProvider->setAccountStat(ret);
@@ -59,7 +59,7 @@ void DOAAccountsadapter::CheckAccountState()
         emit this->sign_changeProperty("Status", m_doaProvider);
 
         QVariantMap changed_properties;
-        changed_properties.insert("status", ret);
+        changed_properties.insert("Status", ret);
         sendPropertiesChanged(changed_properties);
     }
 }
@@ -79,10 +79,10 @@ void DOAAccountsadapter::setCalendarDisabled(bool value)
 {
     if (value) {
         //禁用同步
-        m_checkAccountCalendarTimer->stop();
+        m_checkAccountCalendarTimer.stop();
     } else {
         //启用日历同步 暂定2分钟循环判断帐户状态
-        m_checkAccountCalendarTimer->start(120000);
+        m_checkAccountCalendarTimer.start(120000);
     }
 
     if (m_doaProvider->getCalendarDisabled() != value) {
@@ -147,9 +147,8 @@ QString DOAAccountsadapter::providerType() const
  */
 bool DOAAccountsadapter::Remove()
 {
-    m_checkAccountCalendarTimer->stop();
-    disconnect(m_checkAccountCalendarTimer, &QTimer::timeout, this, &DOAAccountsadapter::CheckAccountState);
-    m_checkAccountCalendarTimer->deleteLater();
+    m_checkAccountCalendarTimer.stop();
+    disconnect(&m_checkAccountCalendarTimer, &QTimer::timeout, this, &DOAAccountsadapter::CheckAccountState);
 
     emit this->sign_remove(this);
     return true;

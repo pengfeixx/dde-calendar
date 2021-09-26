@@ -21,12 +21,7 @@
 #include "doaerrorwidget.h"
 #include "displaytext.h"
 
-#include <DCommandLinkButton>
-
-#include <QLabel>
 #include <QHBoxLayout>
-
-DWIDGET_USE_NAMESPACE
 
 DOAErrorWidget::DOAErrorWidget(QWidget *parent)
     : QWidget(parent)
@@ -35,11 +30,11 @@ DOAErrorWidget::DOAErrorWidget(QWidget *parent)
     QLabel *iconLabel = new QLabel(this);
     iconLabel->setPixmap(QIcon::fromTheme("doa_error").pixmap(QSize(20, 20)));
     //错误信息
-    QLabel *errorMessageLabel = new QLabel(DOA::AccountInfo::networkError);
-    errorMessageLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    m_errorMessageLabel = new QLabel(DOA::AccountInfo::networkError);
+    m_errorMessageLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
     //重试
-    DCommandLinkButton *tryAginLink = new DCommandLinkButton("try agin");
+    m_tryAginLink = new DCommandLinkButton("try agin");
 
     QHBoxLayout *layout = new QHBoxLayout;
     layout->setMargin(0);
@@ -47,8 +42,22 @@ DOAErrorWidget::DOAErrorWidget(QWidget *parent)
     layout->addStretch();
     layout->addWidget(iconLabel);
     layout->addSpacing(8);
-    layout->addWidget(errorMessageLabel);
-    layout->addWidget(tryAginLink);
+    layout->addWidget(m_errorMessageLabel);
+    layout->addWidget(m_tryAginLink);
     layout->addStretch();
     this->setLayout(layout);
+}
+
+void DOAErrorWidget::setErrorMsg(const DOAAccount::AccountState accountState)
+{
+    switch (accountState) {
+    case DOAAccount::Account_AuthenticationFailed:
+        m_errorMessageLabel->setText(DOA::AccountInfo::passwordError);
+        m_tryAginLink->setVisible(false);
+        break;
+    default:
+        m_errorMessageLabel->setText(DOA::AccountInfo::serverError);
+        m_tryAginLink->setVisible(true);
+        break;
+    }
 }

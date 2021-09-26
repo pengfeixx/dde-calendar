@@ -77,16 +77,6 @@ private:
 
     void createInformationWidget();
 
-    /**
-     * @brief createProtocolListWidget  创建协议列表界面
-     */
-    void createProtocolListWidget();
-
-    /**
-     * @brief createAccountInfoWidget   创建帐户详细界面
-     */
-    void createAccountInfoWidget();
-
 private:
     DOAAccountModel *m_accountModel = nullptr; //帐户数据管理
     QTranslator *m_translator = nullptr;

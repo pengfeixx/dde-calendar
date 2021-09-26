@@ -118,6 +118,12 @@ signals:
      * @param disabled
      */
     void signalCalendarDisabled(bool disabled);
+
+    /**
+     * @brief signalStatusChanged      状态改变信号
+     * @param status            状态
+     */
+    void signalStatusChanged(const int status);
 public slots:
     /**
      * @brief PropertiesChanged     监听相关属性

@@ -31,25 +31,22 @@
 
 DOAAccountManager::DOAAccountManager(QObject *parent)
     : QObject(parent)
-    , m_accountDBManager(new AccountDBManager(this))
-    , m_netManager(new QNetworkConfigurationManager(this))
 {
     this->setObjectName("DOAAccountManager");
-
     //当前对象初始化信号槽
     //数据库查询结果信号
-    connect(m_accountDBManager, &AccountDBManager::sign_selectAccountResult, this, &DOAAccountManager::onSelectAccountResult);
+    connect(&m_accountDBManager, &AccountDBManager::sign_selectAccountResult, this, &DOAAccountManager::onSelectAccountResult);
     //数据库增加结果信号
     //connect(m_accountDBManager, &AccountDBManager::sign_addAccountResult, this, &DOAAccountManager::onAddResult);
     //监听网卡状态变化信号
-    connect(m_netManager, &QNetworkConfigurationManager::configurationChanged, this, &DOAAccountManager::netWorkStateNotify);
+    connect(&m_netManager, &QNetworkConfigurationManager::configurationChanged, this, &DOAAccountManager::netWorkStateNotify);
 
     //数据库增加信号
-    connect(this, &DOAAccountManager::sign_addAccount, m_accountDBManager, &AccountDBManager::sign_addAccount);
+    connect(this, &DOAAccountManager::sign_addAccount, &m_accountDBManager, &AccountDBManager::sign_addAccount);
     //数据库修改属性信号
-    connect(this, &DOAAccountManager::sign_updateProperty, m_accountDBManager, &AccountDBManager::sign_updateProperty);
+    connect(this, &DOAAccountManager::sign_updateProperty, &m_accountDBManager, &AccountDBManager::sign_updateProperty);
     //数据库删除帐户信号
-    connect(this, &DOAAccountManager::sign_deleteAccount, m_accountDBManager, &AccountDBManager::sign_deleteAccount);
+    connect(this, &DOAAccountManager::sign_deleteAccount, &m_accountDBManager, &AccountDBManager::sign_deleteAccount);
 }
 
 /**
@@ -115,7 +112,7 @@ void DOAAccountManager::initAccountPropertiesChange(DOAAccountsadapter *accountA
 void DOAAccountManager::creatAllAccountDbusFromDB()
 {
     //读数据库查询数据
-    emit m_accountDBManager->sign_selectAccountList();
+    emit m_accountDBManager.sign_selectAccountList();
 }
 
 /**
@@ -154,7 +151,7 @@ QString DOAAccountManager::passwordPro(const QString &dbpassword)
  */
 void DOAAccountManager::onSelectAccountResult(const AccountResultList &result)
 {
-    for (int i = 0; i < result.count(); i++) {
+    for (int i = 0; i < result.count(); ++i) {
         DOAAccountsadapter *accountadapter = new DOAAccountsadapter;
         if (result[i].m_accountProviderType == "QQ") {
             //QQ帐户，创建QQ帐户对象
@@ -169,12 +166,13 @@ void DOAAccountManager::onSelectAccountResult(const AccountResultList &result)
 
             doaprovider->setSSL(result[i].m_isSSL);
             doaprovider->setCalendarDisabled(result[i].m_calendarDisabled);
-            doaprovider->setAccountStat((DOAProvider::LoginState)loginStatemetaEnum.keyToValue(result[i].m_state.toLatin1().data()));
+            doaprovider->setAccountStat((DOAProvider::LoginState)(result[i].m_state.toInt()));
 
             doaprovider->setUri(result[i].m_accountURI);
             doaprovider->setProviderName((DOAProvider::AccountType)accountTypemetaEnum.keyToValue(result[i].m_accountProviderType.toLatin1().data()));
             //密码处理
             doaprovider->setAccountPassword(passwordPro(result[i].m_accountPassword));
+
             doaprovider->setCreateTime(result[i].m_accountCreateTime);
 
             accountadapter->m_doaProvider = doaprovider;
@@ -206,7 +204,7 @@ QString DOAAccountManager::getAllAccount()
     QJsonObject accountList;
     QMap<QString, DOAAccountsadapter *>::iterator it;
     //从MAP中取出数据
-    for (it = m_doaProviderMap.begin(); it != m_doaProviderMap.end(); it++) {
+    for (it = m_doaProviderMap.begin(); it != m_doaProviderMap.end(); ++it) {
         DOAAccountsadapter *doaAccountAdapter = it.value();
         //从缓存中取出数据 组JSON 返回给前端
         QJsonUtils::accountAddJsonArray(doaAccountAdapter->m_doaProvider, accountArray);
@@ -264,7 +262,7 @@ void DOAAccountManager::loginCancle(const QString &uuid)
     QMutexLocker m_lock(&m_mutex); //单线程处理这个后续删除
     QMap<QString, DOAProvider *>::iterator it;
     //从登录队列中,取出数据删除
-    for (it = m_doaProviderLoginingMap.begin(); it != m_doaProviderLoginingMap.end(); it++) {
+    for (it = m_doaProviderLoginingMap.begin(); it != m_doaProviderLoginingMap.end(); ++it) {
         if (it.key() == uuid) {
             DOAProvider *m_doaProvider = it.value();
             m_doaProvider->loginCancel();
@@ -304,7 +302,7 @@ int DOAAccountManager::addAccount(const QString &accountData)
     //验证重复登录
     QMap<QString, DOAAccountsadapter *>::iterator itProviderMap;
     //从MAP中取出数据
-    for (itProviderMap = m_doaProviderMap.begin(); itProviderMap != m_doaProviderMap.end(); itProviderMap++) {
+    for (itProviderMap = m_doaProviderMap.begin(); itProviderMap != m_doaProviderMap.end(); ++itProviderMap) {
         //帐户名称和服务器地址一样判断为重复登录
         if (itProviderMap.value()->m_doaProvider->getAccountName() == accountadapter->m_doaProvider->getAccountName() && itProviderMap.value()->m_doaProvider->getUrl() == accountadapter->m_doaProvider->getUrl()) {
             qCritical() << "Repeat login";
@@ -328,7 +326,7 @@ int DOAAccountManager::addAccount(const QString &accountData)
         QMutexLocker m_lock(&m_mutex);
         QMap<QString, DOAProvider *>::iterator it;
         //从登录队列中,取出数据删除
-        for (it = m_doaProviderLoginingMap.begin(); it != m_doaProviderLoginingMap.end(); it++) {
+        for (it = m_doaProviderLoginingMap.begin(); it != m_doaProviderLoginingMap.end(); ++it) {
             if (it.key() == accountadapter->m_doaProvider->getAccountID()) {
                 accountadapter->m_doaProvider->deleteLater();
                 accountadapter->m_doaProvider = nullptr;
@@ -343,7 +341,7 @@ int DOAAccountManager::addAccount(const QString &accountData)
     QMutexLocker m_lock(&m_mutex);
     QMap<QString, DOAProvider *>::iterator it;
     //从登录队列中,取出数据删除
-    for (it = m_doaProviderLoginingMap.begin(); it != m_doaProviderLoginingMap.end(); it++) {
+    for (it = m_doaProviderLoginingMap.begin(); it != m_doaProviderLoginingMap.end(); ++it) {
         if (it.key() == accountadapter->m_doaProvider->getAccountID()) {
             m_doaProviderLoginingMap.erase(it);
             break;
@@ -412,7 +410,7 @@ int DOAAccountManager::addAccount(const QString &accountData)
     accountInfo.m_accountCreateTime = accountadapter->m_doaProvider->getCreateTime();
 
     //发送给数据库操作增加帐户
-    bool ret = emit m_accountDBManager->sign_addAccount(accountInfo);
+    bool ret = emit m_accountDBManager.sign_addAccount(accountInfo);
     if (!ret) {
         qWarning() << "db error";
         return DOAProvider::DBError;
@@ -452,7 +450,7 @@ void DOAAccountManager::onRemoveAccount(DOAAccountsadapter *doaAccountAdapter)
 
     //从缓存中删除数据
     QMap<QString, DOAAccountsadapter *>::iterator it;
-    for (it = m_doaProviderMap.begin(); it != m_doaProviderMap.end(); it++) {
+    for (it = m_doaProviderMap.begin(); it != m_doaProviderMap.end(); ++it) {
         if (it.key() == doaAccountAdapter->m_doaProvider->getAccountID()) {
             m_doaProviderMap.erase(it);
             break;
@@ -480,20 +478,20 @@ void DOAAccountManager::onChangeProperty(const QString &propertyName, DOAProvide
     if (propertyName == "CalendarDisable") {
         //修改数据库CalendarDisable值
         value = QVariant::fromValue(doaProvider->getCalendarDisabled());
-        emit m_accountDBManager->sign_updateProperty(doaProvider->getAccountID(), propertyName, value);
+        emit m_accountDBManager.sign_updateProperty(doaProvider->getAccountID(), propertyName, value);
     } else if (propertyName == "UserName") {
         //修改数据库用户名
         value = QVariant::fromValue(doaProvider->getDisplayName());
-        emit m_accountDBManager->sign_updateProperty(doaProvider->getAccountID(), propertyName, value);
+        emit m_accountDBManager.sign_updateProperty(doaProvider->getAccountID(), propertyName, value);
     } else if (propertyName == "Status") {
         //修改数据库状态
         int state = doaProvider->getAccountStat();
         value = QVariant::fromValue(state);
-        emit m_accountDBManager->sign_updateProperty(doaProvider->getAccountID(), propertyName, value);
+        emit m_accountDBManager.sign_updateProperty(doaProvider->getAccountID(), propertyName, value);
     } else if (propertyName == "Password") {
         //修改数据库密码
         value = QVariant::fromValue(doaProvider->getAccountPassword());
-        emit m_accountDBManager->sign_updateProperty(doaProvider->getAccountID(), propertyName, value);
+        emit m_accountDBManager.sign_updateProperty(doaProvider->getAccountID(), propertyName, value);
     }
 }
 

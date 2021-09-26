@@ -47,9 +47,9 @@ void DOAAccountPassword::changePassword(const QString &password)
 {
     QList<QVariant> argumentList;
     argumentList << password;
-    bool isOk = callWithCallback(QStringLiteral("getPassword"), argumentList, this, SLOT(signalChangePasswordResult(bool)), SLOT(slotDBusError(QDBusError)));
+    bool isOk = callWithCallback(QStringLiteral("ChangePassword"), argumentList, this, SLOT(signalChangePasswordResult(bool)), SLOT(slotDBusError(QDBusError)));
     if (!isOk) {
-        qWarning() << "getPassword queueing failed";
+        qWarning() << "ChangePassword queueing failed";
     }
 }
 

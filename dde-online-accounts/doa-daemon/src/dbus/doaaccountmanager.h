@@ -107,8 +107,6 @@ private:
      */
     void creatAccountDbus(DOAAccountsadapter *accountAdapter);
 
-    //数据库对象
-    AccountDBManager *m_accountDBManager;
     //各个帐户集合
     QMap<QString, DOAAccountsadapter *> m_doaProviderMap;
     //正在登录集合
@@ -123,7 +121,9 @@ private:
     QMetaEnum loginTypemetaEnum = QMetaEnum::fromType<DOAProvider::LoginType>();
 
     //检测网络状态
-    QNetworkConfigurationManager *m_netManager;
+    QNetworkConfigurationManager m_netManager;
+    //数据库对象
+    AccountDBManager m_accountDBManager;
 
     QMutex m_mutex;
     QEventLoop eventLoop;

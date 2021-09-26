@@ -56,6 +56,7 @@ void DOAAccountInfoWidget::setModel(DOAAccountModel *model)
         m_accountModel = model;
         connect(m_accountModel, &DOAAccountModel::signalSelectAccountChanged, this, &DOAAccountInfoWidget::slotUpdateCurrentAccount);
         connect(m_accountModel, &DOAAccountModel::signalPasswordChanged, this, &DOAAccountInfoWidget::slotPropertyChanged);
+        connect(m_accountModel, &DOAAccountModel::signalAccountStatusChanged, this, &DOAAccountInfoWidget::slotPropertyChanged);
     }
     slotUpdateCurrentAccount();
 }
@@ -72,6 +73,8 @@ void DOAAccountInfoWidget::slotUpdateCurrentAccount()
         for (int i = 0; i < m_Account->getApplyObject().size(); ++i) {
             m_applyToWidget->addApp(m_Account->getApplyObject().at(i));
         }
+
+        slotShowErrorMsg();
     }
 }
 
@@ -91,10 +94,38 @@ void DOAAccountInfoWidget::slotUpdateUserName(const QString &userName)
     m_Account->updateUserName(userName);
 }
 
+//更新密码
+void DOAAccountInfoWidget::slotUpdatePassword(const QString &passowrd)
+{
+    //更新密码
+    m_Account->updatePassword(passowrd);
+}
+
+void DOAAccountInfoWidget::slotShowErrorMsg()
+{
+    if (m_Account->getAccountState() == DOAAccount::Account_AuthenticationFailed && m_errorWidget->isHidden()) {
+        m_errorWidget->setErrorMsg(m_Account->getAccountState());
+        m_errorWidget->setHidden(false);
+    } else if (m_Account->getAccountState() != DOAAccount::Account_Success && m_errorWidget->isHidden()) {
+        m_errorWidget->setErrorMsg(m_Account->getAccountState());
+        m_errorWidget->setHidden(false);
+    } else if (m_Account->getAccountState() == DOAAccount::Account_Success && !m_errorWidget->isHidden()) {
+        m_errorWidget->setHidden(true);
+    }
+}
+
+//更新同步属性
+void DOAAccountInfoWidget::slotUpdateApplyToItem(const DOAApplyToObject &app)
+{
+    //更新显示名称
+    m_Account->updateApplyTo(app);
+}
+
 void DOAAccountInfoWidget::slotPropertyChanged(const QString &accountID)
 {
     if (m_Account) {
         if (m_Account->getAccountID() == accountID) {
+            slotShowErrorMsg();
             m_accountInfo->setShowData(m_Account->getUserName(), m_Account->getUrl(), m_Account->getAccountName(), m_Account->getAccountPassword());
         }
     }
@@ -140,6 +171,8 @@ void DOAAccountInfoWidget::initWidget()
     this->setLayout(mainLayout);
 
     connect(m_accountInfo, &DOAInfoWidget::signalUpdateUserName, this, &DOAAccountInfoWidget::slotUpdateUserName);
+    connect(m_accountInfo, &DOAInfoWidget::signalUpdatePassword, this, &DOAAccountInfoWidget::slotUpdatePassword);
+    connect(m_applyToWidget, &DOAApplyToWidget::signApplyToItemChange, this, &DOAAccountInfoWidget::slotUpdateApplyToItem);
 }
 
 void DOAAccountInfoWidget::resizeEvent(QResizeEvent *event)

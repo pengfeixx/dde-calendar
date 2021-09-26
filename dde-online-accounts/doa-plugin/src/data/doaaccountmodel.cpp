@@ -78,6 +78,7 @@ bool DOAAccountModel::setCurrentAccountByID(QString accountID)
             return true;
         }
         m_currentAccount = m_accounts[accountID];
+        m_currentAccount->slotCheckState();
         emit signalSelectAccountChanged();
         return true;
     }
@@ -98,6 +99,7 @@ DOAAccount *DOAAccountModel::createAccount(const DOAAccountList::AccountInfo &in
     account->setAccountInfo(info);
     connect(account, &DOAAccount::signalUserNameChanged, this, &DOAAccountModel::signalUserNameChanged);
     connect(account, &DOAAccount::signalPasswordChanged, this, &DOAAccountModel::slotAccountPasswordChange);
+    connect(account, &DOAAccount::signalAccountStatusChanged, this, &DOAAccountModel::slotAccountStatusChange);
     return account;
 }
 
@@ -167,10 +169,20 @@ void DOAAccountModel::slotGetDeleteAccountID(const QString &accountID)
     }
 }
 
+//更新帐户密码
 void DOAAccountModel::slotAccountPasswordChange(const QString &accountID)
 {
     if (m_currentAccount == m_accounts.find(accountID).value()) {
         //只有当前详情帐户密码改变时才发送通知
         emit signalPasswordChanged(accountID);
+    }
+}
+
+//更新帐户状态
+void DOAAccountModel::slotAccountStatusChange(const QString &accountID)
+{
+    if (m_currentAccount == m_accounts.find(accountID).value()) {
+        //只有当前详情帐户状态改变时才发送通知
+        emit signalAccountStatusChanged(accountID);
     }
 }

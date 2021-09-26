@@ -205,6 +205,40 @@ void DOAAccount::updateUserName(const QString &userName)
     }
 }
 
+/**
+ * @brief DOAAccount::updatePassword 更新密码
+ * @param password
+ */
+void DOAAccount::updatePassword(const QString &password)
+{
+    if (m_passwordDBus) {
+        QString ecbPassword;
+        //加密密码
+        AESEncryption::ecb_encrypt(password, ecbPassword, TKEY, true);
+        //调用Dbus 更新密码
+        m_passwordDBus->changePassword(ecbPassword);
+        //设置本地帐户密码
+        setAccountPassword(password);
+        //更新密码 前端详情页
+        emit signalPasswordChanged(getAccountID());
+    }
+}
+
+//更新应用于
+void DOAAccount::updateApplyTo(const DOAApplyToObject &app)
+{
+    if (m_accountDBus) {
+        if (app.appName() == "dde-calendar") {
+            //调用Dbus更新后端
+            if (!m_accountDBus->setCalendarDisabled(!app.isApply())) {
+                qWarning() << "set dde-calendar error";
+            }
+
+            slotCalendarDisabled(!app.isApply());
+        }
+    }
+}
+
 //创建与帐户关联的DBus
 void DOAAccount::createDBus()
 {
@@ -212,6 +246,7 @@ void DOAAccount::createDBus()
     if (m_accountDBus->isValid()) {
         connect(m_accountDBus, &DOAAccountDBus::signalUserNameChanged, this, &DOAAccount::slotUserNameChanged);
         connect(m_accountDBus, &DOAAccountDBus::signalCalendarDisabled, this, &DOAAccount::slotCalendarDisabled);
+        connect(m_accountDBus, &DOAAccountDBus::signalStatusChanged, this, &DOAAccount::slotAccountStatus);
     } else {
         qWarning() << "m_accountDBus DBus create error";
         delete m_accountDBus;
@@ -270,8 +305,48 @@ void DOAAccount::slotCalendarDisabled(bool disabled)
 {
     for (int i = 0; i < m_applyObject.size(); ++i) {
         if (m_applyObject.at(i).appName() == "dde-calendar") {
-            m_applyObject.value(i).setIsApply(!disabled);
+            m_applyObject[i].setIsApply(!disabled);
             break;
+        }
+    }
+}
+
+//是否帐户状态属性改变
+void DOAAccount::slotAccountStatus(int accountStatus)
+{
+    //转换帐户状态
+    int accountState;
+    switch (accountStatus) {
+    case 0:
+        accountState = DOAAccount::Account_Success;
+        break;
+    case 1:
+        accountState = DOAAccount::Account_TimeOut;
+        break;
+    case 3:
+    case 9:
+    case 11:
+        accountState = DOAAccount::Account_ServerException;
+        break;
+    case 4:
+    case 5:
+    case 6:
+    case 7:
+    case 8:
+        accountState = DOAAccount::Account_AuthenticationFailed;
+        break;
+    default:
+        accountState = DOAAccount::Account_ServerException;
+        break;
+    }
+
+    if (getAccountState() != accountState) {
+        setAccountState((DOAAccount::AccountState)accountState);
+        emit signalUserNameChanged(getAccountID()); //更新状态列表
+        emit signalAccountStatusChanged(getAccountID()); //更新状态详情
+        //状态正常则重新获取密码
+        if (m_passwordDBus) {
+            m_passwordDBus->getPassword();
         }
     }
 }
@@ -292,6 +367,13 @@ void DOAAccount::slotRemove()
 {
     if (m_accountDBus) {
         m_accountDBus->remove();
+    }
+}
+
+void DOAAccount::slotCheckState()
+{
+    if (m_accountDBus) {
+        m_accountDBus->checkAccountState();
     }
 }
 

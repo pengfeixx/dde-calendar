@@ -59,7 +59,29 @@ public slots:
      */
     void slotUpdateUserName(const QString &userName);
 
+    /**
+     * @brief slotPropertyChanged 属性改变
+     * @param accountID
+     */
     void slotPropertyChanged(const QString &accountID);
+
+    /**
+     * @brief slotUpdateApplyToItem 应用于改变
+     * @param app
+     */
+    void slotUpdateApplyToItem(const DOAApplyToObject &app);
+
+    /**
+     * @brief slotShowErrorMsg 处理错误信息显示
+     * @param accountID
+     */
+    void slotShowErrorMsg();
+
+    /**
+     * @brief slotUpdatePassword 处理密码改变
+     * @param passowrd
+     */
+    void slotUpdatePassword(const QString &passowrd);
 
 private:
     /**
