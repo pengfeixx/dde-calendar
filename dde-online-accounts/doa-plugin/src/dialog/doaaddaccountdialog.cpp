@@ -302,8 +302,9 @@ void DOAAddAccountDialog::slotAddAccountResults(int results)
         close();
     } break;
     case 1: {
-        //登录超时
-        m_loginError->setText(tr("Login timeout"));
+        //登录超时，登录超时显示服务器异常文案
+        qWarning() << "time out";
+        m_loginError->setText(tr("Server error, please try again"));
     } break;
     case 2: {
         //用户取消

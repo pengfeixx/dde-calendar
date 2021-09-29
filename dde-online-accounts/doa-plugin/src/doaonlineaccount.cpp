@@ -23,8 +23,6 @@
 #include <QDebug>
 #include <QTranslator>
 
-using namespace DCC_NAMESPACE;
-
 DOAOnlineAccount::DOAOnlineAccount()
     : ModuleInterface()
     , m_accountModel(new DOAAccountModel)
