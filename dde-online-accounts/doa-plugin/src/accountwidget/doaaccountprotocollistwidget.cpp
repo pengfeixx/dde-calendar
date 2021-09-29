@@ -19,7 +19,6 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "doaaccountprotocollistwidget.h"
-#include "displaytext.h"
 #include "doaprotocolmodel.h"
 #include "doaprotocolitemdelegate.h"
 #include "dialog/doaaddaccountdialog.h"
@@ -29,15 +28,17 @@
 
 #include <QLabel>
 #include <QVBoxLayout>
+#include <QNetworkConfigurationManager>
+#include <QNetworkConfiguration>
 
 DWIDGET_USE_NAMESPACE
 DOAAccountProtocolListWidget::DOAAccountProtocolListWidget(QWidget *parent)
     : QWidget(parent)
 {
-    QLabel *addAccountLbl = new QLabel(DOA::ProtocolWidget::addAccountStr, this);
+    QLabel *addAccountLbl = new QLabel(tr("Add an Account"), this);
     DFontSizeManager::instance()->bind(addAccountLbl, DFontSizeManager::T5, QFont::Bold);
 
-    QLabel *selectProtocolLbl = new QLabel(DOA::ProtocolWidget::selectAccountProtocol, this);
+    QLabel *selectProtocolLbl = new QLabel(tr("Choose an account type"), this);
     DFontSizeManager::instance()->bind(selectProtocolLbl, DFontSizeManager::T6, QFont::Medium);
 
     DListView *mListView = new DListView();
@@ -66,6 +67,9 @@ DOAAccountProtocolListWidget::DOAAccountProtocolListWidget(QWidget *parent)
     this->setLayout(layout);
 
     connect(itemDelegate, &DOAProtocolItemDelegate::signalSelectItem, this, &DOAAccountProtocolListWidget::slotAccountItemClicked);
+
+    m_network = new QNetworkConfigurationManager(this);
+    slotConfigurationChanged(m_network->defaultConfiguration());
 }
 
 void DOAAccountProtocolListWidget::setModel(DOAAccountModel *model)
@@ -83,6 +87,9 @@ void DOAAccountProtocolListWidget::slotAccountItemClicked(ProtocolType type)
         connect(&addAccountDialog, &DOAAddAccountDialog::signalAddAccountInfo, this, &DOAAccountProtocolListWidget::slotAddAccount);
         connect(&addAccountDialog, &DOAAddAccountDialog::signalCaneclLogin, m_dataModel, &DOAAccountModel::slotCancleLogin);
         connect(m_dataModel, &DOAAccountModel::signalAddAccountResults, &addAccountDialog, &DOAAddAccountDialog::slotAddAccountResults);
+
+        connect(m_network, &QNetworkConfigurationManager::configurationChanged, &addAccountDialog, &DOAAddAccountDialog::slotConfigurationChanged);
+        addAccountDialog.slotConfigurationChanged(m_networkConfiguration);
         addAccountDialog.exec();
     }
 }
@@ -92,4 +99,9 @@ void DOAAccountProtocolListWidget::slotAddAccount(const AddAccountInfo &info)
     if (m_dataModel) {
         m_dataModel->slotAddAccount(info);
     }
+}
+
+void DOAAccountProtocolListWidget::slotConfigurationChanged(const QNetworkConfiguration &config)
+{
+    m_networkConfiguration = config;
 }

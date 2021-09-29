@@ -19,7 +19,6 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "doaonlineaccount.h"
-#include "displaytext.h"
 
 #include <QDebug>
 #include <QTranslator>
@@ -31,13 +30,25 @@ DOAOnlineAccount::DOAOnlineAccount()
     , m_accountModel(new DOAAccountModel)
     , m_translator(new QTranslator())
 {
-    //TODO 加载插件翻译文件
+    // 加载插件翻译文件
+    m_translator->load(QLocale::system(),
+                       QStringLiteral("dde-online-accounts-plugin"),
+                       QStringLiteral("_"),
+                       QStringLiteral("/usr/share/dde-online-accounts-plugin/translations"));
+    qApp->installTranslator(m_translator);
 }
 
 DOAOnlineAccount::~DOAOnlineAccount()
 {
-    delete m_accountModel;
-    m_accountModel = nullptr;
+    if (m_translator) {
+        qApp->removeTranslator(m_translator);
+        m_translator->deleteLater();
+    }
+
+    if (m_accountModel) {
+        delete m_accountModel;
+        m_accountModel = nullptr;
+    }
 }
 
 QIcon DOAOnlineAccount::icon() const
@@ -62,7 +73,7 @@ const QString DOAOnlineAccount::name() const
 
 const QString DOAOnlineAccount::displayName() const
 {
-    return DOA::displayName;
+    return tr("Network Accounts");
 }
 
 void DOAOnlineAccount::active()

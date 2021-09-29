@@ -31,6 +31,8 @@ class DLineEdit;
 class DPasswordEdit;
 DWIDGET_END_NAMESPACE
 class QComboBox;
+class DOAPasswordEdit;
+class QNetworkConfiguration;
 
 DWIDGET_USE_NAMESPACE
 /**
@@ -61,12 +63,6 @@ private:
      * @return
      */
     void setLoginEnableByInputs();
-
-    /**
-     * @brief getInputInfoIsValid       获取所有输入信息是否有效
-     * @return
-     */
-    bool getInputInfoIsValid();
 
     /**
      * @brief getAddAccountInfo     获取添加帐户信息
@@ -149,17 +145,24 @@ public slots:
      */
     void slotAddAccountResults(int results);
 
+    /**
+     * @brief slotConfigurationChanged      网络状态处理槽
+     * @param config                        当前网络配置状态
+     */
+    void slotConfigurationChanged(const QNetworkConfiguration &config);
+
 private:
     Dtk::Widget::DLabel *m_titleLbl = nullptr;
     QComboBox *m_loginModel = nullptr; //登录方式
     Dtk::Widget::DLineEdit *m_accountName = nullptr; //帐户名称
-    Dtk::Widget::DPasswordEdit *m_passwordEdit = nullptr; //帐户密码
+    DOAPasswordEdit *m_passwordEdit = nullptr; //帐户密码
     Dtk::Widget::DLineEdit *m_serverIP = nullptr; //帐户服务器地址
     QWidget *m_serverWidget = nullptr; //服务器地址对应的widget，根据登录方式设置隐藏
     Dtk::Widget::DLabel *m_loginError = nullptr; //登录错误
     bool m_accountIsOk = false; //登录信息是否输入正确
     bool m_passwordIsOk = false; //密码是否输入正确
     bool m_serverIPIsOk = false; //服务器地址是否输入正确
+    bool m_networkIsOk = true; //网络是否正常
     AddAccountInfo m_addInfo; //需要新增的帐户信息
     bool m_loginSuccess = false; //是否登录成功
     QWidget *m_ContentWidget = nullptr;

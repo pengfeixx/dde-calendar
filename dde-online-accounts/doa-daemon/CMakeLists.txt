@@ -5,9 +5,11 @@ if (NOT DEFINED VERSION)
     set(VERSION 1.2.2)
 endif ()
 
-project(dde-online-accounts)
+project(dde-online-accounts-daemon)
 
 set(CMAKE_INSTALL_PREFIX /usr)
+set(APP_SERVICE "assets/dde-online-accounts-daemon.service")
+set(APP_DBUS_SERVICE "assets/com.dde.onlineaccount.service")
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -116,19 +118,18 @@ src/db/account_result.h
     )
 
 # Main executable
-add_executable(doa-daemon
+add_executable(${PROJECT_NAME}
                src/app/doa_daemon.cpp
                ${CONTROLLER_FILES}
                ${DBUS_FILES}
                ${DB_FILES}
                )
 
-target_link_libraries(doa-daemon
+target_link_libraries(${PROJECT_NAME}
     ${LINK_LIBS}
     doa-lib)
 
 ## Installation
-install(TARGETS doa-daemon
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
-
-string(TOLOWER ${CMAKE_SYSTEM_PROCESSOR} LOWERCASE_CMAKE_SYSTEM_PROCESSOR)
+install(TARGETS ${PROJECT_NAME}  DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+install(FILES ${APP_SERVICE} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/systemd/user)
+install(FILES ${APP_DBUS_SERVICE} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/dbus-1/services/)

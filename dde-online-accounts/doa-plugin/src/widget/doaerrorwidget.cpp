@@ -19,7 +19,6 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "doaerrorwidget.h"
-#include "displaytext.h"
 
 #include <QHBoxLayout>
 
@@ -30,7 +29,7 @@ DOAErrorWidget::DOAErrorWidget(QWidget *parent)
     QLabel *iconLabel = new QLabel(this);
     iconLabel->setPixmap(QIcon::fromTheme("doa_error").pixmap(QSize(20, 20)));
     //错误信息
-    m_errorMessageLabel = new QLabel(DOA::AccountInfo::networkError);
+    m_errorMessageLabel = new QLabel(tr("Network error, please check and"));
     m_errorMessageLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
     //重试
@@ -52,11 +51,13 @@ void DOAErrorWidget::setErrorMsg(const DOAAccount::AccountState accountState)
 {
     switch (accountState) {
     case DOAAccount::Account_AuthenticationFailed:
-        m_errorMessageLabel->setText(DOA::AccountInfo::passwordError);
+        //密码异常
+        m_errorMessageLabel->setText(tr("Cannot connect to the account, please check your password"));
         m_tryAginLink->setVisible(false);
         break;
     default:
-        m_errorMessageLabel->setText(DOA::AccountInfo::serverError);
+        //服务器异常
+        m_errorMessageLabel->setText(tr("Server error, please"));
         m_tryAginLink->setVisible(true);
         break;
     }

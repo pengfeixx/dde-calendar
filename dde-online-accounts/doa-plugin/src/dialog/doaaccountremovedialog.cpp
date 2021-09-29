@@ -1,5 +1,4 @@
 #include "doaaccountremovedialog.h"
-#include "displaytext.h"
 
 #include <DLabel>
 #include <DFontSizeManager>
@@ -16,11 +15,11 @@ DOAAccountRemoveDialog::DOAAccountRemoveDialog(QWidget *parent)
 void DOAAccountRemoveDialog::initWidget()
 {
     //标题
-    DLabel *title = new DLabel(DOA::RemoveAccountWidget::deleteAccount, this);
+    DLabel *title = new DLabel(tr("Are you sure you want to delete this account?"), this);
     title->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
     DFontSizeManager::instance()->bind(title, DFontSizeManager::T6, QFont::Medium);
     //提醒内容
-    DLabel *rompt = new DLabel(DOA::RemoveAccountWidget::deletePrompt, this);
+    DLabel *rompt = new DLabel(tr("You will lose all data associated with the account on this device"), this);
     rompt->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
     DFontSizeManager::instance()->bind(rompt, DFontSizeManager::T6, QFont::Normal);
 
@@ -36,9 +35,9 @@ void DOAAccountRemoveDialog::initWidget()
     widget->setLayout(layout);
     addContent(widget);
     //添加按钮
-    addButton(DOA::RemoveAccountWidget::cancel);
+    addButton(tr("Cancel", "button"));
     //删除按钮
-    addButton(DOA::RemoveAccountWidget::deletebtn, false, ButtonType::ButtonWarning);
+    addButton(tr("Delete", "button"), false, ButtonType::ButtonWarning);
     connect(this, &DDialog::buttonClicked, this, &DOAAccountRemoveDialog::slotbuttonClicked);
 }
 

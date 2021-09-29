@@ -19,7 +19,6 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "doaaccountinfowidget.h"
-#include "displaytext.h"
 #include "dialog/doaaccountremovedialog.h"
 
 #include <DWarningButton>
@@ -146,7 +145,7 @@ void DOAAccountInfoWidget::initWidget()
 
     //删除按钮
     DWarningButton *warningBtn = new DWarningButton(this);
-    warningBtn->setText(DOA::AccountInfo::deleteAccount);
+    warningBtn->setText(tr("Delete Account"));
     connect(warningBtn, &DWarningButton::clicked, this, &DOAAccountInfoWidget::slotDeleteCurrentAccount);
 
     DFontSizeManager::instance()->bind(m_accountProtocolLbl, DFontSizeManager::T3, QFont::Bold);

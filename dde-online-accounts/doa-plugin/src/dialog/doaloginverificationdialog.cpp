@@ -19,7 +19,6 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "doaloginverificationdialog.h"
-#include "displaytext.h"
 
 #include <DFontSizeManager>
 
@@ -49,7 +48,7 @@ void DOALoginVerificationDialog::initWidget()
     setIcon(QIcon::fromTheme("preferences-system", QIcon::fromTheme("application-x-desktop")));
     QVBoxLayout *layout = new QVBoxLayout;
     //标题
-    m_titleLbl = new DLabel(DOA::LoginWidget::addCalDav);
+    m_titleLbl = new DLabel(tr("Add a CalDAV Account"));
     m_titleLbl->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
     DFontSizeManager::instance()->bind(m_titleLbl, DFontSizeManager::T6, QFont::Medium);
 
@@ -63,14 +62,14 @@ void DOALoginVerificationDialog::initWidget()
     layout->addWidget(m_spinner, 0, Qt::AlignCenter);
     layout->addSpacing(32);
     DLabel *verificationLbl = new DLabel();
-    verificationLbl->setText(DOA::LoginWidget::verification);
+    verificationLbl->setText(tr("Verifying the account..."));
     verificationLbl->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
     layout->addWidget(verificationLbl);
     layout->addStretch();
     QWidget *widget = new QWidget();
     widget->setLayout(layout);
     addContent(widget);
-    addButton(DOA::LoginWidget::CancelBtn);
+    addButton(tr("Cancel", "button"));
     this->setFixedSize(420, 346);
 }
 

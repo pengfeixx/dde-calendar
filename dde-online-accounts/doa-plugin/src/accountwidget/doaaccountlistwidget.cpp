@@ -19,7 +19,6 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "doaaccountlistwidget.h"
-#include "displaytext.h"
 #include "consts.h"
 
 #include <DStyleOption>
@@ -78,10 +77,10 @@ void DOAAccountListWidget::initWidget()
 {
     //新建用户按钮
     m_addAccountBtn->setFixedSize(50, 50);
-    m_addAccountBtn->setToolTip(DOA::AccountListWidget::addAccountStr);
+    m_addAccountBtn->setToolTip(tr("Add Account"));
     m_addAccountBtn->setAccessibleName("Add Account");
     //无帐户信息提示
-    m_promptLbl->setText(DOA::AccountListWidget::noAccountPrompt);
+    m_promptLbl->setText(tr("No accounts yet"));
     DFontSizeManager::instance()->bind(m_promptLbl, DFontSizeManager::T5, QFont::Bold);
     m_promptLbl->setAlignment(Qt::AlignCenter);
 

@@ -19,14 +19,13 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "doaprotocolmodel.h"
-#include "displaytext.h"
 
 DOAProtocolModel::DOAProtocolModel(QObject *parent)
     : QAbstractListModel(parent)
 {
     AccountProtocol protocol;
     protocol.protocolType = ProtocolType::Type_CalDAV;
-    protocol.protocolDisplayName = DOA::ProtocolWidget::calDavName;
+    protocol.protocolDisplayName = tr("CalDAV Account");
     m_protocol.append(protocol);
 }
 

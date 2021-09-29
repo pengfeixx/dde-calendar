@@ -21,11 +21,16 @@
 #include "doapasswordedit.h"
 
 #include <QEvent>
+#include <QRegExp>
+#include <QRegExpValidator>
 
 DOAPasswordEdit::DOAPasswordEdit(QWidget *parent)
     : DPasswordEdit(parent)
 {
-    setEchoButtonIsVisible(false);
+    //添加密码限制，只能输入字母，数字和特殊字符,限制中文和空白字符的输入
+    QRegExp exp("^[^\u4e00-\u9fa5\\s]*$");
+    QRegExpValidator *validator = new QRegExpValidator(exp, this);
+    lineEdit()->setValidator(validator);
     connect(this, &DPasswordEdit::textChanged, this, &DOAPasswordEdit::slotTextChanged);
     //获取隐藏密码按钮
     m_PasswordBtn = this->findChild<DSuggestButton *>();

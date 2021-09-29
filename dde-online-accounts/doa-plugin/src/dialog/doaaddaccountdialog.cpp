@@ -19,12 +19,11 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "doaaddaccountdialog.h"
-#include "displaytext.h"
 #include "doaloginverificationdialog.h"
 #include "aesencryption.h"
 #include "widget/doalabel.h"
+#include "widget/doapasswordedit.h"
 
-#include <DPasswordEdit>
 #include <DLineEdit>
 #include <DLabel>
 #include <DComboBox>
@@ -32,10 +31,10 @@
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <QAbstractButton>
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
 #include <QUuid>
+#include <QNetworkConfiguration>
 
 DOAAddAccountDialog::DOAAddAccountDialog(QWidget *parent)
     : DDialog(parent)
@@ -50,7 +49,7 @@ void DOAAddAccountDialog::initWidget()
     setIcon(QIcon::fromTheme("preferences-system", QIcon::fromTheme("application-x-desktop")));
     QVBoxLayout *layout = new QVBoxLayout;
     //标题
-    m_titleLbl = new DLabel(DOA::LoginWidget::addCalDav);
+    m_titleLbl = new DLabel(tr("Add a CalDAV Account"));
     m_titleLbl->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
     DFontSizeManager::instance()->bind(m_titleLbl, DFontSizeManager::T6, QFont::Medium);
     layout->setMargin(0);
@@ -58,31 +57,27 @@ void DOAAddAccountDialog::initWidget()
     layout->addWidget(m_titleLbl);
     //登录方式
     {
-        m_loginModel = new QComboBox(this);
-        m_loginModel->addItem(DOA::LoginWidget::loginAuto);
-        m_loginModel->addItem(DOA::LoginWidget::LoginManual);
+        m_loginModel = new DComboBox(this);
+        m_loginModel->addItem(tr("Auto"));
+        m_loginModel->addItem(tr("Manual"));
         m_loginModel->setCurrentIndex(0);
-        layout->addWidget(addItemWidget(DOA::LoginWidget::loginModel, m_loginModel));
+        layout->addWidget(addItemWidget(tr("Sign-in"), m_loginModel));
         connect(m_loginModel, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &DOAAddAccountDialog::slotLoginModelChanged);
     }
     //帐户名称
     {
         m_accountName = new DLineEdit();
-        layout->addWidget(addItemWidget(DOA::LoginWidget::accountName, m_accountName));
+        layout->addWidget(addItemWidget(tr("Account"), m_accountName));
         //提示信息
-        m_accountName->setPlaceholderText(DOA::LoginWidget::accountPlaceholder);
+        m_accountName->setPlaceholderText(tr("Email/Phone number"));
         connect(m_accountName, &DLineEdit::focusChanged, this, &DOAAddAccountDialog::slotAccountFocusChanged);
         connect(m_accountName, &DLineEdit::textChanged, this, &DOAAddAccountDialog::slotAccountTextChanged);
     }
     //密码
     {
-        m_passwordEdit = new DPasswordEdit();
-        //添加密码限制，只能输入字母，数字和特殊字符
-        QRegExp exp("^[A-Za-z0-9\\S^\\u4e00-\\u9fa5]+$");
-        QRegExpValidator *validator = new QRegExpValidator(exp, this);
-        m_passwordEdit->lineEdit()->setValidator(validator);
-        layout->addWidget(addItemWidget(DOA::LoginWidget::accountPassword, m_passwordEdit));
-        m_passwordEdit->setPlaceholderText(DOA::LoginWidget::accountPasswordPlaceholder);
+        m_passwordEdit = new DOAPasswordEdit();
+        layout->addWidget(addItemWidget(tr("Password"), m_passwordEdit));
+        m_passwordEdit->setPlaceholderText(tr("Required"));
         connect(m_passwordEdit, &DLineEdit::textChanged, this, &DOAAddAccountDialog::slotPasswordTextChanged);
     }
     //服务器地址
@@ -90,10 +85,10 @@ void DOAAddAccountDialog::initWidget()
         m_serverIP = new DLineEdit();
         //TODO:添加服务器地址限制
 
-        m_serverWidget = addItemWidget(DOA::LoginWidget::serverIp, m_serverIP);
+        m_serverWidget = addItemWidget(tr("Server IP"), m_serverIP);
         layout->addWidget(m_serverWidget);
         m_serverWidget->setVisible(false);
-        m_serverIP->setPlaceholderText(DOA::LoginWidget::serveripPlaceholder);
+        m_serverIP->setPlaceholderText(tr("Required"));
         connect(m_serverIP, &DLineEdit::textChanged, this, &DOAAddAccountDialog::slotPasswordTextChanged);
     }
     layout->addStretch();
@@ -104,7 +99,7 @@ void DOAAddAccountDialog::initWidget()
         m_loginError->setFixedHeight(20);
         m_loginError->setForegroundRole(DPalette::TextWarning);
         m_loginError->setAlignment(Qt::AlignCenter);
-        DFontSizeManager::instance()->bind(m_titleLbl, DFontSizeManager::T8, QFont::Normal);
+        DFontSizeManager::instance()->bind(m_loginError, DFontSizeManager::T8, QFont::Normal);
     }
 
     m_ContentWidget = new QWidget();
@@ -112,8 +107,8 @@ void DOAAddAccountDialog::initWidget()
     addContent(m_ContentWidget);
     //添加按钮
     {
-        addButton(DOA::LoginWidget::CancelBtn);
-        addButton(DOA::LoginWidget::signInBtn, false, ButtonType::ButtonRecommend);
+        addButton(tr("Cancel", "button"));
+        addButton(tr("Sign In", "button"), false, ButtonType::ButtonRecommend);
         //登录按钮默认不可用
         getButton(1)->setEnabled(false);
     }
@@ -147,17 +142,6 @@ void DOAAddAccountDialog::setLoginEnableByInputs()
         enable = enable || m_serverIP->lineEdit()->text().isEmpty();
     }
     getButton(1)->setEnabled(!enable);
-}
-
-//获取所有输入信息是否有效
-bool DOAAddAccountDialog::getInputInfoIsValid()
-{
-    bool isOk = m_accountIsOk && m_passwordIsOk;
-    if (m_loginModel->currentIndex() == 1) {
-        //手动模式
-        isOk = isOk && m_serverIPIsOk;
-    }
-    return isOk;
 }
 
 //获取添加帐户信息
@@ -217,7 +201,6 @@ void DOAAddAccountDialog::slotAccountFocusChanged(bool onFocus)
     m_accountIsOk = false;
     //如果帐户输入框失去焦点
     if (!onFocus) {
-        m_loginError->setText("");
         //如果输入内容不为空
         if (!m_accountName->lineEdit()->text().isEmpty()) {
             QString accountName = m_accountName->lineEdit()->text();
@@ -226,7 +209,7 @@ void DOAAddAccountDialog::slotAccountFocusChanged(bool onFocus)
             if (matchPhoneNumber(accountName)) {
                 //TODO 由于目前只支持QQ，故提示目前只支持QQ帐号
                 m_accountName->setAlert(true);
-                m_accountName->showAlertMessage(DOA::LoginWidget::supportQQ, m_ContentWidget);
+                m_accountName->showAlertMessage(tr("Now only QQ account is supported"), m_ContentWidget);
             } else if (matchEmail(accountName)) {
                 //合格的邮箱帐号,判断是否为QQ帐号
                 QRegularExpression reg("@qq.com$", QRegularExpression::CaseInsensitiveOption);
@@ -238,12 +221,12 @@ void DOAAddAccountDialog::slotAccountFocusChanged(bool onFocus)
                 } else {
                     //提示目前只支持QQ
                     m_accountName->setAlert(true);
-                    m_accountName->showAlertMessage(DOA::LoginWidget::supportQQ, m_ContentWidget);
+                    m_accountName->showAlertMessage(tr("Now only QQ account is supported"), m_ContentWidget);
                 }
             } else {
                 m_accountName->setAlert(true);
                 //提示邮箱不合法
-                m_accountName->showAlertMessage(DOA::LoginWidget::illegalEmail, m_ContentWidget);
+                m_accountName->showAlertMessage(tr("Illegal email address"), m_ContentWidget);
             }
         }
     }
@@ -255,8 +238,8 @@ void DOAAddAccountDialog::slotbuttonClicked(int index, const QString &text)
     Q_UNUSED(text)
     //如果为登录按钮
     if (index == 1) {
-        //如果帐户输入不合法则退出
-        if (!m_accountIsOk)
+        //如果帐户输入不合法或网络不正常则退出
+        if (!(m_accountIsOk && m_networkIsOk))
             return;
         //获取窗口中的帐户信息
         getAddAccountInfo();
@@ -272,6 +255,9 @@ void DOAAddAccountDialog::slotbuttonClicked(int index, const QString &text)
         if (dialog.isCaneclLogin()) {
             emit signalCaneclLogin(m_addInfo.UUID);
         }
+    } else {
+        //取消按钮
+        close();
     }
 }
 
@@ -317,7 +303,7 @@ void DOAAddAccountDialog::slotAddAccountResults(int results)
     } break;
     case 1: {
         //登录超时
-        m_loginError->setText(DOA::LoginWidget::loginTimeout);
+        m_loginError->setText(tr("Login timeout"));
     } break;
     case 2: {
         //用户取消
@@ -325,20 +311,36 @@ void DOAAddAccountDialog::slotAddAccountResults(int results)
     } break;
     case 3: {
         //服务器异常
-        m_loginError->setText(DOA::LoginWidget::serverError);
+        m_loginError->setText(tr("Server error, please try again"));
     } break;
     case 4: {
         //认证失败
-        m_loginError->setText(DOA::LoginWidget::loginError);
+        m_loginError->setText(tr("Cannot verify the account and password"));
     } break;
     case 10: {
         //重复登录
-        m_loginError->setText(DOA::LoginWidget::repeatAdd);
+        m_loginError->setText(tr("Account added already"));
     } break;
     default: {
         qWarning() << "Other status :" << results;
         //TODO 其他的状态按服务器异常状态错误显示，待后续状态补充后再更新
-        m_loginError->setText(DOA::LoginWidget::serverError);
+        m_loginError->setText(tr("Server error, please try again"));
     } break;
+    }
+}
+
+//网络状态处理槽
+void DOAAddAccountDialog::slotConfigurationChanged(const QNetworkConfiguration &config)
+{
+    if (!config.state().testFlag(QNetworkConfiguration::StateFlag::Active)) {
+        //没有连接网络
+        m_loginError->setText(tr("Network error, please check and try again"));
+        m_networkIsOk = false;
+    } else {
+        //如果当前提示为网络错误则去除网络错误提示
+        if (m_loginError->text() == tr("Network error, please check and try again")) {
+            m_loginError->setText("");
+            m_networkIsOk = true;
+        }
     }
 }

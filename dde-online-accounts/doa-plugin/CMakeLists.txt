@@ -6,7 +6,8 @@ endif ()
 
 #common resource names
 set(APP_RES_DIR "assets")
-set(APP_BIN_NAME "onlineaccountplugin")
+#二进制名称
+set(APP_BIN_NAME "dde-online-accounts-plugin")
 set(APP_QRC "${APP_RES_DIR}/resources.qrc")
 
 project(${APP_BIN_NAME})
@@ -58,6 +59,7 @@ find_package(DtkCore REQUIRED)
 find_package(Qt5DBus REQUIRED)
 find_package(Qt5Gui REQUIRED)
 find_package(Qt5Widgets REQUIRED)
+find_package(Qt5Network REQUIRED)
 
 
 include_directories(${Qt5Gui_PRIVATE_INCLUDE_DIRS})
@@ -65,8 +67,6 @@ include_directories(../doa-lib/src)
 
 # Tell CMake to create the lib
 add_library(${PROJECT_NAME} SHARED ${onlineAccount_Plugin_SRC}  ${APP_QRC})
-
-SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES VERSION 1.2.3 SOVERSION 1)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
     "/usr/include/dde-control-center"
@@ -80,10 +80,38 @@ target_link_libraries(${PROJECT_NAME}
     ${DtkGui_LIBRARIES}
     ${Qt5Widgets_LIBRARIES}
     ${Qt5DBus_LIBRARIES}
+    ${Qt5Network_LIBRARIES}
     doa-lib
-    dccwidgets
 )
 
 
+find_package(Qt5LinguistTools REQUIRED)
+#lupdate start
+#此处其实只有当没有自动翻译需要手动翻译.ts文件才有意义可以创建不同语言名称的ts文件，下同
+set(TS_FILES
+    "${CMAKE_CURRENT_SOURCE_DIR}/translations/${PROJECT_NAME}_en_US.ts"
+)
+find_program(LUPDATE_EXECUTABLE lupdate)
+foreach(_ts_file ${TS_FILES})
+    execute_process(
+        COMMAND ${LUPDATE_EXECUTABLE} -recursive ${CMAKE_CURRENT_SOURCE_DIR} -ts ${_ts_file})
+endforeach()
+
+#lupdate end
+
+file (GLOB DTNG_TS_FILES translations/*.ts)
+
+#lrelease start
+#发布qm文件
+find_program(LRELEASE_EXECUTABLE lrelease)
+foreach(_ts_file ${DTNG_TS_FILES})
+        execute_process(COMMAND ${LRELEASE_EXECUTABLE}   ${_ts_file})
+endforeach()
+#lrelease end
+
+qt5_create_translation(DTNG_QM_FILES
+    ${DTNG_TS_FILES}
+     ${DTNG_QM_FILES}
+     )
 # Install files
 install(TARGETS ${PROJECT_NAME} DESTINATION /usr/lib/dde-control-center/modules/)

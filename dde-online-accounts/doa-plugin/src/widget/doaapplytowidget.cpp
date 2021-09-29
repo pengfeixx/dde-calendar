@@ -19,7 +19,6 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "doaapplytowidget.h"
-#include "displaytext.h"
 #include "doaapplytoitem.h"
 
 #include <DFontSizeManager>
@@ -55,7 +54,7 @@ void DOAApplyToWidget::addApp(const DOAApplyToObject &app)
 
 void DOAApplyToWidget::initWidget()
 {
-    QLabel *applyLabel = new QLabel(DOA::AccountInfo::applyToStr);
+    QLabel *applyLabel = new QLabel(tr("Apply to"));
     applyLabel->setAlignment(Qt::AlignLeft);
     DFontSizeManager::instance()->bind(applyLabel, DFontSizeManager::T5, QFont::Medium);
 

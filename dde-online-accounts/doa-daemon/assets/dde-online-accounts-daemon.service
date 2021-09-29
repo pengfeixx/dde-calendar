@@ -1,0 +1,14 @@
+[Unit]
+Description=dde online accounts management service
+After=network.target
+
+[Service]
+Type=dbus
+BusName=com.dde.onlineaccount
+ExecStart=/usr/bin/dde-online-accounts-daemon
+Restart=always
+RestartSec=1
+OOMScoreAdjust=-250
+
+[Install]
+WantedBy=default.target

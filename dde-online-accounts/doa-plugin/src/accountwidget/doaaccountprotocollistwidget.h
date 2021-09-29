@@ -25,6 +25,9 @@
 #include "data/doaaccountmodel.h"
 
 #include <QListView>
+#include <QNetworkConfiguration>
+
+class QNetworkConfigurationManager;
 
 /**
  * @brief The accountProtocolListWidget class   帐户协议选择列表窗口
@@ -50,9 +53,13 @@ public slots:
      */
     void slotAddAccount(const AddAccountInfo &info);
 
+    void slotConfigurationChanged(const QNetworkConfiguration &config);
+
 private:
     QListView *m_protocolList;
     DOAAccountModel *m_dataModel = nullptr;
+    QNetworkConfigurationManager *m_network = nullptr;
+    QNetworkConfiguration m_networkConfiguration; //当前默认网络配置
 };
 
 #endif // DOAACCOUNTPROTOCOLLISTWIDGET_H

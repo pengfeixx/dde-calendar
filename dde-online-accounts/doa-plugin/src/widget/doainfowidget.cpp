@@ -19,7 +19,6 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "doainfowidget.h"
-#include "displaytext.h"
 #include "doainfoitem.h"
 #include "doapasswordedit.h"
 
@@ -46,11 +45,14 @@ void DOAInfoWidget::setShowData(const QString &userName, const QString &url, con
     m_serverAddressLbl->setText(url);
     m_accountName->setText(accountName);
     m_passwordEdit->setText(password);
+    //密码恢复默认设置
+    m_passwordEdit->setPasswordButtonAutoHide(true);
+    m_passwordEdit->setEchoButtonIsVisible(false);
 }
 
 void DOAInfoWidget::initWidget()
 {
-    QLabel *accountLabl = new QLabel(DOA::AccountInfo::accountInfo, this);
+    QLabel *accountLabl = new QLabel(tr("Account Info"), this);
     accountLabl->setAlignment(Qt::AlignLeft);
     DFontSizeManager::instance()->bind(accountLabl, DFontSizeManager::T5, QFont::Medium);
 
@@ -59,7 +61,7 @@ void DOAInfoWidget::initWidget()
     {
         //用户名
         m_userName = new DLineEdit(this);
-        DOAInfoItem *userNameItem = new DOAInfoItem(DOA::AccountInfo::displayName, m_userName);
+        DOAInfoItem *userNameItem = new DOAInfoItem(tr("User Name"), m_userName);
         connect(m_userName, &DLineEdit::focusChanged, this, &DOAInfoWidget::slotUserNameFocusChanged);
         connect(m_userName, &DLineEdit::textChanged, this, &DOAInfoWidget::slotUserNameTextChanged);
         vboxlayout->addWidget(userNameItem);
@@ -68,7 +70,7 @@ void DOAInfoWidget::initWidget()
     {
         //服务器地址
         m_serverAddressLbl = new QLabel(this);
-        DOAInfoItem *serverAddressItem = new DOAInfoItem(DOA::AccountInfo::serverAddress, m_serverAddressLbl);
+        DOAInfoItem *serverAddressItem = new DOAInfoItem(tr("Server IP"), m_serverAddressLbl);
         m_serverAddressLbl->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
         vboxlayout->addWidget(serverAddressItem);
     }
@@ -76,7 +78,7 @@ void DOAInfoWidget::initWidget()
     {
         //帐户
         m_accountName = new QLabel(this);
-        DOAInfoItem *accountItem = new DOAInfoItem(DOA::AccountInfo::account, m_accountName);
+        DOAInfoItem *accountItem = new DOAInfoItem(tr("Account"), m_accountName);
         m_accountName->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
         vboxlayout->addWidget(accountItem);
     }
@@ -84,9 +86,10 @@ void DOAInfoWidget::initWidget()
     {
         //密码
         m_passwordEdit = new DOAPasswordEdit(this);
+        //设置密码显示按钮自动隐藏
         m_passwordEdit->setPasswordButtonAutoHide(true);
         connect(m_passwordEdit, &DOAPasswordEdit::signalePasswordChanged, this, &DOAInfoWidget::signalUpdatePassword);
-        DOAInfoItem *passwordItem = new DOAInfoItem(DOA::AccountInfo::password, m_passwordEdit);
+        DOAInfoItem *passwordItem = new DOAInfoItem(tr("Password"), m_passwordEdit);
         vboxlayout->addWidget(passwordItem);
     }
 
@@ -113,7 +116,7 @@ void DOAInfoWidget::slotUserNameFocusChanged(const bool onFocus)
         if (m_userName->lineEdit()->text().size() >= 32) {
             m_userName->setAlert(true);
             m_userName->setAlertMessageAlignment(Qt::AlignTop);
-            m_userName->showAlertMessage(DOA::AccountInfo::userNameTooLong, this);
+            m_userName->showAlertMessage(tr("No more than 32 characters please"), this);
             return;
         }
         //如果内容为空则设置为之前的用户名
