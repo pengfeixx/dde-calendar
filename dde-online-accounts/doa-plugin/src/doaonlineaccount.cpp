@@ -19,6 +19,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "doaonlineaccount.h"
+#include "doadataconversion.h"
 
 #include <QDebug>
 #include <QTranslator>
@@ -106,22 +107,45 @@ int DOAOnlineAccount::load(const QString &path)
 
     QEventLoop eventLoop;
     QTimer timer;
-    timer.setInterval(20000);
+    timer.setInterval(2000);
     timer.setSingleShot(true);
+    timer.start();
     connect(&timer, &QTimer::timeout, &eventLoop, &QEventLoop::quit);
-    connect(m_accountModel, &DOAAccountModel::signalChangeState, &eventLoop, &QEventLoop::quit);
+    connect(m_accountModel, &DOAAccountModel::signalGetAccountListSuccess, &eventLoop, &QEventLoop::quit);
     eventLoop.exec(QEventLoop::ExcludeUserInputEvents);
 
-    QStringList searchList;
-    searchList << "Accounts Detail"
-               << "create account";
-    if (path == searchList[1]) {
-        m_accountModel->signalSelectAccountChanged();
-        m_accountListWidget->slotClickeAddAccount();
-        return 0;
+    QStringList pages = path.split(",");
+
+    if ("ADD" == pages[0]) {
+        //如果为添加帐户信号
+        if (m_accountModel->getAccountMap().size() > 0) {
+            m_accountListWidget->slotGetAccountListSuccess();
+            m_accountListWidget->slotClickeAddAccount();
+        }
+    } else if ("DEL" == pages[0]) {
+        QString data = path.mid(path.indexOf(',') + 1);
+
+        QList<QVariant> msg = accountListChangeParameterAnalysis(data);
+
+        if (msg.size() == 0) {
+            qWarning() << "delete page size 0";
+            return 0;
+        }
+
+        //如果为删除帐户信号
+        QString accountID = remvoeAccountJsonObjectToInfo(msg.at(2));
+
+        if (!m_accountModel->getAccount(accountID)) {
+            qWarning() << "delete account not existence";
+            return 0;
+        }
+
+        QTimer::singleShot(20, this, [=] {
+            m_accountListWidget->slotSelectItem(accountID);
+            m_accountModel->signShowDeleteDialog();
+        });
     }
 
-    qDebug() << Q_FUNC_INFO;
     return 0;
 }
 
@@ -129,7 +153,8 @@ QStringList DOAOnlineAccount::availPage() const
 {
     QStringList list;
     list << "account "
-         << "create account";
+         << "ADD"
+         << "DEL";
     qDebug() << Q_FUNC_INFO;
     return list;
 }

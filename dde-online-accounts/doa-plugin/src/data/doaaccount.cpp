@@ -281,7 +281,14 @@ DOAAccount::AccountState DOAAccount::getStateByIndex(const int index)
         state = Account_TimeOut;
         break;
     case 4:
+    case 5:
+    case 6:
+    case 7:
+    case 8:
         state = Account_AuthenticationFailed;
+        break;
+    case 13:
+        state = Account_NetWorkException;
         break;
     default:
         state = Account_ServerException;
@@ -315,39 +322,14 @@ void DOAAccount::slotCalendarDisabled(bool disabled)
 void DOAAccount::slotAccountStatus(int accountStatus)
 {
     //转换帐户状态
-    int accountState;
-    switch (accountStatus) {
-    case 0:
-        accountState = DOAAccount::Account_Success;
-        break;
-    case 1:
-        accountState = DOAAccount::Account_TimeOut;
-        break;
-    case 3:
-    case 9:
-    case 11:
-        accountState = DOAAccount::Account_ServerException;
-        break;
-    case 4:
-    case 5:
-    case 6:
-    case 7:
-    case 8:
-        accountState = DOAAccount::Account_AuthenticationFailed;
-        break;
-    default:
-        accountState = DOAAccount::Account_ServerException;
-        break;
-    }
+    DOAAccount::AccountState accountState = getStateByIndex(accountStatus);
 
-    if (getAccountState() != accountState) {
-        setAccountState((DOAAccount::AccountState)accountState);
-        emit signalUserNameChanged(getAccountID()); //更新状态列表
-        emit signalAccountStatusChanged(getAccountID()); //更新状态详情
-        //状态正常则重新获取密码
-        if (m_passwordDBus) {
-            m_passwordDBus->getPassword();
-        }
+    setAccountState(accountState);
+    emit signalUserNameChanged(getAccountID()); //更新状态列表
+    emit signalAccountStatusChanged(getAccountID()); //更新状态详情
+    //重新获取密码
+    if (m_passwordDBus) {
+        m_passwordDBus->getPassword();
     }
 }
 

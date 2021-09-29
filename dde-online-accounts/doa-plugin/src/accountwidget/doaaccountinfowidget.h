@@ -83,6 +83,12 @@ public slots:
      */
     void slotUpdatePassword(const QString &passowrd);
 
+    /**
+     * @brief DOAAccountInfoWidget::slotTryAgain
+     * 重新检测帐户状态
+     */
+    void slotTryAgain();
+
 private:
     /**
      * @brief initWidget    初始化界面

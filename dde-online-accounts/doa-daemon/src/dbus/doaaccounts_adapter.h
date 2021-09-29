@@ -57,9 +57,12 @@ public: // PROPERTIES
     QString providerType() const;
 
 public Q_SLOTS: // METHODS
-    bool Remove();
-    void CheckAccountState();
-    void loginCancle();
+    Q_SCRIPTABLE bool Remove();
+    Q_SCRIPTABLE void CheckAccountState();
+    Q_SCRIPTABLE void loginCancle();
+
+    void onNetWorkChange(bool active);
+
 signals:
     void sign_changeProperty(const QString &propertyName, DOAProvider *doaProvider);
     void sign_remove(DOAAccountsadapter *doaAccountAdapter);
@@ -73,6 +76,7 @@ private:
     void sendPropertiesChanged(QVariantMap changed_properties);
 
     QTimer m_checkAccountCalendarTimer;
+    bool networkerror = false;
 };
 
 #endif

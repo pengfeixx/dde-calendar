@@ -24,7 +24,7 @@ void DOAAccountRemoveDialog::initWidget()
     DFontSizeManager::instance()->bind(rompt, DFontSizeManager::T6, QFont::Normal);
 
     //设置控制中心图标
-    setIcon(QIcon::fromTheme("preferences-system", QIcon::fromTheme("application-x-desktop")));
+    setIcon(QIcon::fromTheme("doa_warning"));
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setMargin(0);
     layout->setSpacing(10);

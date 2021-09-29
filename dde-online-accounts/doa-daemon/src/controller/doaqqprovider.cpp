@@ -36,6 +36,8 @@ DOAQQProvider::DOAQQProvider(QObject *parent)
 {
     setUrl("https://dav.qq.com");
     setProviderName(QQ);
+    m_timer.setInterval(20000);
+    m_timer.setSingleShot(true);
 }
 
 DOAQQProvider::~DOAQQProvider()
@@ -136,9 +138,6 @@ DOAProvider::LoginState DOAQQProvider::getCalendarUri()
     m_reply = m_manager->sendCustomRequest(request, QByteArray("PROPFIND"), buffer);
 
     QEventLoop eventLoop;
-
-    m_timer.setInterval(20000);
-    m_timer.setSingleShot(true);
     connect(&m_timer, &QTimer::timeout, &eventLoop, &QEventLoop::quit);
     connect(m_reply, &QNetworkReply::finished, &eventLoop, &QEventLoop::quit);
     m_timer.start();
@@ -231,15 +230,20 @@ DOAProvider::LoginState DOAQQProvider::getPropname()
         request.setSslConfiguration(conf);
     }
 
+    if (m_timer.isActive()) { //已经启动检测
+        qWarning() << "checking...";
+        return Checking;
+    } else {
+        m_timer.start();
+    }
+
     //发送请求
     m_reply = m_manager->sendCustomRequest(request, QByteArray("PROPFIND"), buffer);
 
     QEventLoop eventLoop;
-    m_timer.setInterval(20000);
-    m_timer.setSingleShot(true);
+
     connect(&m_timer, &QTimer::timeout, &eventLoop, &QEventLoop::quit);
     connect(m_reply, &QNetworkReply::finished, &eventLoop, &QEventLoop::quit);
-    m_timer.start();
     eventLoop.exec(QEventLoop::ExcludeUserInputEvents);
 
     if (m_timer.isActive()) {

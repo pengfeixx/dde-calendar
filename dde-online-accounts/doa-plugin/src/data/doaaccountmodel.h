@@ -141,6 +141,12 @@ signals:
      * @param accountID                     对应的用户id
      */
     void signalAccountStatusChanged(const QString &accountID);
+
+    /**
+     * @brief signShowDeleteDialog
+     * 显示删除对话框
+     */
+    void signShowDeleteDialog();
 public slots:
     /**
      * @brief addAccount    调用DBUS接口添加帐户

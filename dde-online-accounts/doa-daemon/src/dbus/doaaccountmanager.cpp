@@ -66,19 +66,13 @@ void DOAAccountManager::netWorkStateNotify(const QNetworkConfiguration &config)
     case QNetworkConfiguration::Active: //网络连接成功
     {
         qWarning() << "Active";
-        //        networkStateMap.insert("statetype", "NetWorkStat");
-        //        networkStateMap.insert("status", QNetworkConfiguration::Active);
-        //        jsonstr = QJsonUtils::getJsonString(networkStateMap);
-        //        emit this->InterfaceAccountStatus(jsonstr);
+        emit this->sign_netWorkChange(true);
         break;
     }
     case QNetworkConfiguration::Discovered: //discovered和defined 网络断开,实际先触发discovered
     {
         qWarning() << "Discovered";
-        //        networkStateMap.insert("statetype", "NetWorkStat");
-        //        networkStateMap.insert("status", QNetworkConfiguration::Discovered);
-        //        jsonstr = QJsonUtils::getJsonString(networkStateMap);
-        //        emit this->InterfaceAccountStatus(jsonstr);
+        emit this->sign_netWorkChange(false);
         break;
     }
     case QNetworkConfiguration::Undefined:
@@ -103,6 +97,7 @@ void DOAAccountManager::initAccountPropertiesChange(DOAAccountsadapter *accountA
 
     //检测帐户状态
     connect(this, &DOAAccountManager::sign_checkAccountStat, accountAdapter, &DOAAccountsadapter::CheckAccountState, Qt::QueuedConnection);
+    connect(this, &DOAAccountManager::sign_netWorkChange, accountAdapter, &DOAAccountsadapter::onNetWorkChange, Qt::QueuedConnection);
 }
 
 /**
@@ -248,7 +243,7 @@ void DOAAccountManager::creatAccountDbus(DOAAccountsadapter *accountAdapter)
             connect(accountpasswordadapter, &DOAAccountsPassWordadapter::sign_changeProperty, this, &DOAAccountManager::onChangeProperty);
         }
         //导出所有对象
-        sessionBus.registerObject(accountAdapter->m_doaProvider->getPath(), accountAdapter, QDBusConnection::ExportAdaptors | QDBusConnection::ExportAllSlots | QDBusConnection::ExportAllProperties);
+        sessionBus.registerObject(accountAdapter->m_doaProvider->getPath(), accountAdapter, QDBusConnection::ExportAdaptors | QDBusConnection::ExportScriptableSlots | QDBusConnection::ExportAllProperties);
     }
 }
 
@@ -418,6 +413,12 @@ int DOAAccountManager::addAccount(const QString &accountData)
 
     creatAccountDbus(accountadapter);
 
+    //设置同步状态 使用现有值重新设置只为了触发定时检测
+    QDBusInterface *iface = new QDBusInterface(kAccountsService, accountadapter->m_doaProvider->getPath(), kAccountsServiceAccountIface,
+                                               QDBusConnection::sessionBus());
+    iface->setProperty("CalendarDisabled", accountadapter->m_doaProvider->getCalendarDisabled());
+    iface->deleteLater();
+
     //生成JSON字符串
     QString strJson = QJsonUtils::doaProvider2String(accountadapter->m_doaProvider, QJsonUtils::ADD);
 
@@ -438,6 +439,7 @@ void DOAAccountManager::onRemoveAccount(DOAAccountsadapter *doaAccountAdapter)
     doaAccountAdapter->disconnect();
     //当前帐户槽连接
     disconnect(this, &DOAAccountManager::sign_checkAccountStat, doaAccountAdapter, &DOAAccountsadapter::CheckAccountState);
+    disconnect(this, &DOAAccountManager::sign_netWorkChange, doaAccountAdapter, &DOAAccountsadapter::onNetWorkChange);
 
     QDBusConnection sessionBus = QDBusConnection::sessionBus();
     if (sessionBus.registerService(kAccountsService)) {

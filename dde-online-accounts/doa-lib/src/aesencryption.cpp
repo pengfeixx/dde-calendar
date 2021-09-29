@@ -79,10 +79,14 @@ bool AESEncryption::ecb_encrypt(const QString &instr, QString &outstr, const QSt
     size_t outLength = 0;
     QByteArray destData;
     if (enc) {
-        QString relPasswordtmp = QString("%1%2").arg(instr.length()).arg(instr);
+        QString relPasswordtmp = QString("%1%2").arg(instr.length(), 2, 10, QLatin1Char('0')).arg(instr);
         orgData = relPasswordtmp.toUtf8();
+
+        //计算需求填充的长度
+        size_t block_required = orgData.size() % keyLength_ == 0 ? orgData.size() / keyLength_ : (orgData.size() / keyLength_) + 1;
+
         //源数据补位32位
-        QByteArray paddingArray = PKCS7Padding(orgData, 32);
+        QByteArray paddingArray = PKCS7Padding(orgData, block_required * keyLength_);
         //计算补位数据长度
         outLength = paddingArray.size();
         //设置大小

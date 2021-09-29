@@ -55,17 +55,19 @@ public:
     //登录状态码
     enum LoginState {
         SUCCESS = 0, //成功
-        TIMEOUT, //超时
-        UserCancel, //用户取消
-        ServerError, //服务器异常
-        AuthenticationFailed, //认证失败
-        AccountNameError, //帐户名格式错误
-        PassWordError, //密码错误 格式、加解密失败
-        AccountNameEmpty, //帐户名为空
-        PassWordEmpty, //密码为空
-        DatatError, //请求数据错误
-        RepeatLogin, //重复登录
-        DBError //数据库错误
+        TIMEOUT = 1, //超时
+        UserCancel = 2, //用户取消
+        ServerError = 3, //服务器异常
+        AuthenticationFailed = 4, //认证失败
+        AccountNameError = 5, //帐户名格式错误
+        PassWordError = 6, //密码错误 格式、加解密失败
+        AccountNameEmpty = 7, //帐户名为空
+        PassWordEmpty = 8, //密码为空
+        DatatError = 9, //请求数据错误
+        RepeatLogin = 10, //重复登录
+        DBError = 11, //数据库错误
+        Checking = 12, //检测中
+        NetWorkError = 13
     };
     Q_ENUM(LoginState)
 

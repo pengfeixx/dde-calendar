@@ -40,12 +40,6 @@ bool DOAAccountsPassWordadapter::ChangePassword(const QString &password)
 
     qobject_cast<DOAAccountsadapter *>(parent())->m_doaProvider->setAccountPassword(password);
 
-    //    if (qobject_cast<DOAAccountsadapter *>(parent())->m_doaProvider->login() != DOAProvider::SUCCESS) {
-    //        qCritical() << "password verification fail";
-    //        qobject_cast<DOAAccountsadapter *>(parent())->CheckAccountState();
-    //        return false;
-    //    }
-
     //使用传输密钥解出明文
     QString descPasswordString;
     if (!AESEncryption::ecb_encrypt(password, descPasswordString, TKEY, false)) {

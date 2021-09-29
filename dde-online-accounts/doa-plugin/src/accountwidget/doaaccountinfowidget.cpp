@@ -56,8 +56,19 @@ void DOAAccountInfoWidget::setModel(DOAAccountModel *model)
         connect(m_accountModel, &DOAAccountModel::signalSelectAccountChanged, this, &DOAAccountInfoWidget::slotUpdateCurrentAccount);
         connect(m_accountModel, &DOAAccountModel::signalPasswordChanged, this, &DOAAccountInfoWidget::slotPropertyChanged);
         connect(m_accountModel, &DOAAccountModel::signalAccountStatusChanged, this, &DOAAccountInfoWidget::slotPropertyChanged);
+        //应用调用控制中心直接显示删除对话框
+        connect(m_accountModel, &DOAAccountModel::signShowDeleteDialog, this, &DOAAccountInfoWidget::slotDeleteCurrentAccount);
     }
     slotUpdateCurrentAccount();
+}
+
+/**
+ * @brief DOAAccountInfoWidget::slotTryAgain
+ * 重新检测帐户状态
+ */
+void DOAAccountInfoWidget::slotTryAgain()
+{
+    m_Account->slotCheckState();
 }
 
 void DOAAccountInfoWidget::slotUpdateCurrentAccount()
@@ -100,16 +111,21 @@ void DOAAccountInfoWidget::slotUpdatePassword(const QString &passowrd)
     m_Account->updatePassword(passowrd);
 }
 
+/**
+ * @brief DOAAccountInfoWidget::slotShowErrorMsg
+ * 根据错误码显示错误信息
+ */
 void DOAAccountInfoWidget::slotShowErrorMsg()
 {
-    if (m_Account->getAccountState() == DOAAccount::Account_AuthenticationFailed && m_errorWidget->isHidden()) {
+    if (m_Account->getAccountState() != DOAAccount::Account_Success
+        && m_errorWidget->getErrorMsgStat() != DOAErrorWidget::ErrorMsgShow) { //不正常同时错误信息隐藏或者正在检测中
         m_errorWidget->setErrorMsg(m_Account->getAccountState());
         m_errorWidget->setHidden(false);
-    } else if (m_Account->getAccountState() != DOAAccount::Account_Success && m_errorWidget->isHidden()) {
-        m_errorWidget->setErrorMsg(m_Account->getAccountState());
-        m_errorWidget->setHidden(false);
-    } else if (m_Account->getAccountState() == DOAAccount::Account_Success && !m_errorWidget->isHidden()) {
+        m_errorWidget->setErrorMsgStat(DOAErrorWidget::ErrorMsgShow);
+    } else if (m_Account->getAccountState() == DOAAccount::Account_Success
+               && m_errorWidget->getErrorMsgStat() != DOAErrorWidget::ErrorMsgHide) { //正常同时错误信息显示或者正在检测中
         m_errorWidget->setHidden(true);
+        m_errorWidget->setErrorMsgStat(DOAErrorWidget::ErrorMsgHide);
     }
 }
 
@@ -154,6 +170,10 @@ void DOAAccountInfoWidget::initWidget()
     layout->addWidget(warningBtn);
     layout->addWidget(m_errorWidget);
     layout->addSpacing(20);
+
+    //默认隐藏错误信息
+    m_errorWidget->setHidden(true);
+    connect(m_errorWidget, &DOAErrorWidget::sign_tryAgain, this, &DOAAccountInfoWidget::slotTryAgain);
 
     layout->addWidget(m_accountProtocolLbl);
     layout->addSpacing(20);

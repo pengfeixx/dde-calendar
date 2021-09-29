@@ -70,6 +70,8 @@ signals: //内部处理信号
     //删除帐户属性信号->>数据库管理类删除帐户属性信号->>数据库对象槽
     void sign_deleteAccount(const QString &accountID);
 
+    void sign_netWorkChange(bool active);
+
 public Q_SLOTS: // METHODS
     //dbus接口 增加帐户
     Q_SCRIPTABLE int addAccount(const QString &accountData);

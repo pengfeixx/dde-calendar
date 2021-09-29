@@ -52,7 +52,7 @@ void AccountDBManager::initDbManager()
     connect(db_, &AccountDB::selectAccountResult, this, &AccountDBManager::sign_selectAccountResult);
     connect(db_, &AccountDB::addAccountResult, this, &AccountDBManager::sign_addAccountResult);
 
-    connect(db_thread_, &QThread::destroyed, db_, &QObject::deleteLater);
+    //connect(db_thread_, &QThread::destroyed, db_, &QObject::deleteLater);
 
     //初始化创建数据库AccountDb::initDb
     emit db_->initDbAsync();

@@ -43,25 +43,47 @@ DOAAccountsadapter::~DOAAccountsadapter()
     }
 }
 
+void DOAAccountsadapter::onNetWorkChange(bool active)
+{
+    if (active) {
+        networkerror = false;
+    } else {
+        networkerror = true;
+    }
+
+    CheckAccountState();
+}
+
 /**
  * @brief DOAAccountsadapter::CheckAccountState
- * 定时判断当前状态的状态
+ * 检测状态
  */
 void DOAAccountsadapter::CheckAccountState()
 {
-    //登录验证
-    DOAProvider::LoginState ret = m_doaProvider->login();
+    DOAProvider::LoginState ret;
+
+    if (!networkerror) { //网络正常
+        //登录验证
+        ret = m_doaProvider->login();
+    } else { //网络断开状态
+        ret = DOAProvider::NetWorkError;
+    }
+
+    if (ret == DOAProvider::Checking) { //已经在检测中,等待上次结果
+        return;
+    }
+
     qWarning() << m_doaProvider->getAccountID() << "time is A:" << m_checkAccountCalendarTimer.isActive();
 
     if (ret != m_doaProvider->getAccountStat()) {
         m_doaProvider->setAccountStat(ret);
         //更新数据库
         emit this->sign_changeProperty("Status", m_doaProvider);
-
-        QVariantMap changed_properties;
-        changed_properties.insert("Status", ret);
-        sendPropertiesChanged(changed_properties);
     }
+
+    QVariantMap changed_properties;
+    changed_properties.insert("Status", ret);
+    sendPropertiesChanged(changed_properties);
 }
 
 bool DOAAccountsadapter::calendarDisabled() const

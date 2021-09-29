@@ -23,6 +23,7 @@
 
 #include <data/doaaccount.h>
 
+#include <DSpinner>
 #include <DCommandLinkButton>
 
 #include <QWidget>
@@ -38,22 +39,43 @@ class DOAErrorWidget : public QWidget
 {
     Q_OBJECT
 public:
+    enum ErrorMsgStat {
+        ErrorMsgHide = 1 //错误信息隐藏
+        ,
+        ErrorMsgChecking //错误信息正在检查中
+        ,
+        ErrorMsgShow //错误信息显示
+    };
+
     explicit DOAErrorWidget(QWidget *parent = nullptr);
+
+    ~DOAErrorWidget();
 
     /**
      * @brief DOAErrorWidget::setErrorMsg 设置错误信息
      * @param errorMsg
      */
     void setErrorMsg(const DOAAccount::AccountState);
-signals:
 
+    ErrorMsgStat getErrorMsgStat() const;
+
+    void setErrorMsgStat(const ErrorMsgStat &value);
+
+signals:
+    void sign_tryAgain();
 public slots:
+    void slot_tryAgain();
 
 private:
     //错误信息label
     QLabel *m_errorMessageLabel;
     //重试按钮
     DCommandLinkButton *m_tryAginLink;
+
+    DSpinner *m_spinner = nullptr;
+    QLabel *m_iconLabel = nullptr;
+
+    ErrorMsgStat errorMsgStat = ErrorMsgHide;
 };
 
 #endif // DOAERRORWIDGET_H

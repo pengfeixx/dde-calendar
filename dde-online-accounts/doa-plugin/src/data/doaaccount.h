@@ -54,6 +54,8 @@ public:
         Account_ServerException //服务器异常
         ,
         Account_AuthenticationFailed //认证失败
+        ,
+        Account_NetWorkException //网络异常
     };
     explicit DOAAccount(QObject *parent = nullptr);
 
