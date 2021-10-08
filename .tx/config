@@ -20,3 +20,9 @@ file_filter = translations/dde-calendar-service_<lang>.ts
 source_file = translations/dde-calendar-service_en_US.ts
 source_lang = en_US
 type = QT
+
+[deepin-desktop-environment.dde-online-accounts-plugin]
+file_filter = dde-online-accounts/doa-plugin/assets/translations/dde-online-accounts-plugin_<lang>.ts
+source_file = dde-online-accounts/doa-plugin/assets/translations/dde-online-accounts-plugin_en_US.ts
+source_lang = en_US
+type = QT

@@ -89,17 +89,17 @@ find_package(Qt5LinguistTools REQUIRED)
 #lupdate start
 #此处其实只有当没有自动翻译需要手动翻译.ts文件才有意义可以创建不同语言名称的ts文件，下同
 set(TS_FILES
-    "${CMAKE_CURRENT_SOURCE_DIR}/translations/${PROJECT_NAME}_en_US.ts"
+    "${CMAKE_CURRENT_SOURCE_DIR}/assets/translations/${PROJECT_NAME}_en_US.ts"
 )
 find_program(LUPDATE_EXECUTABLE lupdate)
 foreach(_ts_file ${TS_FILES})
     execute_process(
-        COMMAND ${LUPDATE_EXECUTABLE} -recursive ${CMAKE_CURRENT_SOURCE_DIR} -ts ${_ts_file})
+        COMMAND ${LUPDATE_EXECUTABLE} -recursive ${CMAKE_CURRENT_SOURCE_DIR} -ts -no-obsolete ${_ts_file})
 endforeach()
 
 #lupdate end
 
-file (GLOB DTNG_TS_FILES translations/*.ts)
+file (GLOB DTNG_TS_FILES assets/translations/*.ts)
 
 #lrelease start
 #发布qm文件
@@ -115,3 +115,8 @@ qt5_create_translation(DTNG_QM_FILES
      )
 # Install files
 install(TARGETS ${PROJECT_NAME} DESTINATION /usr/lib/dde-control-center/modules/)
+
+# 安装 .qm 文件
+file(GLOB APP_QM_FILES "assets/translations/${PROJECT_NAME}*.qm")
+message(/usr/share/${PROJECT_NAME}/translations)
+install(FILES ${APP_QM_FILES} DESTINATION /usr/share/${PROJECT_NAME}/translations)

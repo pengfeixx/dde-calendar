@@ -36,7 +36,7 @@ DOAErrorWidget::DOAErrorWidget(QWidget *parent)
     m_errorMessageLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
     //重试
-    m_tryAginLink = new DCommandLinkButton(tr("try agin"));
+    m_tryAginLink = new DCommandLinkButton(tr("try again"));
     connect(m_tryAginLink, &DCommandLinkButton::clicked, this, &DOAErrorWidget::slot_tryAgain);
 
     QHBoxLayout *layout = new QHBoxLayout;

@@ -5,4 +5,17 @@
         <file>builtin/icons/doa_onlineAccount_42px.svg</file>
         <file>builtin/icons/doa_warning_32px.svg</file>
     </qresource>
+    <qresource prefix="/">
+        <file>translations/dde-online-accounts-plugin_en.ts</file>
+        <file>translations/dde-online-accounts-plugin_zh_CN.ts</file>
+        <file>translations/dde-online-accounts-plugin_az.ts</file>
+        <file>translations/dde-online-accounts-plugin_de.ts</file>
+        <file>translations/dde-online-accounts-plugin_hr.ts</file>
+        <file>translations/dde-online-accounts-plugin_ko.ts</file>
+        <file>translations/dde-online-accounts-plugin_nl.ts</file>
+        <file>translations/dde-online-accounts-plugin_sq.ts</file>
+        <file>translations/dde-online-accounts-plugin_uk.ts</file>
+        <file>translations/dde-online-accounts-plugin_zh_HK.ts</file>
+        <file>translations/dde-online-accounts-plugin_zh_TW.ts</file>
+    </qresource>
 </RCC>

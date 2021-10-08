@@ -161,8 +161,8 @@ QStringList DOAOnlineAccount::availPage() const
 
 QString DOAOnlineAccount::translationPath() const
 {
-    //TODO 翻译文件路径
-    return QStringLiteral("");
+    //翻译文件路径
+    return QStringLiteral(":/translations/dde-online-accounts-plugin_%1.ts");
 }
 
 void DOAOnlineAccount::deactive()
