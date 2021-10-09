@@ -39,6 +39,12 @@ protected:
     void loginCancel() override;
 
 private:
+    /**
+     * @brief timeouthandle     定时器超时处理
+     */
+    LoginState timeouthandle();
+
+private:
     //使用获取属性接口验证密码是否正确
     LoginState getPropname();
     //根据URL查询出日历同步URL

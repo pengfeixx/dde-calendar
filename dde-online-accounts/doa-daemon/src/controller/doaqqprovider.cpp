@@ -163,11 +163,8 @@ DOAProvider::LoginState DOAQQProvider::getCalendarUri()
             setUri(getUrl() + redirectAttr.toString());
         }
     } else {
-        qCritical() << "NetWork timeout";
-        m_reply->deleteLater();
-        m_reply = nullptr;
         delete buffer;
-        return TIMEOUT;
+        return timeouthandle();
     }
     m_reply->deleteLater();
     m_reply = nullptr;
@@ -267,17 +264,8 @@ DOAProvider::LoginState DOAQQProvider::getPropname()
             return ServerError;
         }
     } else {
-        m_reply->deleteLater();
-        m_reply = nullptr;
         delete buffer;
-
-        if (isUserCancle) {
-            qCritical() << "UserCancel" << getAccountID();
-            isUserCancle = false;
-            return UserCancel;
-        }
-        qCritical() << "network timeout" << getAccountID();
-        return TIMEOUT;
+        return timeouthandle();
     }
     m_reply->deleteLater();
     m_reply = nullptr;
@@ -292,8 +280,23 @@ DOAProvider::LoginState DOAQQProvider::getPropname()
 void DOAQQProvider::loginCancel()
 {
     isUserCancle = true;
-    m_timer.setInterval(0);
+    m_timer.stop();
     if (m_reply) {
         m_reply->abort();
     }
+}
+
+//定时器超时处理
+DOAProvider::LoginState DOAQQProvider::timeouthandle()
+{
+    m_reply->deleteLater();
+    m_reply = nullptr;
+
+    if (isUserCancle) {
+        qCritical() << "UserCancel" << getAccountID();
+        isUserCancle = false;
+        return UserCancel;
+    }
+    qCritical() << "network timeout" << getAccountID();
+    return TIMEOUT;
 }
