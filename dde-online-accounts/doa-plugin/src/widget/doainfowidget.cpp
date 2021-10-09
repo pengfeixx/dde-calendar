@@ -113,7 +113,7 @@ void DOAInfoWidget::slotUserNameFocusChanged(const bool onFocus)
 {
     if (!onFocus) {
         //如果内容多于32则提示
-        if (m_userName->lineEdit()->text().size() >= 32) {
+        if (m_userName->lineEdit()->text().size() > 32) {
             m_userName->setAlert(true);
             m_userName->setAlertMessageAlignment(Qt::AlignTop);
             m_userName->showAlertMessage(tr("No more than 32 characters please"), this);
