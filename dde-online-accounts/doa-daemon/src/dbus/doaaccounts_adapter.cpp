@@ -79,11 +79,11 @@ void DOAAccountsadapter::CheckAccountState()
         m_doaProvider->setAccountStat(ret);
         //更新数据库
         emit this->sign_changeProperty("Status", m_doaProvider);
+        //发送状态改变信号
+        QVariantMap changed_properties;
+        changed_properties.insert("Status", ret);
+        sendPropertiesChanged(changed_properties);
     }
-
-    QVariantMap changed_properties;
-    changed_properties.insert("Status", ret);
-    sendPropertiesChanged(changed_properties);
 }
 
 bool DOAAccountsadapter::calendarDisabled() const

@@ -51,11 +51,15 @@ void DOAAccountInfoWidget::setModel(DOAAccountModel *model)
         if (m_accountModel) {
             disconnect(m_accountModel, &DOAAccountModel::signalSelectAccountChanged, this, &DOAAccountInfoWidget::slotUpdateCurrentAccount);
             disconnect(m_accountModel, &DOAAccountModel::signalPasswordChanged, this, &DOAAccountInfoWidget::slotPropertyChanged);
+            disconnect(m_accountModel, &DOAAccountModel::signalUserNameChanged, this, &DOAAccountInfoWidget::slotPropertyChanged);
+            disconnect(m_accountModel, &DOAAccountModel::signalAccountStatusChanged, this, &DOAAccountInfoWidget::slotAccountStatusChanged);
+            disconnect(m_accountModel, &DOAAccountModel::signShowDeleteDialog, this, &DOAAccountInfoWidget::slotDeleteCurrentAccount);
         }
         m_accountModel = model;
         connect(m_accountModel, &DOAAccountModel::signalSelectAccountChanged, this, &DOAAccountInfoWidget::slotUpdateCurrentAccount);
         connect(m_accountModel, &DOAAccountModel::signalPasswordChanged, this, &DOAAccountInfoWidget::slotPropertyChanged);
-        connect(m_accountModel, &DOAAccountModel::signalAccountStatusChanged, this, &DOAAccountInfoWidget::slotPropertyChanged);
+        connect(m_accountModel, &DOAAccountModel::signalUserNameChanged, this, &DOAAccountInfoWidget::slotPropertyChanged);
+        connect(m_accountModel, &DOAAccountModel::signalAccountStatusChanged, this, &DOAAccountInfoWidget::slotAccountStatusChanged);
         //应用调用控制中心直接显示删除对话框
         connect(m_accountModel, &DOAAccountModel::signShowDeleteDialog, this, &DOAAccountInfoWidget::slotDeleteCurrentAccount);
     }
@@ -68,7 +72,9 @@ void DOAAccountInfoWidget::setModel(DOAAccountModel *model)
  */
 void DOAAccountInfoWidget::slotTryAgain()
 {
-    m_Account->slotCheckState();
+    if (m_Account) {
+        m_Account->slotCheckState();
+    }
 }
 
 void DOAAccountInfoWidget::slotUpdateCurrentAccount()
@@ -83,8 +89,8 @@ void DOAAccountInfoWidget::slotUpdateCurrentAccount()
         for (int i = 0; i < m_Account->getApplyObject().size(); ++i) {
             m_applyToWidget->addApp(m_Account->getApplyObject().at(i));
         }
-
-        slotShowErrorMsg();
+        //设置当前状态
+        slotAccountStatusChanged(m_Account->getAccountID());
     }
 }
 
@@ -101,14 +107,18 @@ void DOAAccountInfoWidget::slotDeleteCurrentAccount()
 void DOAAccountInfoWidget::slotUpdateUserName(const QString &userName)
 {
     //更新显示名称
-    m_Account->updateUserName(userName);
+    if (m_Account) {
+        m_Account->updateUserName(userName);
+    }
 }
 
 //更新密码
 void DOAAccountInfoWidget::slotUpdatePassword(const QString &passowrd)
 {
     //更新密码
-    m_Account->updatePassword(passowrd);
+    if (m_Account) {
+        m_Account->updatePassword(passowrd);
+    }
 }
 
 /**
@@ -133,16 +143,23 @@ void DOAAccountInfoWidget::slotShowErrorMsg()
 void DOAAccountInfoWidget::slotUpdateApplyToItem(const DOAApplyToObject &app)
 {
     //更新显示名称
-    m_Account->updateApplyTo(app);
+    if (m_Account) {
+        m_Account->updateApplyTo(app);
+    }
 }
 
 void DOAAccountInfoWidget::slotPropertyChanged(const QString &accountID)
 {
-    if (m_Account) {
-        if (m_Account->getAccountID() == accountID) {
-            slotShowErrorMsg();
-            m_accountInfo->setShowData(m_Account->getUserName(), m_Account->getUrl(), m_Account->getAccountName(), m_Account->getAccountPassword());
-        }
+    if (isCurrentShowAccount(accountID)) {
+        m_accountInfo->setShowData(m_Account->getUserName(), m_Account->getUrl(), m_Account->getAccountName(), m_Account->getAccountPassword());
+    }
+}
+
+//帐户状态发生改变
+void DOAAccountInfoWidget::slotAccountStatusChanged(const QString &accountID)
+{
+    if (isCurrentShowAccount(accountID)) {
+        slotShowErrorMsg();
     }
 }
 
@@ -192,6 +209,13 @@ void DOAAccountInfoWidget::initWidget()
     connect(m_accountInfo, &DOAInfoWidget::signalUpdateUserName, this, &DOAAccountInfoWidget::slotUpdateUserName);
     connect(m_accountInfo, &DOAInfoWidget::signalUpdatePassword, this, &DOAAccountInfoWidget::slotUpdatePassword);
     connect(m_applyToWidget, &DOAApplyToWidget::signApplyToItemChange, this, &DOAAccountInfoWidget::slotUpdateApplyToItem);
+}
+
+//是否为当前显示帐户
+bool DOAAccountInfoWidget::isCurrentShowAccount(const QString &accountID)
+{
+    //如果当前帐户有效且状态改变的帐户为当前帐户
+    return m_Account && m_Account->getAccountID() == accountID;
 }
 
 void DOAAccountInfoWidget::resizeEvent(QResizeEvent *event)

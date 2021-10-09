@@ -93,13 +93,6 @@ signals:
     void signalChangeState();
 
     /**
-     * @brief accountStateChange        帐户状态改变
-     * @param accountID                 帐户id
-     * @param isError                   帐户是否正常
-     */
-    void signalAccountStateChange(const QString accountID, const bool isError);
-
-    /**
      * @brief signalSelectAccountChange       修改选中日程
      */
     void signalSelectAccountChanged();

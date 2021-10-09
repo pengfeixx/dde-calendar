@@ -66,6 +66,12 @@ public slots:
     void slotPropertyChanged(const QString &accountID);
 
     /**
+     * @brief slotAccountStatusChanged      帐户状态发生改变
+     * @param accountID                     帐户id
+     */
+    void slotAccountStatusChanged(const QString &accountID);
+
+    /**
      * @brief slotUpdateApplyToItem 应用于改变
      * @param app
      */
@@ -94,6 +100,13 @@ private:
      * @brief initWidget    初始化界面
      */
     void initWidget();
+
+    /**
+     * @brief isCurrentShowAccount      是否为当前显示帐户
+     * @param accountID                 帐户id
+     * @return
+     */
+    bool isCurrentShowAccount(const QString &accountID);
 
 protected:
     void resizeEvent(QResizeEvent *event) override;

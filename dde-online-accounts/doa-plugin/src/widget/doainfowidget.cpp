@@ -38,16 +38,23 @@ DOAInfoWidget::DOAInfoWidget(QWidget *parent)
 
 void DOAInfoWidget::setShowData(const QString &userName, const QString &url, const QString &accountName, const QString &password)
 {
-    //存储用户名，若用户删除后需要设置
-    m_displayName = userName;
-    m_password = password;
-    m_userName->setText(m_displayName);
+    //只有当用户名被修改时才更新
+    if (m_displayName != userName) {
+        //存储用户名，若用户删除后需要设置
+        m_displayName = userName;
+        m_userName->setText(m_displayName);
+    }
+    //只有当密码被修改时才更新
+    if (m_password != password) {
+        m_password = password;
+        m_passwordEdit->setText(password);
+        //密码恢复默认设置
+        m_passwordEdit->setPasswordButtonAutoHide(true);
+        m_passwordEdit->setEchoButtonIsVisible(false);
+    }
+
     m_serverAddressLbl->setText(url);
     m_accountName->setText(accountName);
-    m_passwordEdit->setText(password);
-    //密码恢复默认设置
-    m_passwordEdit->setPasswordButtonAutoHide(true);
-    m_passwordEdit->setEchoButtonIsVisible(false);
 }
 
 void DOAInfoWidget::initWidget()

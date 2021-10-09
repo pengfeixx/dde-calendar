@@ -325,7 +325,6 @@ void DOAAccount::slotAccountStatus(int accountStatus)
     DOAAccount::AccountState accountState = getStateByIndex(accountStatus);
 
     setAccountState(accountState);
-    emit signalUserNameChanged(getAccountID()); //更新状态列表
     emit signalAccountStatusChanged(getAccountID()); //更新状态详情
     //重新获取密码
     if (m_passwordDBus) {

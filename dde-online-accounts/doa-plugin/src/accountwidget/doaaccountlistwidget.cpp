@@ -60,6 +60,8 @@ void DOAAccountListWidget::setModel(DOAAccountModel *model)
             disconnect(m_model, &DOAAccountModel::signalDeleteAccount, this, &DOAAccountListWidget::slotGetDeleteAccount);
             disconnect(m_model, &DOAAccountModel::signalAddAccountInfo, this, &DOAAccountListWidget::slotGetAddAccount);
             disconnect(m_model, &DOAAccountModel::signalChangeState, this, &DOAAccountListWidget::slotShowStateChanged);
+            disconnect(m_model, &DOAAccountModel::signalUserNameChanged, this, &DOAAccountListWidget::slotAccountItemDataChanged);
+            disconnect(m_model, &DOAAccountModel::signalAccountStatusChanged, this, &DOAAccountListWidget::slotAccountItemDataChanged);
             disconnect(m_model, &DOAAccountModel::signalGetAccountListSuccess, this, &DOAAccountListWidget::slotGetAccountListSuccess);
         }
         m_model = model;
@@ -67,7 +69,8 @@ void DOAAccountListWidget::setModel(DOAAccountModel *model)
         connect(m_model, &DOAAccountModel::signalDeleteAccount, this, &DOAAccountListWidget::slotGetDeleteAccount);
         connect(m_model, &DOAAccountModel::signalAddAccountInfo, this, &DOAAccountListWidget::slotGetAddAccount);
         connect(m_model, &DOAAccountModel::signalChangeState, this, &DOAAccountListWidget::slotShowStateChanged);
-        connect(m_model, &DOAAccountModel::signalUserNameChanged, this, &DOAAccountListWidget::slotUserNameChanged);
+        connect(m_model, &DOAAccountModel::signalUserNameChanged, this, &DOAAccountListWidget::slotAccountItemDataChanged);
+        connect(m_model, &DOAAccountModel::signalAccountStatusChanged, this, &DOAAccountListWidget::slotAccountItemDataChanged);
         slotGetAccountListSuccess();
         connect(m_model, &DOAAccountModel::signalGetAccountListSuccess, this, &DOAAccountListWidget::slotGetAccountListSuccess);
     }
@@ -167,8 +170,8 @@ void DOAAccountListWidget::slotShowStateChanged()
     }
 }
 
-//用户名称改变处理
-void DOAAccountListWidget::slotUserNameChanged(const QString &accountID)
+//帐户项数据发生改变
+void DOAAccountListWidget::slotAccountItemDataChanged(const QString &accountID)
 {
     if (m_model) {
         //数据更新时会取消item选中状态，先获取当前选中项，待数据更新后重新设置当期选中项

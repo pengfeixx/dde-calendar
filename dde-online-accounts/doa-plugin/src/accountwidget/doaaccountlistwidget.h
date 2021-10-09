@@ -80,10 +80,10 @@ public slots:
     void slotShowStateChanged();
 
     /**
-     * @brief slotUserNameChanged       用户名称改变处理
+     * @brief slotAccountItemDataChanged       帐户项数据发生改变
      * @param accountID
      */
-    void slotUserNameChanged(const QString &accountID);
+    void slotAccountItemDataChanged(const QString &accountID);
 
     /**
      * @brief slotGetAccountListSuccess     所有用户信息获取成功处理
