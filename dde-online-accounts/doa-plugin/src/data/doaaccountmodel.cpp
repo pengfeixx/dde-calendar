@@ -156,14 +156,25 @@ void DOAAccountModel::slotGetAccountInfo(const DOAAccountList::AccountInfo &info
 void DOAAccountModel::slotGetDeleteAccountID(const QString &accountID)
 {
     if (m_accounts.contains(accountID)) {
-        m_accounts[accountID]->deleteLater();
-        m_accounts.remove(accountID);
+        QMap<QString, DOAAccount *>::iterator it;
+        //从登录队列中,取出数据删除
+        for (it = m_accounts.begin(); it != m_accounts.end(); ++it) {
+            if (it.key() == accountID) {
+                m_accounts[accountID]->deleteLater();
+                it = m_accounts.erase(it);
+                break;
+            }
+        }
+
         emit signalDeleteAccount(accountID);
         //如果帐号数不为空，则这只第一个为默认帐号
-        if (m_accounts.size() > 0) {
+        if (m_accounts.size() > 0 && it == m_accounts.end()) { //剩余一个帐户
             m_currentAccount = m_accounts.begin().value();
             emit signalSelectAccountChanged();
-        } else {
+        } else if(m_accounts.size() > 0 && it != m_accounts.end()){ //多个帐户则显示下一个帐户
+            m_currentAccount = it.value();
+            emit signalSelectAccountChanged();
+        }else {
             setState(Account_Init);
         }
     }

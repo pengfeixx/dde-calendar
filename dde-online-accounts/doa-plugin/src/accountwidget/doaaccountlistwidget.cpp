@@ -143,13 +143,19 @@ void DOAAccountListWidget::slotGetAddAccount(const DOAAccount *info)
 //移除获取到需要移除的帐户ID
 void DOAAccountListWidget::slotGetDeleteAccount(const QString &accountID)
 {
+    int rowid = m_listView->currentIndex().row();
+
     m_listModel->removeAccount(accountID);
     QModelIndex index;
-    if (m_listModel->rowCount(index) > 0) {
+
+    if (rowid == m_listModel->rowCount(index)) {
         //设置第一个为选中状态
         index = m_listModel->index(0);
-        m_listView->setCurrentIndex(index);
+    }else if(m_listModel->rowCount(index) > 1){
+        //设置下一个为选中状态
+        index = m_listModel->index(rowid);
     }
+    m_listView->setCurrentIndex(index);
 }
 
 //页面显示状态

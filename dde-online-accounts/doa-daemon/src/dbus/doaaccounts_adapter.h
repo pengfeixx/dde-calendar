@@ -56,6 +56,20 @@ public: // PROPERTIES
     Q_PROPERTY(QString ProviderType READ providerType)
     QString providerType() const;
 
+    /**
+     * @brief doaProvider
+     * @return
+     * 获取当前帐户对象
+     */
+    DOAProvider *getDoaProvider() const;
+
+    /**
+     * @brief setDoaProvider
+     * @param doaProvider
+     * 设置当前帐户对象
+     */
+    void setDoaProvider(DOAProvider *doaProvider);
+
 public Q_SLOTS: // METHODS
     Q_SCRIPTABLE bool Remove();
     Q_SCRIPTABLE void CheckAccountState();
@@ -69,12 +83,10 @@ signals:
     //状态改变
     void sign_accountState(const QString &accountState);
 
-public:
-    DOAProvider *m_doaProvider {nullptr};
-
 private:
     void sendPropertiesChanged(QVariantMap changed_properties);
 
+    DOAProvider *m_doaProvider {nullptr};
     QTimer m_checkAccountCalendarTimer;
     bool networkerror = false;
 };

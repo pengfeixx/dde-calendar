@@ -164,7 +164,7 @@ bool DOAAccountListItemDelegate::editorEvent(QEvent *event, QAbstractItemModel *
         emit signalSelectItem(accountData.accountId);
     }
     //过滤鼠标点击移动选中item
-    if (event->type() == QEvent::MouseMove) {
+    else if (event->type() == QEvent::MouseMove) {
         return true;
     }
 

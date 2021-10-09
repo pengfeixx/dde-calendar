@@ -38,7 +38,7 @@ DOAAccountsadapter::~DOAAccountsadapter()
     // destructor
     qWarning() << "~DOAAccountsadapter";
     if (m_doaProvider != nullptr) {
-        delete m_doaProvider;
+        m_doaProvider->deleteLater();
         m_doaProvider = nullptr;
     }
 }
@@ -70,7 +70,7 @@ void DOAAccountsadapter::CheckAccountState()
     }
 
     if (ret == DOAProvider::Checking) { //已经在检测中,等待上次结果
-        return;
+        return ;
     }
 
     qWarning() << m_doaProvider->getAccountID() << "time is A:" << m_checkAccountCalendarTimer.isActive();
@@ -190,4 +190,18 @@ void DOAAccountsadapter::sendPropertiesChanged(QVariantMap changed_properties)
     dbusMsg << changed_properties;
     dbusMsg << QStringList();
     QDBusConnection::sessionBus().send(dbusMsg);
+}
+
+void DOAAccountsadapter::setDoaProvider(DOAProvider *doaProvider)
+{
+    if(m_doaProvider){
+        m_doaProvider->deleteLater();
+        m_doaProvider = nullptr;
+    }
+    m_doaProvider = doaProvider;
+}
+
+DOAProvider *DOAAccountsadapter::getDoaProvider() const
+{
+    return m_doaProvider;
 }

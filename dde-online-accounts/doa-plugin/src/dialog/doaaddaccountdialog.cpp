@@ -147,7 +147,8 @@ void DOAAddAccountDialog::setLoginEnableByInputs()
 //获取添加帐户信息
 void DOAAddAccountDialog::getAddAccountInfo()
 {
-    m_addInfo.type = m_loginModel->currentIndex() + 1;
+    m_addInfo.loginModel = m_loginModel->currentIndex()+1;
+
     m_addInfo.accountName = m_accountName->text();
     QString orgarray;
     //加密

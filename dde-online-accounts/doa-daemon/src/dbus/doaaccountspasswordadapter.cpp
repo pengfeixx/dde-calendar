@@ -38,7 +38,7 @@ bool DOAAccountsPassWordadapter::ChangePassword(const QString &password)
         return false;
     }
 
-    qobject_cast<DOAAccountsadapter *>(parent())->m_doaProvider->setAccountPassword(password);
+    qobject_cast<DOAAccountsadapter *>(parent())->getDoaProvider()->setAccountPassword(password);
 
     //使用传输密钥解出明文
     QString descPasswordString;
@@ -54,10 +54,10 @@ bool DOAAccountsPassWordadapter::ChangePassword(const QString &password)
         return false;
     }
 
-    qobject_cast<DOAAccountsadapter *>(parent())->m_doaProvider->setAccountPassword(encPassWordString);
+    qobject_cast<DOAAccountsadapter *>(parent())->getDoaProvider()->setAccountPassword(encPassWordString);
     //保存数据库
-    emit this->sign_changeProperty("Password", qobject_cast<DOAAccountsadapter *>(parent())->m_doaProvider);
-    qobject_cast<DOAAccountsadapter *>(parent())->m_doaProvider->setAccountPassword(password);
+     emit this->sign_changeProperty("Password", qobject_cast<DOAAccountsadapter *>(parent())->getDoaProvider());
+    qobject_cast<DOAAccountsadapter *>(parent())->getDoaProvider()->setAccountPassword(password);
     qobject_cast<DOAAccountsadapter *>(parent())->CheckAccountState();
     return true;
 }
@@ -69,5 +69,5 @@ bool DOAAccountsPassWordadapter::ChangePassword(const QString &password)
  */
 QString DOAAccountsPassWordadapter::getPassword()
 {
-    return qobject_cast<DOAAccountsadapter *>(parent())->m_doaProvider->getAccountPassword();
+    return qobject_cast<DOAAccountsadapter *>(parent())->getDoaProvider()->getAccountPassword();
 }

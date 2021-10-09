@@ -39,5 +39,5 @@ DOAAccountsCalendardapter::~DOAAccountsCalendardapter()
 QString DOAAccountsCalendardapter::url() const
 {
     // get the value of property url
-    return qobject_cast<DOAAccountsadapter *>(parent())->m_doaProvider->getUri();
+    return qobject_cast<DOAAccountsadapter *>(parent())->getDoaProvider()->getUri();
 }
