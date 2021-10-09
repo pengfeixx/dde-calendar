@@ -258,8 +258,9 @@ DOAProvider::LoginState DOAQQProvider::getPropname()
             m_reply->deleteLater();
             m_reply = nullptr;
             delete buffer;
-            if (401 == statusCode) {
-                return PassWordError;
+            //如果验证失败
+            if (401 == statusCode || 403 == statusCode || 407 == statusCode) {
+                return AuthenticationFailed;
             }
             return ServerError;
         }
