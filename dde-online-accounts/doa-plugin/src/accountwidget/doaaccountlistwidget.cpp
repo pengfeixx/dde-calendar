@@ -21,8 +21,6 @@
 #include "doaaccountlistwidget.h"
 #include "consts.h"
 
-#include <DStyleOption>
-#include <DStandardItem>
 #include <DFloatingButton>
 #include <DFontSizeManager>
 
@@ -151,7 +149,7 @@ void DOAAccountListWidget::slotGetDeleteAccount(const QString &accountID)
     if (rowid == m_listModel->rowCount(index)) {
         //设置第一个为选中状态
         index = m_listModel->index(0);
-    }else if(m_listModel->rowCount(index) > 1){
+    } else if (m_listModel->rowCount(index) > 1) {
         //设置下一个为选中状态
         index = m_listModel->index(rowid);
     }

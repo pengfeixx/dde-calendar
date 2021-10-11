@@ -23,7 +23,6 @@
 
 #include <DFontSizeManager>
 #include <DGuiApplicationHelper>
-#include <DApplicationHelper>
 
 #include <QMouseEvent>
 #include <QPainter>

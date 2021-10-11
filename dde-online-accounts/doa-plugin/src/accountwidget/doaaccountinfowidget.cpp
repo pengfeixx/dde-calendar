@@ -26,8 +26,6 @@
 
 #include <QLabel>
 #include <QVBoxLayout>
-#include <QScroller>
-#include <QEvent>
 #include <QResizeEvent>
 
 DWIDGET_USE_NAMESPACE
