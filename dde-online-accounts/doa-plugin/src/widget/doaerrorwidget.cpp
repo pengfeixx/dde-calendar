@@ -72,7 +72,13 @@ void DOAErrorWidget::setErrorMsg(const DOAAccount::AccountState accountState)
     m_iconLabel->setVisible(true);
     m_spinner->setVisible(false);
     m_tryAgainState.isClicked = false;
-    setErrorMsgStat(DOAErrorWidget::ErrorMsgShow);
+    //如果验证成功则隐藏
+    if (DOAAccount::Account_Success == accountState) {
+        setHidden(true);
+        return;
+    }
+    //如果验证失败则显示
+    setHidden(false);
     switch (accountState) {
     case DOAAccount::Account_AuthenticationFailed:
         //密码异常
@@ -98,19 +104,8 @@ void DOAErrorWidget::slot_tryAgain()
     m_spinner->setVisible(true);
     m_errorMessageLabel->setText(tr("Connecting to the account..."));
     m_tryAginLink->setVisible(false);
-    setErrorMsgStat(DOAErrorWidget::ErrorMsgChecking);
     //获取点击时间
     m_tryAgainState.isClicked = true;
     m_tryAgainState.clickDateTime = QDateTime::currentDateTime();
     emit this->sign_tryAgain();
-}
-
-DOAErrorWidget::ErrorMsgStat DOAErrorWidget::getErrorMsgStat() const
-{
-    return errorMsgStat;
-}
-
-void DOAErrorWidget::setErrorMsgStat(const ErrorMsgStat &value)
-{
-    errorMsgStat = value;
 }

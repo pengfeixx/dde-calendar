@@ -127,16 +127,7 @@ void DOAAccountInfoWidget::slotUpdatePassword(const QString &passowrd)
  */
 void DOAAccountInfoWidget::slotShowErrorMsg()
 {
-    if (m_Account->getAccountState() != DOAAccount::Account_Success
-        && m_errorWidget->getErrorMsgStat() != DOAErrorWidget::ErrorMsgShow) { //不正常同时错误信息隐藏或者正在检测中
-        m_errorWidget->setErrorMsg(m_Account->getAccountState());
-        m_errorWidget->setHidden(false);
-        m_errorWidget->setErrorMsgStat(DOAErrorWidget::ErrorMsgShow);
-    } else if (m_Account->getAccountState() == DOAAccount::Account_Success
-               && m_errorWidget->getErrorMsgStat() != DOAErrorWidget::ErrorMsgHide) { //正常同时错误信息显示或者正在检测中
-        m_errorWidget->setHidden(true);
-        m_errorWidget->setErrorMsgStat(DOAErrorWidget::ErrorMsgHide);
-    }
+    m_errorWidget->setErrorMsg(m_Account->getAccountState());
 }
 
 //更新同步属性

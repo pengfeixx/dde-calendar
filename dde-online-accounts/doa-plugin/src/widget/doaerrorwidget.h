@@ -39,14 +39,6 @@ class DOAErrorWidget : public QWidget
 {
     Q_OBJECT
 public:
-    enum ErrorMsgStat {
-        ErrorMsgHide = 1 //错误信息隐藏
-        ,
-        ErrorMsgChecking //错误信息正在检查中
-        ,
-        ErrorMsgShow //错误信息显示
-    };
-
     explicit DOAErrorWidget(QWidget *parent = nullptr);
 
     ~DOAErrorWidget();
@@ -56,11 +48,6 @@ public:
      * @param errorMsg
      */
     void setErrorMsg(const DOAAccount::AccountState);
-
-    ErrorMsgStat getErrorMsgStat() const;
-
-    void setErrorMsgStat(const ErrorMsgStat &value);
-
 private:
     struct TryAgainState {
         bool isClicked = false;
@@ -80,8 +67,6 @@ private:
 
     DSpinner *m_spinner = nullptr;
     QLabel *m_iconLabel = nullptr;
-
-    ErrorMsgStat errorMsgStat = ErrorMsgHide;
     TryAgainState m_tryAgainState; //点击重试状态
 };
 
