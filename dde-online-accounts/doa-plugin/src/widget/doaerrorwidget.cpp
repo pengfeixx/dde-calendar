@@ -21,6 +21,8 @@
 #include "doaerrorwidget.h"
 
 #include <QHBoxLayout>
+#include <QEventLoop>
+#include <QTimer>
 
 DOAErrorWidget::DOAErrorWidget(QWidget *parent)
     : QWidget(parent)
@@ -59,9 +61,17 @@ DOAErrorWidget::~DOAErrorWidget()
 
 void DOAErrorWidget::setErrorMsg(const DOAAccount::AccountState accountState)
 {
+    //如果点击重试后，结果返回时间比较短
+    if (m_tryAgainState.isClicked && QDateTime::currentDateTime().msecsTo(m_tryAgainState.clickDateTime) < 200) {
+        QEventLoop eventLoop;
+        //优化用户体验设置600毫秒后退出
+        QTimer::singleShot(600, &eventLoop, &QEventLoop::quit);
+        eventLoop.exec();
+    }
     m_spinner->stop();
     m_iconLabel->setVisible(true);
     m_spinner->setVisible(false);
+    m_tryAgainState.isClicked = false;
     setErrorMsgStat(DOAErrorWidget::ErrorMsgShow);
     switch (accountState) {
     case DOAAccount::Account_AuthenticationFailed:
@@ -89,6 +99,9 @@ void DOAErrorWidget::slot_tryAgain()
     m_errorMessageLabel->setText(tr("Connecting to the account..."));
     m_tryAginLink->setVisible(false);
     setErrorMsgStat(DOAErrorWidget::ErrorMsgChecking);
+    //获取点击时间
+    m_tryAgainState.isClicked = true;
+    m_tryAgainState.clickDateTime = QDateTime::currentDateTime();
     emit this->sign_tryAgain();
 }
 

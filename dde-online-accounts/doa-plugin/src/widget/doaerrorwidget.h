@@ -61,6 +61,12 @@ public:
 
     void setErrorMsgStat(const ErrorMsgStat &value);
 
+private:
+    struct TryAgainState {
+        bool isClicked = false;
+        QDateTime clickDateTime;
+    };
+
 signals:
     void sign_tryAgain();
 public slots:
@@ -68,14 +74,15 @@ public slots:
 
 private:
     //错误信息label
-    QLabel *m_errorMessageLabel;
+    QLabel *m_errorMessageLabel = nullptr;
     //重试按钮
-    DCommandLinkButton *m_tryAginLink;
+    DCommandLinkButton *m_tryAginLink = nullptr;
 
     DSpinner *m_spinner = nullptr;
     QLabel *m_iconLabel = nullptr;
 
     ErrorMsgStat errorMsgStat = ErrorMsgHide;
+    TryAgainState m_tryAgainState; //点击重试状态
 };
 
 #endif // DOAERRORWIDGET_H
