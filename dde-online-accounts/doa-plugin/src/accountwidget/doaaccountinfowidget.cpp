@@ -64,6 +64,11 @@ void DOAAccountInfoWidget::setModel(DOAAccountModel *model)
     slotUpdateCurrentAccount();
 }
 
+void DOAAccountInfoWidget::initData()
+{
+    m_errorWidget->initData();
+}
+
 /**
  * @brief DOAAccountInfoWidget::slotTryAgain
  * 重新检测帐户状态
@@ -77,6 +82,7 @@ void DOAAccountInfoWidget::slotTryAgain()
 
 void DOAAccountInfoWidget::slotUpdateCurrentAccount()
 {
+    initData();
     //获取当前帐户信息
     m_Account = m_accountModel->getCurrentAccount();
     if (m_Account) {

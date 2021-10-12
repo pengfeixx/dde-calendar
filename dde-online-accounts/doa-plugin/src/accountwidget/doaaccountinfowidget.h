@@ -40,6 +40,8 @@ class DOAAccountInfoWidget : public QWidget
 public:
     explicit DOAAccountInfoWidget(QWidget *parent = nullptr);
     void setModel(DOAAccountModel *model);
+
+    void initData();
 signals:
 
 public slots:

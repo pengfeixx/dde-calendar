@@ -24,6 +24,8 @@
 #include <QEventLoop>
 #include <QTimer>
 
+bool widgetIsVisible = false; //窗口是否有效
+
 DOAErrorWidget::DOAErrorWidget(QWidget *parent)
     : QWidget(parent)
 {
@@ -52,22 +54,30 @@ DOAErrorWidget::DOAErrorWidget(QWidget *parent)
     layout->addWidget(m_tryAginLink);
     layout->addStretch();
     this->setLayout(layout);
+    widgetIsVisible = true;
 }
 
 DOAErrorWidget::~DOAErrorWidget()
 {
+    widgetIsVisible = false;
     m_spinner->stop();
+    initData();
 }
 
 void DOAErrorWidget::setErrorMsg(const DOAAccount::AccountState accountState)
 {
     //如果点击重试后，结果返回时间比较短
-    if (m_tryAgainState.isClicked && QDateTime::currentDateTime().msecsTo(m_tryAgainState.clickDateTime) < 200) {
+    if (m_tryAgainState.isClicked && m_tryAgainState.clickDateTime.msecsTo(QDateTime::currentDateTime()) < 200) {
         QEventLoop eventLoop;
         //优化用户体验设置600毫秒后退出
         QTimer::singleShot(600, &eventLoop, &QEventLoop::quit);
+        //切换用户时退出
+        connect(this, &DOAErrorWidget::sign_EventQuit, &eventLoop, &QEventLoop::quit);
         eventLoop.exec();
     }
+    //如果窗口已被释放则退出
+    if (!widgetIsVisible)
+        return;
     m_spinner->stop();
     m_iconLabel->setVisible(true);
     m_spinner->setVisible(false);
@@ -97,13 +107,21 @@ void DOAErrorWidget::setErrorMsg(const DOAAccount::AccountState accountState)
     }
 }
 
+//初始化数据
+void DOAErrorWidget::initData()
+{
+    m_tryAgainState.isClicked = false;
+    //通知退出事件循环
+    emit sign_EventQuit();
+}
+
 void DOAErrorWidget::slot_tryAgain()
 {
-    m_spinner->start();
     m_iconLabel->setVisible(false);
     m_spinner->setVisible(true);
-    m_errorMessageLabel->setText(tr("Connecting to the account..."));
     m_tryAginLink->setVisible(false);
+    m_spinner->start();
+    m_errorMessageLabel->setText(tr("Connecting to the account..."));
     //获取点击时间
     m_tryAgainState.isClicked = true;
     m_tryAgainState.clickDateTime = QDateTime::currentDateTime();

@@ -158,7 +158,6 @@ QDateTime DOAAccount::getAddAccountDateTime() const
 void DOAAccount::setAccountDBusPath(const QString &dbusPath)
 {
     m_DBusPath = dbusPath;
-    createDBus();
 }
 
 //设置帐户信息

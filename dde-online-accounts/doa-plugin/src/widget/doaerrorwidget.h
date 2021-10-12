@@ -31,6 +31,8 @@
 
 DWIDGET_USE_NAMESPACE
 
+extern bool widgetIsVisible;
+
 /**
  * @brief The DOAErrorWidget class      帐户详情错误显示模块
  *
@@ -48,6 +50,12 @@ public:
      * @param errorMsg
      */
     void setErrorMsg(const DOAAccount::AccountState);
+
+    /**
+     * @brief initData  初始化数据
+     */
+    void initData();
+
 private:
     struct TryAgainState {
         bool isClicked = false;
@@ -56,6 +64,7 @@ private:
 
 signals:
     void sign_tryAgain();
+    void sign_EventQuit();
 public slots:
     void slot_tryAgain();
 
