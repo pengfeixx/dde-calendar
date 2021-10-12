@@ -30,7 +30,7 @@ DOAAccountsadapter::DOAAccountsadapter(QObject *parent)
     : QObject(parent)
 {
     //定时验证当前帐户状态
-    connect(&m_checkAccountCalendarTimer, &QTimer::timeout, this, &DOAAccountsadapter::CheckAccountState);
+    connect(&m_checkAccountCalendarTimer, &QTimer::timeout, this, &DOAAccountsadapter::slotAutoCheck);
 }
 
 DOAAccountsadapter::~DOAAccountsadapter()
@@ -51,6 +51,12 @@ void DOAAccountsadapter::onNetWorkChange(bool active)
         networkerror = true;
     }
 
+    CheckAccountState();
+}
+
+void DOAAccountsadapter::slotAutoCheck()
+{
+    isAutoCheck = true;
     CheckAccountState();
 }
 
@@ -83,6 +89,13 @@ void DOAAccountsadapter::CheckAccountState()
         QVariantMap changed_properties;
         changed_properties.insert("Status", ret);
         sendPropertiesChanged(changed_properties);
+        isAutoCheck = false;
+    }else if(!isAutoCheck){
+        QVariantMap changed_properties;
+        changed_properties.insert("Status", ret);
+        sendPropertiesChanged(changed_properties);
+    }else{
+        isAutoCheck = false;
     }
 }
 

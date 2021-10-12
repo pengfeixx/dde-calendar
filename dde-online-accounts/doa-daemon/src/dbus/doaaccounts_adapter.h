@@ -77,6 +77,8 @@ public Q_SLOTS: // METHODS
 
     void onNetWorkChange(bool active);
 
+    void slotAutoCheck();
+
 signals:
     void sign_changeProperty(const QString &propertyName, DOAProvider *doaProvider);
     void sign_remove(DOAAccountsadapter *doaAccountAdapter);
@@ -89,6 +91,7 @@ private:
     DOAProvider *m_doaProvider {nullptr};
     QTimer m_checkAccountCalendarTimer;
     bool networkerror = false;
+    bool isAutoCheck = false;
 };
 
 #endif
