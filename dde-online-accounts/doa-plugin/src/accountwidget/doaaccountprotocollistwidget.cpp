@@ -70,6 +70,8 @@ DOAAccountProtocolListWidget::DOAAccountProtocolListWidget(QWidget *parent)
 
     m_network = new QNetworkConfigurationManager(this);
     slotConfigurationChanged(m_network->defaultConfiguration());
+    //若网络状态发生改变则更新状态信息
+    connect(m_network, &QNetworkConfigurationManager::configurationChanged, this, &DOAAccountProtocolListWidget::slotConfigurationChanged);
 }
 
 void DOAAccountProtocolListWidget::setModel(DOAAccountModel *model)
