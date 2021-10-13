@@ -2,7 +2,7 @@
 <context>
     <name>DOAAccountInfoWidget</name>
     <message>
-        <location filename="../../src/accountwidget/doaaccountinfowidget.cpp" line="164"/>
+        <location filename="../../src/accountwidget/doaaccountinfowidget.cpp" line="176"/>
         <source>Delete Account</source>
         <translation>Izbriši račun</translation>
     </message>
@@ -10,12 +10,12 @@
 <context>
     <name>DOAAccountListWidget</name>
     <message>
-        <location filename="../../src/accountwidget/doaaccountlistwidget.cpp" line="80"/>
+        <location filename="../../src/accountwidget/doaaccountlistwidget.cpp" line="81"/>
         <source>Add Account</source>
         <translation>Dodaj račun</translation>
     </message>
     <message>
-        <location filename="../../src/accountwidget/doaaccountlistwidget.cpp" line="83"/>
+        <location filename="../../src/accountwidget/doaaccountlistwidget.cpp" line="84"/>
         <source>No accounts yet</source>
         <translation>Još nema računa</translation>
     </message>
@@ -119,36 +119,36 @@
         <translation>Prijava</translation>
     </message>
     <message>
-        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="212"/>
-        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="224"/>
+        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="213"/>
+        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="225"/>
         <source>Now only QQ account is supported</source>
         <translation>Sada su samo QQ računi podržani</translation>
     </message>
     <message>
-        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="229"/>
+        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="230"/>
         <source>Illegal email address</source>
         <translation>Ilegalna adresa e-pošte</translation>
     </message>
     <message>
-        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="307"/>
-        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="315"/>
-        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="328"/>
+        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="308"/>
+        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="316"/>
+        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="329"/>
         <source>Server error, please try again</source>
         <translation>Pogreška poslužitelja, pokušajte ponovno</translation>
     </message>
     <message>
-        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="319"/>
+        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="320"/>
         <source>Cannot verify the account and password</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="323"/>
+        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="324"/>
         <source>Account added already</source>
         <translation>Račun je već dodan</translation>
     </message>
     <message>
-        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="338"/>
-        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="342"/>
+        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="339"/>
+        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="343"/>
         <source>Network error, please check and try again</source>
         <translation>Mrežna greška, molim provjerite i pokušajte ponovno</translation>
     </message>
@@ -164,28 +164,28 @@
 <context>
     <name>DOAErrorWidget</name>
     <message>
-        <location filename="../../src/widget/doaerrorwidget.cpp" line="35"/>
-        <location filename="../../src/widget/doaerrorwidget.cpp" line="73"/>
+        <location filename="../../src/widget/doaerrorwidget.cpp" line="38"/>
+        <location filename="../../src/widget/doaerrorwidget.cpp" line="97"/>
         <source>Network error, please check and</source>
         <translation>Mrežna greška, molim provjerite i</translation>
     </message>
     <message>
-        <location filename="../../src/widget/doaerrorwidget.cpp" line="39"/>
+        <location filename="../../src/widget/doaerrorwidget.cpp" line="42"/>
         <source>try again</source>
         <translation>pokušajte ponovno</translation>
     </message>
     <message>
-        <location filename="../../src/widget/doaerrorwidget.cpp" line="69"/>
+        <location filename="../../src/widget/doaerrorwidget.cpp" line="93"/>
         <source>Cannot connect to the account, please check your password</source>
         <translation>Ne mogu se spojiti na račun, molim provjerite vašu lozinku</translation>
     </message>
     <message>
-        <location filename="../../src/widget/doaerrorwidget.cpp" line="78"/>
+        <location filename="../../src/widget/doaerrorwidget.cpp" line="102"/>
         <source>Server error, please</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../../src/widget/doaerrorwidget.cpp" line="89"/>
+        <location filename="../../src/widget/doaerrorwidget.cpp" line="122"/>
         <source>Connecting to the account...</source>
         <translation>Spajanje na račun...</translation>
     </message>
@@ -193,32 +193,32 @@
 <context>
     <name>DOAInfoWidget</name>
     <message>
-        <location filename="../../src/widget/doainfowidget.cpp" line="55"/>
+        <location filename="../../src/widget/doainfowidget.cpp" line="62"/>
         <source>Account Info</source>
         <translation>Informacije o računu</translation>
     </message>
     <message>
-        <location filename="../../src/widget/doainfowidget.cpp" line="64"/>
+        <location filename="../../src/widget/doainfowidget.cpp" line="71"/>
         <source>User Name</source>
         <translation>Korisničko ime</translation>
     </message>
     <message>
-        <location filename="../../src/widget/doainfowidget.cpp" line="73"/>
+        <location filename="../../src/widget/doainfowidget.cpp" line="80"/>
         <source>Server IP</source>
         <translation>IP poslužitelja</translation>
     </message>
     <message>
-        <location filename="../../src/widget/doainfowidget.cpp" line="81"/>
+        <location filename="../../src/widget/doainfowidget.cpp" line="88"/>
         <source>Account</source>
         <translation>Račun</translation>
     </message>
     <message>
-        <location filename="../../src/widget/doainfowidget.cpp" line="92"/>
+        <location filename="../../src/widget/doainfowidget.cpp" line="99"/>
         <source>Password</source>
         <translation>Lozinka</translation>
     </message>
     <message>
-        <location filename="../../src/widget/doainfowidget.cpp" line="119"/>
+        <location filename="../../src/widget/doainfowidget.cpp" line="126"/>
         <source>No more than 32 characters please</source>
         <translation>Ne više od 32 znaka molim</translation>
     </message>

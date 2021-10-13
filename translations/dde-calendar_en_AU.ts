@@ -1,40 +1,40 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="ro" version="2.1">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="en_AU" version="2.1">
 <context>
     <name>CDayMonthView</name>
     <message>
         <location filename="../calendar-client/src/widget/dayWidget/daymonthview.cpp" line="47"/>
         <source>Monday</source>
-        <translation>Luni</translation>
+        <translation>Monday</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/widget/dayWidget/daymonthview.cpp" line="48"/>
         <source>Tuesday</source>
-        <translation>Marţi</translation>
+        <translation>Tuesday</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/widget/dayWidget/daymonthview.cpp" line="49"/>
         <source>Wednesday</source>
-        <translation>Miercuri</translation>
+        <translation>Wednesday</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/widget/dayWidget/daymonthview.cpp" line="50"/>
         <source>Thursday</source>
-        <translation>Joi</translation>
+        <translation>Thursday</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/widget/dayWidget/daymonthview.cpp" line="51"/>
         <source>Friday</source>
-        <translation>Vineri</translation>
+        <translation>Friday</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/widget/dayWidget/daymonthview.cpp" line="52"/>
         <source>Saturday</source>
-        <translation>Sâmbătă</translation>
+        <translation>Saturday</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/widget/dayWidget/daymonthview.cpp" line="53"/>
         <source>Sunday</source>
-        <translation>Duminică</translation>
+        <translation>Sunday</translation>
     </message>
 </context>
 <context>
@@ -47,12 +47,12 @@
     <message>
         <location filename="../calendar-client/src/widget/dayWidget/daywindow.cpp" line="125"/>
         <source>M</source>
-        <translation>l</translation>
+        <translation>M</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/widget/dayWidget/daywindow.cpp" line="126"/>
         <source>D</source>
-        <translation>z</translation>
+        <translation>D</translation>
     </message>
 </context>
 <context>
@@ -60,7 +60,7 @@
     <message>
         <location filename="../calendar-client/src/view/graphicsview.cpp" line="615"/>
         <source>New Event</source>
-        <translation>Eveniment nou</translation>
+        <translation>New Event</translation>
     </message>
 </context>
 <context>
@@ -68,7 +68,7 @@
     <message>
         <location filename="../calendar-client/src/view/graphicsItem/cmonthschedulenumitem.cpp" line="96"/>
         <source>%1 more</source>
-        <translation>%1 mai mult</translation>
+        <translation>%1 more</translation>
     </message>
 </context>
 <context>
@@ -76,12 +76,12 @@
     <message>
         <location filename="../calendar-client/src/widget/monthWidget/monthview.cpp" line="66"/>
         <source>New event</source>
-        <translation>Eveniment nou</translation>
+        <translation>New event</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/widget/monthWidget/monthview.cpp" line="225"/>
         <source>New Event</source>
-        <translation>Eveniment nou</translation>
+        <translation>New Event</translation>
     </message>
 </context>
 <context>
@@ -89,7 +89,7 @@
     <message>
         <location filename="../calendar-client/src/widget/monthWidget/monthwindow.cpp" line="139"/>
         <source>Y</source>
-        <translation>A</translation>
+        <translation>Y</translation>
     </message>
 </context>
 <context>
@@ -97,25 +97,25 @@
     <message>
         <location filename="../calendar-client/src/dialog/myscheduleview.cpp" line="237"/>
         <source>My Event</source>
-        <translation>Evenimentul meu</translation>
+        <translation>My Event</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/myscheduleview.cpp" line="276"/>
         <source>OK</source>
         <comment>button</comment>
-        <translation>Ok</translation>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/myscheduleview.cpp" line="280"/>
         <source>Delete</source>
         <comment>button</comment>
-        <translation>Ștergeți</translation>
+        <translation>Delete</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/myscheduleview.cpp" line="281"/>
         <source>Edit</source>
         <comment>button</comment>
-        <translation>Editare</translation>
+        <translation>Edit</translation>
     </message>
 </context>
 <context>
@@ -124,23 +124,23 @@
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="47"/>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="597"/>
         <source>New Event</source>
-        <translation>Eveniment nou</translation>
+        <translation>New Event</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="59"/>
         <source>Edit Event</source>
-        <translation>Editare eveniment</translation>
+        <translation>Edit Event</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="161"/>
         <source>End time must be greater than start time</source>
-        <translation>Ora de încheiere trebuie să fie mai mare decât ora de început</translation>
+        <translation>End time must be greater than start time</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="162"/>
         <source>OK</source>
         <comment>button</comment>
-        <translation>Ok</translation>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="344"/>
@@ -148,205 +148,205 @@
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="734"/>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="762"/>
         <source>Never</source>
-        <translation>Niciodată</translation>
+        <translation>Never</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="345"/>
         <source>At time of event</source>
-        <translation>La momentul evenimentului</translation>
+        <translation>At time of event</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="346"/>
         <source>15 minutes before</source>
-        <translation>Cu 15 minute înainte</translation>
+        <translation>15 minutes before</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="347"/>
         <source>30 minutes before</source>
-        <translation>Cu 30 minute înainte</translation>
+        <translation>30 minutes before</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="348"/>
         <source>1 hour before</source>
-        <translation>Cu 1 oră înainte</translation>
+        <translation>1 hour before</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="349"/>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="369"/>
         <source>1 day before</source>
-        <translation>Cu 1 zi înainte</translation>
+        <translation>1 day before</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="350"/>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="370"/>
         <source>2 days before</source>
-        <translation>Cu 2 zile înainte</translation>
+        <translation>2 days before</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="351"/>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="371"/>
         <source>1 week before</source>
-        <translation>Cu 1 săptămână înainte</translation>
+        <translation>1 week before</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="368"/>
         <source>On start day (9:00 AM)</source>
-        <translation>Începutul zilei (9:00 AM)</translation>
+        <translation>On start day (9:00 AM)</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="472"/>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="545"/>
         <source>Type:</source>
-        <translation>Tip:</translation>
+        <translation>Type:</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="476"/>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="582"/>
         <source>Description:</source>
-        <translation>Descriere:</translation>
+        <translation>Description:</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="480"/>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="615"/>
         <source>All Day:</source>
-        <translation>Toată ziua:</translation>
+        <translation>All Day:</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="484"/>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="635"/>
         <source>Starts:</source>
-        <translation>Începe:</translation>
+        <translation>Starts:</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="488"/>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="667"/>
         <source>Ends:</source>
-        <translation>Se termină:</translation>
+        <translation>Ends:</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="492"/>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="699"/>
         <source>Remind Me:</source>
-        <translation>Aminteşte-mi:</translation>
+        <translation>Remind Me:</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="496"/>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="724"/>
         <source>Repeat:</source>
-        <translation>Repetă:</translation>
+        <translation>Repeat:</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="500"/>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="751"/>
         <source>End Repeat:</source>
-        <translation>Repetarea se termină:</translation>
+        <translation>End Repeat:</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="542"/>
         <source>Type</source>
-        <translation>Tip</translation>
+        <translation>Type</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="559"/>
         <source>Work</source>
-        <translation>Serviciu</translation>
+        <translation>Work</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="563"/>
         <source>Life</source>
-        <translation>Viaţă</translation>
+        <translation>Life</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="568"/>
         <source>Other</source>
-        <translation>Altul</translation>
+        <translation>Other</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="585"/>
         <source>Description</source>
-        <translation>Descriere</translation>
+        <translation>Description</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="612"/>
         <source>All Day</source>
-        <translation>Toată ziua</translation>
+        <translation>All Day</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="632"/>
         <source>Starts</source>
-        <translation>Începe</translation>
+        <translation>Starts</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="664"/>
         <source>Ends</source>
-        <translation>Se termină</translation>
+        <translation>Ends</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="700"/>
         <source>Remind Me</source>
-        <translation>Aminteşte-mi</translation>
+        <translation>Remind Me</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="721"/>
         <source>Repeat</source>
-        <translation>Repetă</translation>
+        <translation>Repeat</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="735"/>
         <source>Daily</source>
-        <translation>Zilnic</translation>
+        <translation>Daily</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="736"/>
         <source>Weekdays</source>
-        <translation>Zilele saptămânii</translation>
+        <translation>Weekdays</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="737"/>
         <source>Weekly</source>
-        <translation>Săptămânal</translation>
+        <translation>Weekly</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="738"/>
         <source>Monthly</source>
-        <translation>Lunar</translation>
+        <translation>Monthly</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="739"/>
         <source>Yearly</source>
-        <translation>Anual</translation>
+        <translation>Yearly</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="752"/>
         <source>End Repeat</source>
-        <translation>Opreşte repetarea</translation>
+        <translation>End Repeat</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="763"/>
         <source>After</source>
-        <translation>După</translation>
+        <translation>After</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="764"/>
         <source>On</source>
-        <translation>Pornire</translation>
+        <translation>On</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="783"/>
         <source>time(s)</source>
-        <translation>ori</translation>
+        <translation>time(s)</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="831"/>
         <source>Cancel</source>
         <comment>button</comment>
-        <translation>Anulează</translation>
+        <translation>Cancel</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/dialog/scheduledlg.cpp" line="832"/>
         <source>Save</source>
         <comment>button</comment>
-        <translation>Salvare</translation>
+        <translation>Save</translation>
     </message>
 </context>
 <context>
@@ -354,36 +354,36 @@
     <message>
         <location filename="../calendar-client/src/scheduleTask/cscheduleoperation.cpp" line="60"/>
         <source>All occurrences of a repeating event must have the same all-day status.</source>
-        <translation>Toate aparițiile unui eveniment repetat trebuie să aibă același statut toată ziua.</translation>
+        <translation>All occurrences of a repeating event must have the same all-day status.</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/scheduleTask/cscheduleoperation.cpp" line="61"/>
         <location filename="../calendar-client/src/scheduleTask/cscheduleoperation.cpp" line="78"/>
         <source>Do you want to change all occurrences?</source>
-        <translation>Doriți să schimbați toate aparițiile?</translation>
+        <translation>Do you want to change all occurrences?</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/scheduleTask/cscheduleoperation.cpp" line="63"/>
         <location filename="../calendar-client/src/scheduleTask/cscheduleoperation.cpp" line="80"/>
         <source>Change All</source>
-        <translation>Schimbă tot</translation>
+        <translation>Change All</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/scheduleTask/cscheduleoperation.cpp" line="77"/>
         <source>You are changing the repeating rule of this event.</source>
-        <translation>Modificați regula de repetare a acestui eveniment.</translation>
+        <translation>You are changing the repeating rule of this event.</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/scheduleTask/cscheduleoperation.cpp" line="107"/>
         <location filename="../calendar-client/src/scheduleTask/cscheduleoperation.cpp" line="124"/>
         <location filename="../calendar-client/src/scheduleTask/cscheduleoperation.cpp" line="148"/>
         <source>You are deleting an event.</source>
-        <translation>Ştergeţi un eveniment.</translation>
+        <translation>You are deleting an event.</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/scheduleTask/cscheduleoperation.cpp" line="108"/>
         <source>Are you sure you want to delete this event?</source>
-        <translation>Sigur doriţi să ştergeţi acest eveniment?</translation>
+        <translation>Are you sure you want to delete this event?</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/scheduleTask/cscheduleoperation.cpp" line="62"/>
@@ -395,71 +395,71 @@
         <location filename="../calendar-client/src/scheduleTask/cscheduleoperation.cpp" line="270"/>
         <source>Cancel</source>
         <comment>button</comment>
-        <translation>Anulează</translation>
+        <translation>Cancel</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/scheduleTask/cscheduleoperation.cpp" line="110"/>
         <source>Delete</source>
         <comment>button</comment>
-        <translation>Ștergeți</translation>
+        <translation>Delete</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/scheduleTask/cscheduleoperation.cpp" line="125"/>
         <source>Do you want to delete all occurrences of this event, or only the selected occurrence?</source>
-        <translation>Doriți să ștergeți toate aparițiile acestui eveniment sau doar evenimentul selectat?</translation>
+        <translation>Do you want to delete all occurrences of this event, or only the selected occurrence?</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/scheduleTask/cscheduleoperation.cpp" line="127"/>
         <source>Delete All</source>
-        <translation>Şterge tot</translation>
+        <translation>Delete All</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/scheduleTask/cscheduleoperation.cpp" line="128"/>
         <location filename="../calendar-client/src/scheduleTask/cscheduleoperation.cpp" line="152"/>
         <source>Delete Only This Event</source>
-        <translation>Şterge doar acest eveniment</translation>
+        <translation>Delete Only This Event</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/scheduleTask/cscheduleoperation.cpp" line="149"/>
         <source>Do you want to delete this and all future occurrences of this event, or only the selected occurrence?</source>
-        <translation>Doriți să ștergeți toate aparițiile acestui eveniment sau doar evenimentul selectat?</translation>
+        <translation>Do you want to delete this and all future occurrences of this event, or only the selected occurrence?</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/scheduleTask/cscheduleoperation.cpp" line="151"/>
         <source>Delete All Future Events</source>
-        <translation>Şterge toate evenimentele viitoare</translation>
+        <translation>Delete All Future Events</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/scheduleTask/cscheduleoperation.cpp" line="232"/>
         <location filename="../calendar-client/src/scheduleTask/cscheduleoperation.cpp" line="266"/>
         <source>You are changing a repeating event.</source>
-        <translation>Modificați un eveniment care se repetă.</translation>
+        <translation>You are changing a repeating event.</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/scheduleTask/cscheduleoperation.cpp" line="234"/>
         <source>Do you want to change only this occurrence of the event, or all occurrences?</source>
-        <translation>Doriți să schimbați doar această apariție a evenimentului sau toate evenimentele?</translation>
+        <translation>Do you want to change only this occurrence of the event, or all occurrences?</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/scheduleTask/cscheduleoperation.cpp" line="237"/>
         <source>All</source>
-        <translation>Tot</translation>
+        <translation>All</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/scheduleTask/cscheduleoperation.cpp" line="238"/>
         <location filename="../calendar-client/src/scheduleTask/cscheduleoperation.cpp" line="272"/>
         <source>Only This Event</source>
-        <translation>Doar acest eveniment</translation>
+        <translation>Only This Event</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/scheduleTask/cscheduleoperation.cpp" line="268"/>
         <source>Do you want to change only this occurrence of the event, or this and all future occurrences?</source>
-        <translation>Doriți să schimbați doar această apariție a evenimentului sau aceasta și toate evenimentele viitoare?</translation>
+        <translation>Do you want to change only this occurrence of the event, or this and all future occurrences?</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/scheduleTask/cscheduleoperation.cpp" line="271"/>
         <source>All Future Events</source>
-        <translation>Toate evenimentele viitoare</translation>
+        <translation>All Future Events</translation>
     </message>
 </context>
 <context>
@@ -467,17 +467,17 @@
     <message>
         <location filename="../calendar-client/src/widget/schedulesearchview.cpp" line="899"/>
         <source>Y</source>
-        <translation>A</translation>
+        <translation>Y</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/widget/schedulesearchview.cpp" line="899"/>
         <source>M</source>
-        <translation>L</translation>
+        <translation>M</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/widget/schedulesearchview.cpp" line="899"/>
         <source>D</source>
-        <translation>Z</translation>
+        <translation>D</translation>
     </message>
 </context>
 <context>
@@ -485,17 +485,17 @@
     <message>
         <location filename="../calendar-client/src/widget/schedulesearchview.cpp" line="55"/>
         <source>Edit</source>
-        <translation>Editează</translation>
+        <translation>Edit</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/widget/schedulesearchview.cpp" line="56"/>
         <source>Delete</source>
-        <translation>Șterge</translation>
+        <translation>Delete</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/widget/schedulesearchview.cpp" line="295"/>
         <source>All Day</source>
-        <translation>Toată ziua</translation>
+        <translation>All Day</translation>
     </message>
 </context>
 <context>
@@ -503,7 +503,7 @@
     <message>
         <location filename="../calendar-client/src/widget/schedulesearchview.cpp" line="642"/>
         <source>No search results</source>
-        <translation>Niciun rezultat la căutare</translation>
+        <translation>No search results</translation>
     </message>
 </context>
 <context>
@@ -511,7 +511,7 @@
     <message>
         <location filename="../calendar-client/src/customWidget/scheduleview.cpp" line="321"/>
         <source>ALL DAY</source>
-        <translation>TOATĂ ZIUA</translation>
+        <translation>ALL DAY</translation>
     </message>
 </context>
 <context>
@@ -519,22 +519,22 @@
     <message>
         <location filename="../calendar-client/src/customWidget/ctitlewidget.cpp" line="40"/>
         <source>Y</source>
-        <translation>A</translation>
+        <translation>Y</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/customWidget/ctitlewidget.cpp" line="52"/>
         <source>M</source>
-        <translation>L</translation>
+        <translation>M</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/customWidget/ctitlewidget.cpp" line="60"/>
         <source>W</source>
-        <translation>S</translation>
+        <translation>W</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/customWidget/ctitlewidget.cpp" line="68"/>
         <source>D</source>
-        <translation>Z</translation>
+        <translation>D</translation>
     </message>
 </context>
 <context>
@@ -542,12 +542,12 @@
     <message>
         <location filename="../calendar-client/src/widget/weekWidget/weekwindow.cpp" line="109"/>
         <source>Week</source>
-        <translation>Săptămână</translation>
+        <translation>Week</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/widget/weekWidget/weekwindow.cpp" line="326"/>
         <source>Y</source>
-        <translation>A</translation>
+        <translation>Y</translation>
     </message>
 </context>
 <context>
@@ -556,12 +556,12 @@
         <location filename="../calendar-client/src/widget/yearWidget/yearscheduleview.cpp" line="271"/>
         <location filename="../calendar-client/src/widget/yearWidget/yearscheduleview.cpp" line="274"/>
         <source>All Day</source>
-        <translation>Toată ziua</translation>
+        <translation>All Day</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/widget/yearWidget/yearscheduleview.cpp" line="291"/>
         <source>No event</source>
-        <translation>Nici un eveniment</translation>
+        <translation>No event</translation>
     </message>
 </context>
 <context>
@@ -569,7 +569,7 @@
     <message>
         <location filename="../calendar-client/src/widget/yearWidget/yearwindow.cpp" line="634"/>
         <source>Y</source>
-        <translation>A</translation>
+        <translation>Y</translation>
     </message>
 </context>
 <context>
@@ -582,7 +582,7 @@
     <message>
         <location filename="../calendar-client/src/main.cpp" line="70"/>
         <source>Calendar is a tool to view dates, and also a smart daily planner to schedule all things in life. </source>
-        <translation>Calendarul este un instrument pentru a vizualiza datele și, de asemenea, un planificator inteligent zilnic pentru a programa toate lucrurile din viață.</translation>
+        <translation>Calendar is a tool to view dates, and also a smart daily planner to schedule all things in life. </translation>
     </message>
 </context>
 <context>
@@ -598,7 +598,7 @@
     <message>
         <location filename="../calendar-client/src/customWidget/scheduleRemindWidget.cpp" line="191"/>
         <source>All Day</source>
-        <translation>Toată ziua</translation>
+        <translation>All Day</translation>
     </message>
 </context>
 <context>
@@ -606,22 +606,22 @@
     <message>
         <location filename="../calendar-client/src/view/draginfographicsview.cpp" line="60"/>
         <source>Edit</source>
-        <translation>Editare</translation>
+        <translation>Edit</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/view/draginfographicsview.cpp" line="61"/>
         <source>Delete</source>
-        <translation>Ștergeți</translation>
+        <translation>Delete</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/view/draginfographicsview.cpp" line="62"/>
         <source>New event</source>
-        <translation>Eveniment nou</translation>
+        <translation>New event</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/view/draginfographicsview.cpp" line="713"/>
         <source>New Event</source>
-        <translation>Eveniment nou</translation>
+        <translation>New Event</translation>
     </message>
 </context>
 <context>
@@ -630,7 +630,7 @@
         <location filename="../calendar-client/src/widget/yearWidget/yearwindow.cpp" line="630"/>
         <source>Today</source>
         <comment>Return</comment>
-        <translation>Astăzi</translation>
+        <translation>Today</translation>
     </message>
 </context>
 <context>
@@ -641,7 +641,7 @@
         <location filename="../calendar-client/src/widget/weekWidget/weekwindow.cpp" line="323"/>
         <source>Today</source>
         <comment>Return Today</comment>
-        <translation>Astăzi</translation>
+        <translation>Today</translation>
     </message>
 </context>
 <context>
@@ -649,37 +649,37 @@
     <message>
         <location filename="../calendar-client/src/shortcut.cpp" line="31"/>
         <source>Help</source>
-        <translation>Ajutor</translation>
+        <translation>Help</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/shortcut.cpp" line="32"/>
         <source>Delete event</source>
-        <translation>Ştergere eveniment</translation>
+        <translation>Delete event</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/shortcut.cpp" line="35"/>
         <source>Copy</source>
-        <translation>Copiere</translation>
+        <translation>Copy</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/shortcut.cpp" line="36"/>
         <source>Cut</source>
-        <translation>Tăiere</translation>
+        <translation>Cut</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/shortcut.cpp" line="37"/>
         <source>Paste</source>
-        <translation>Lipire</translation>
+        <translation>Paste</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/shortcut.cpp" line="40"/>
         <source>Delete</source>
-        <translation>Ștergeți</translation>
+        <translation>Delete</translation>
     </message>
     <message>
         <location filename="../calendar-client/src/shortcut.cpp" line="41"/>
         <source>Select all</source>
-        <translation>Selectează totul</translation>
+        <translation>Select all</translation>
     </message>
 </context>
 <context>
@@ -687,7 +687,7 @@
     <message>
         <location filename="../calendar-client/src/widget/yearWidget/yearwindow.cpp" line="948"/>
         <source>Y</source>
-        <translation>A</translation>
+        <translation>Y</translation>
     </message>
 </context>
 <context>
@@ -703,7 +703,7 @@
         <location filename="../calendar-client/src/widget/yearWidget/yearwindow.cpp" line="628"/>
         <source>Today</source>
         <comment>Today</comment>
-        <translation>Astăzi</translation>
+        <translation>Today</translation>
     </message>
 </context>
 </TS>
