@@ -77,6 +77,7 @@ void DOAInfoWidget::initWidget()
     {
         //服务器地址
         m_serverAddressLbl = new QLabel(this);
+        DFontSizeManager::instance()->bind(m_serverAddressLbl, DFontSizeManager::T8, QFont::Normal);
         DOAInfoItem *serverAddressItem = new DOAInfoItem(tr("Server IP"), m_serverAddressLbl);
         m_serverAddressLbl->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
         vboxlayout->addWidget(serverAddressItem);
@@ -85,6 +86,7 @@ void DOAInfoWidget::initWidget()
     {
         //帐户
         m_accountName = new QLabel(this);
+        DFontSizeManager::instance()->bind(m_accountName, DFontSizeManager::T8, QFont::Normal);
         DOAInfoItem *accountItem = new DOAInfoItem(tr("Account"), m_accountName);
         m_accountName->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
         vboxlayout->addWidget(accountItem);
