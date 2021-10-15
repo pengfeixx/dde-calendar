@@ -25,7 +25,6 @@
 
 DOAInfoItem::DOAInfoItem(const QString &name, QWidget *widget)
 {
-    widget->setMaximumWidth(750);
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setContentsMargins(10, 6, 10, 6);
     QLabel *nameLbl = new QLabel(name, this);
@@ -33,6 +32,8 @@ DOAInfoItem::DOAInfoItem(const QString &name, QWidget *widget)
     nameLbl->setMinimumWidth(130);
     layout->addWidget(nameLbl);
     layout->addWidget(widget);
+    layout->setStretchFactor(nameLbl, 1);
+    layout->setStretchFactor(widget, 2);
     this->setLayout(layout);
     //根据UI图设置固定高度为48
     setFixedHeight(48);

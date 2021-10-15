@@ -52,8 +52,8 @@ void DOALabel::changeEvent(QEvent *e)
 
 void DOALabel::resizeEvent(QResizeEvent *event)
 {
-    setTextByWidth();
     QLabel::resizeEvent(event);
+    setTextByWidth();
 }
 
 void DOALabel::setTextByWidth()

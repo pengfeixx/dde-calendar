@@ -25,9 +25,9 @@
 #include <DPasswordEdit>
 
 #include <QWidget>
-#include <QLabel>
 
 class DOAPasswordEdit;
+class DOALabel;
 DWIDGET_USE_NAMESPACE
 
 /**
@@ -67,8 +67,8 @@ public slots:
 
 private:
     DLineEdit *m_userName = nullptr;
-    QLabel *m_serverAddressLbl = nullptr;
-    QLabel *m_accountName = nullptr;
+    DOALabel *m_serverAddressLbl = nullptr;
+    DOALabel *m_accountName = nullptr;
     DOAPasswordEdit *m_passwordEdit = nullptr;
     QString m_displayName = ""; //用户名
     QString m_password = ""; //密码

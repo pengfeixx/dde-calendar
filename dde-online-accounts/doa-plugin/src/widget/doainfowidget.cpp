@@ -21,6 +21,7 @@
 #include "doainfowidget.h"
 #include "doainfoitem.h"
 #include "doapasswordedit.h"
+#include "doalabel.h"
 
 #include <DFontSizeManager>
 #include <DBackgroundGroup>
@@ -28,7 +29,6 @@
 #include <DPalette>
 
 #include <QVBoxLayout>
-#include <QLabel>
 
 DWIDGET_USE_NAMESPACE
 DOAInfoWidget::DOAInfoWidget(QWidget *parent)
@@ -54,8 +54,10 @@ void DOAInfoWidget::setShowData(const QString &userName, const QString &url, con
         m_passwordEdit->setEchoButtonIsVisible(false);
     }
 
-    m_serverAddressLbl->setText(url);
-    m_accountName->setText(accountName);
+    m_serverAddressLbl->setShowText(url);
+    m_serverAddressLbl->setToolTip(url);
+    m_accountName->setShowText(accountName);
+    m_accountName->setToolTip(accountName);
 }
 
 void DOAInfoWidget::initWidget()
@@ -81,7 +83,7 @@ void DOAInfoWidget::initWidget()
 
     {
         //服务器地址
-        m_serverAddressLbl = new QLabel(this);
+        m_serverAddressLbl = new DOALabel(this);
         DFontSizeManager::instance()->bind(m_serverAddressLbl, DFontSizeManager::T8, QFont::Normal);
         DOAInfoItem *serverAddressItem = new DOAInfoItem(tr("Server IP"), m_serverAddressLbl);
         m_serverAddressLbl->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
@@ -90,7 +92,7 @@ void DOAInfoWidget::initWidget()
 
     {
         //帐户
-        m_accountName = new QLabel(this);
+        m_accountName = new DOALabel(this);
         DFontSizeManager::instance()->bind(m_accountName, DFontSizeManager::T8, QFont::Normal);
         DOAInfoItem *accountItem = new DOAInfoItem(tr("Account"), m_accountName);
         m_accountName->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
