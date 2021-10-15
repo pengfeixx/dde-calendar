@@ -188,10 +188,15 @@ void DOAAccountInfoWidget::initWidget()
     m_errorWidget->setHidden(true);
     connect(m_errorWidget, &DOAErrorWidget::sign_tryAgain, this, &DOAAccountInfoWidget::slotTryAgain);
 
+    //设置内容左边距
+    QMargins margins = m_accountProtocolLbl->contentsMargins();
+    margins.setLeft(10);
+    m_accountProtocolLbl->setContentsMargins(margins);
     layout->addWidget(m_accountProtocolLbl);
-    layout->addSpacing(20);
+
+    layout->addSpacing(10);
     layout->addWidget(m_accountInfo);
-    layout->addSpacing(20);
+    layout->addSpacing(10);
     layout->addWidget(m_applyToWidget);
     layout->addStretch();
     m_content->setLayout(layout);

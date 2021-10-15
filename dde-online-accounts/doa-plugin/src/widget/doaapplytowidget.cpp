@@ -57,6 +57,9 @@ void DOAApplyToWidget::initWidget()
     QLabel *applyLabel = new QLabel(tr("Apply to"));
     applyLabel->setAlignment(Qt::AlignLeft);
     DFontSizeManager::instance()->bind(applyLabel, DFontSizeManager::T5, QFont::Medium);
+    QMargins margins = applyLabel->contentsMargins();
+    margins.setLeft(10);
+    applyLabel->setContentsMargins(margins);
 
     m_mainLayout = new QVBoxLayout();
     m_mainLayout->setMargin(0);
@@ -71,7 +74,6 @@ void DOAApplyToWidget::initWidget()
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->setMargin(0);
     mainLayout->addWidget(applyLabel);
-    mainLayout->addSpacing(10);
     mainLayout->addWidget(group);
     this->setLayout(mainLayout);
 }

@@ -25,6 +25,7 @@
 #include <DFontSizeManager>
 #include <DBackgroundGroup>
 #include <DLineEdit>
+#include <DPalette>
 
 #include <QVBoxLayout>
 #include <QLabel>
@@ -62,6 +63,10 @@ void DOAInfoWidget::initWidget()
     QLabel *accountLabl = new QLabel(tr("Account Info"), this);
     accountLabl->setAlignment(Qt::AlignLeft);
     DFontSizeManager::instance()->bind(accountLabl, DFontSizeManager::T5, QFont::Medium);
+    //设置内容左边距
+    QMargins margins = accountLabl->contentsMargins();
+    margins.setLeft(10);
+    accountLabl->setContentsMargins(margins);
 
     QVBoxLayout *vboxlayout = new QVBoxLayout();
     vboxlayout->setMargin(0);
@@ -112,7 +117,7 @@ void DOAInfoWidget::initWidget()
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->setMargin(0);
     mainLayout->addWidget(accountLabl);
-    mainLayout->addSpacing(10);
+    mainLayout->addSpacing(5);
     mainLayout->addWidget(group);
     this->setLayout(mainLayout);
 }
