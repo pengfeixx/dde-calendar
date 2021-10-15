@@ -180,6 +180,7 @@ void DOAAccountInfoWidget::initWidget()
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(warningBtn);
+    layout->addSpacing(10);
     layout->addWidget(m_errorWidget);
     layout->addSpacing(20);
 
