@@ -20,11 +20,11 @@
 */
 #include "doaaccountlistwidget.h"
 #include "consts.h"
+#include "doanonetworklabel.h"
 
 #include <DFloatingButton>
 #include <DFontSizeManager>
 
-#include <QLabel>
 #include <QVBoxLayout>
 
 DWIDGET_USE_NAMESPACE
@@ -34,7 +34,7 @@ DOAAccountListWidget::DOAAccountListWidget(QWidget *parent)
     , m_model(nullptr)
     , m_addAccountBtn(new DFloatingButton(DStyle::SP_IncreaseElement, this))
     , m_listView(new DListView(this))
-    , m_promptLbl(new QLabel(this))
+    , m_promptLbl(new DOANoNetWorkLabel(this))
     , m_listModel(new DOAAccountListModel(m_listView))
     , m_listDelegate(new DOAAccountListItemDelegate(m_listView))
     , m_stackedWidget(new DStackedWidget)
@@ -82,8 +82,6 @@ void DOAAccountListWidget::initWidget()
     m_addAccountBtn->setAccessibleName("Add Account");
     //无帐户信息提示
     m_promptLbl->setText(tr("No accounts yet"));
-    DFontSizeManager::instance()->bind(m_promptLbl, DFontSizeManager::T5, QFont::Bold);
-    m_promptLbl->setAlignment(Qt::AlignCenter);
 
     m_listView->setAccessibleName("accountListView");
     m_listView->setFrameShape(QFrame::NoFrame);
@@ -92,7 +90,6 @@ void DOAAccountListWidget::initWidget()
     m_listView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     m_listView->setEditTriggers(QListView::NoEditTriggers);
     m_listView->setDragEnabled(false);
-    m_listView->setIconSize(QSize(30, 30));
     m_listView->setLayoutDirection(Qt::LeftToRight);
     m_listView->setItemDelegate(m_listDelegate);
     m_listView->setModel(m_listModel);

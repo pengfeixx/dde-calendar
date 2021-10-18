@@ -30,8 +30,9 @@
 #include <DStackedWidget>
 
 #include <QWidget>
-#include <QLabel>
 #include <QStandardItemModel>
+
+class DOANoNetWorkLabel;
 
 DWIDGET_USE_NAMESPACE
 
@@ -102,7 +103,7 @@ private:
     DOAAccountModel *m_model;
     DFloatingButton *m_addAccountBtn; //添加用户按钮
     DListView *m_listView; //帐户信息列表
-    QLabel *m_promptLbl; //无帐户信息提示
+    DOANoNetWorkLabel *m_promptLbl; //无帐户信息提示
     DOAAccountListModel *m_listModel;
     DOAAccountListItemDelegate *m_listDelegate;
     DStackedWidget *m_stackedWidget;

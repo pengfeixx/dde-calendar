@@ -60,7 +60,6 @@ DOAAccountProtocolListWidget::DOAAccountProtocolListWidget(QWidget *parent)
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addSpacing(10);
     layout->addWidget(addAccountLbl, 0, Qt::AlignCenter);
-    layout->addSpacing(6);
     layout->addWidget(selectProtocolLbl, 0, Qt::AlignCenter);
     layout->addSpacing(10);
     layout->addWidget(mListView);

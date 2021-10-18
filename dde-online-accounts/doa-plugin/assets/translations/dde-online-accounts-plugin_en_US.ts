@@ -12,12 +12,12 @@
 <context>
     <name>DOAAccountListWidget</name>
     <message>
-        <location filename="../../src/accountwidget/doaaccountlistwidget.cpp" line="81"/>
+        <location filename="../../src/accountwidget/doaaccountlistwidget.cpp" line="84"/>
         <source>Add Account</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/accountwidget/doaaccountlistwidget.cpp" line="84"/>
+        <location filename="../../src/accountwidget/doaaccountlistwidget.cpp" line="87"/>
         <source>No accounts yet</source>
         <translation type="unfinished"></translation>
     </message>
@@ -166,28 +166,28 @@
 <context>
     <name>DOAErrorWidget</name>
     <message>
-        <location filename="../../src/widget/doaerrorwidget.cpp" line="38"/>
-        <location filename="../../src/widget/doaerrorwidget.cpp" line="97"/>
+        <location filename="../../src/widget/doaerrorwidget.cpp" line="39"/>
+        <location filename="../../src/widget/doaerrorwidget.cpp" line="99"/>
         <source>Network error, please check and</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widget/doaerrorwidget.cpp" line="42"/>
+        <location filename="../../src/widget/doaerrorwidget.cpp" line="43"/>
         <source>try again</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widget/doaerrorwidget.cpp" line="93"/>
+        <location filename="../../src/widget/doaerrorwidget.cpp" line="95"/>
         <source>Cannot connect to the account, please check your password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widget/doaerrorwidget.cpp" line="102"/>
+        <location filename="../../src/widget/doaerrorwidget.cpp" line="104"/>
         <source>Server error, please</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widget/doaerrorwidget.cpp" line="122"/>
+        <location filename="../../src/widget/doaerrorwidget.cpp" line="124"/>
         <source>Connecting to the account...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -195,32 +195,32 @@
 <context>
     <name>DOAInfoWidget</name>
     <message>
-        <location filename="../../src/widget/doainfowidget.cpp" line="62"/>
+        <location filename="../../src/widget/doainfowidget.cpp" line="65"/>
         <source>Account Info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widget/doainfowidget.cpp" line="71"/>
+        <location filename="../../src/widget/doainfowidget.cpp" line="78"/>
         <source>User Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widget/doainfowidget.cpp" line="80"/>
+        <location filename="../../src/widget/doainfowidget.cpp" line="88"/>
         <source>Server IP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widget/doainfowidget.cpp" line="88"/>
+        <location filename="../../src/widget/doainfowidget.cpp" line="97"/>
         <source>Account</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widget/doainfowidget.cpp" line="99"/>
+        <location filename="../../src/widget/doainfowidget.cpp" line="108"/>
         <source>Password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widget/doainfowidget.cpp" line="126"/>
+        <location filename="../../src/widget/doainfowidget.cpp" line="135"/>
         <source>No more than 32 characters please</source>
         <translation type="unfinished"></translation>
     </message>
