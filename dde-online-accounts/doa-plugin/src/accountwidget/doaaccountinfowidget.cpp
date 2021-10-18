@@ -95,6 +95,7 @@ void DOAAccountInfoWidget::slotUpdateCurrentAccount()
         }
         //设置当前状态
         slotAccountStatusChanged(m_Account->getAccountID());
+        setFocus();
     }
 }
 
