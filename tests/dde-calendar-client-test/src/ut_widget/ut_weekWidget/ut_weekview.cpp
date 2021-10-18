@@ -40,15 +40,17 @@ ut_weekview::~ut_weekview()
 //void CWeekView::setSelectDate(const QDate date)
 TEST_F(ut_weekview, setSelectDate)
 {
-    mWeekView->setSelectDate(QDate::currentDate());
-    ASSERT_EQ(mWeekView->m_weekNumWidget->m_selectDate, QDate::currentDate());
+    QDateTime date =  QDateTime::currentDateTime();
+    mWeekView->setSelectDate(date.date());
+    ASSERT_EQ(mWeekView->m_weekNumWidget->m_selectDate, date.date());
 }
 
 //void CWeekView::setCurrent(const QDateTime &dateTime)
 TEST_F(ut_weekview, setCurrent)
 {
-    mWeekView->setCurrent(QDateTime::currentDateTime());
-    ASSERT_EQ(mWeekView->m_weekNumWidget->m_currentDate, QDateTime::currentDateTime());
+    QDateTime date =  QDateTime::currentDateTime();
+    mWeekView->setCurrent(date);
+    ASSERT_EQ(mWeekView->m_weekNumWidget->m_currentDate, date);
 }
 
 //void CWeekView::setTheMe(int type)

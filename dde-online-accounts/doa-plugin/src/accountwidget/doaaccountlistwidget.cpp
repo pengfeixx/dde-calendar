@@ -146,7 +146,7 @@ void DOAAccountListWidget::slotGetDeleteAccount(const QString &accountID)
     m_listModel->removeAccount(accountID);
     QModelIndex index;
 
-    if (rowid == m_listModel->rowCount(index)) {
+    if (rowid == m_listModel->rowCount(index) || m_listModel->rowCount(index) == 1) {
         //设置第一个为选中状态
         index = m_listModel->index(0);
     } else if (m_listModel->rowCount(index) > 1) {
