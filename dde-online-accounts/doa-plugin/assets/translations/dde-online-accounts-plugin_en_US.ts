@@ -4,7 +4,7 @@
 <context>
     <name>DOAAccountInfoWidget</name>
     <message>
-        <location filename="../../src/accountwidget/doaaccountinfowidget.cpp" line="176"/>
+        <location filename="../../src/accountwidget/doaaccountinfowidget.cpp" line="177"/>
         <source>Delete Account</source>
         <translation type="unfinished"></translation>
     </message>
@@ -12,12 +12,12 @@
 <context>
     <name>DOAAccountListWidget</name>
     <message>
-        <location filename="../../src/accountwidget/doaaccountlistwidget.cpp" line="84"/>
+        <location filename="../../src/accountwidget/doaaccountlistwidget.cpp" line="81"/>
         <source>Add Account</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/accountwidget/doaaccountlistwidget.cpp" line="87"/>
+        <location filename="../../src/accountwidget/doaaccountlistwidget.cpp" line="84"/>
         <source>No accounts yet</source>
         <translation type="unfinished"></translation>
     </message>
@@ -166,8 +166,7 @@
 <context>
     <name>DOAErrorWidget</name>
     <message>
-        <location filename="../../src/widget/doaerrorwidget.cpp" line="39"/>
-        <location filename="../../src/widget/doaerrorwidget.cpp" line="99"/>
+        <location filename="../../src/widget/doaerrorwidget.cpp" line="110"/>
         <source>Network error, please check and</source>
         <translation type="unfinished"></translation>
     </message>
@@ -177,17 +176,17 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widget/doaerrorwidget.cpp" line="95"/>
+        <location filename="../../src/widget/doaerrorwidget.cpp" line="105"/>
         <source>Cannot connect to the account, please check your password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widget/doaerrorwidget.cpp" line="104"/>
+        <location filename="../../src/widget/doaerrorwidget.cpp" line="115"/>
         <source>Server error, please</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widget/doaerrorwidget.cpp" line="124"/>
+        <location filename="../../src/widget/doaerrorwidget.cpp" line="50"/>
         <source>Connecting to the account...</source>
         <translation type="unfinished"></translation>
     </message>

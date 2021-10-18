@@ -42,9 +42,7 @@ class DOAErrorWidget : public QWidget
     Q_OBJECT
 public:
     explicit DOAErrorWidget(QWidget *parent = nullptr);
-
-    ~DOAErrorWidget();
-
+    ~DOAErrorWidget() override;
     /**
      * @brief DOAErrorWidget::setErrorMsg 设置错误信息
      * @param errorMsg
@@ -57,26 +55,77 @@ public:
     void initData();
 
 private:
+    enum MouseState { MS_Press,
+                      MS_Enter,
+                      MS_Leave
+    };
     struct TryAgainState {
         bool isClicked = false;
         QDateTime clickDateTime;
+        MouseState msState = MS_Leave;
     };
+    struct ErrorMsg {
+        QString msg = "";
+        int len = 0;
+        QRectF rectF;
+    };
+    enum ShowState {
+        MsgHide //隐藏
+        ,
+        MsgChecking //验证
+        ,
+        MsgShow_TryAgain //显示 重试
+        ,
+        MsgShow_NoTryAgain //显示 无重试
+    };
+    //根据宽度和字体大小显示错误信息
+    void showMsgByWidth();
+    /**
+     * @brief tokenize          根据词边界拆分字符串
+     * @param str
+     * @return
+     */
+    QStringList tokenize(const QString &str);
 
+    /**
+     * @brief getErrorMsgVector     根据错误信息和限制宽度分割每行显示的内容
+     * @param t                     根据词边界拆分后的字符集
+     * @param limitLength           显示的宽度
+     * @return                      每行显示的内容
+     */
+    template<typename T>
+    QVector<ErrorMsg> getErrorMsgVector(const T &t, const int &limitLength);
+
+    /**
+     * @brief updateRect        更新错误信息需要显示的矩阵
+     */
+    void updateRect();
+protected:
+    void paintEvent(QPaintEvent *event) override;
+    void changeEvent(QEvent *event) override;
+    void resizeEvent(QResizeEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void leaveEvent(QEvent *event) override;
 signals:
     void sign_tryAgain();
     void sign_EventQuit();
 public slots:
     void slot_tryAgain();
-
 private:
     //错误信息label
     QLabel *m_errorMessageLabel = nullptr;
-    //重试按钮
-    DCommandLinkButton *m_tryAginLink = nullptr;
-
     DSpinner *m_spinner = nullptr;
-    QLabel *m_iconLabel = nullptr;
+    QString m_errorMsg {}; //为原始错误信息
+    QVector<ErrorMsg> m_errorMsgVector {};
     TryAgainState m_tryAgainState; //点击重试状态
+    ShowState m_errorMsgState = MsgHide;
+    QRectF m_tryAgainRect;
+    QFont m_font;
+    QFontMetrics m_fontMeterics;
+    QString m_tryAgainStr;
+    QRectF m_iconRect;
+    int m_showRow = 0;
 };
-
 #endif // DOAERRORWIDGET_H
