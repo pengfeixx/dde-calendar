@@ -29,11 +29,10 @@
 class ut_dayWindow : public ::testing::Test
 {
 public:
-    ut_dayWindow();
     void SetUp() override;
     void TearDown() override;
 public:
-    CDayWindow *m_dayWindow;
+    CDayWindow *m_dayWindow = nullptr;
 };
 
 #endif // TEST_DAYWINDOW_H

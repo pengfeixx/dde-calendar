@@ -24,10 +24,6 @@
 
 #include <QPainter>
 
-ut_CAlldayscheduleitem::ut_CAlldayscheduleitem()
-{
-}
-
 void ut_CAlldayscheduleitem::SetUp()
 {
     m_rectF.setRect(0, 0, 200, 50);

@@ -20,10 +20,6 @@
 */
 #include "ut_cweekdaybackgrounditem.h"
 
-ut_CWeekDayBackgroundItem::ut_CWeekDayBackgroundItem()
-{
-}
-
 void ut_CWeekDayBackgroundItem::SetUp()
 {
     m_weekItem = new CWeekDayBackgroundItem();

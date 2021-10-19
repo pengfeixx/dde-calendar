@@ -22,10 +22,6 @@
 
 #include "customWidget/customframe.h"
 
-ut_dayWindow::ut_dayWindow()
-{
-}
-
 void ut_dayWindow::SetUp()
 {
     QDateTime currentTime = QDateTime::currentDateTime();

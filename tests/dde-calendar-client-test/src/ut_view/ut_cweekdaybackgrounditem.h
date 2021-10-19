@@ -29,7 +29,6 @@
 class ut_CWeekDayBackgroundItem : public testing::Test
 {
 public:
-    ut_CWeekDayBackgroundItem();
     // Sets up the test fixture.
     void SetUp() override;
 
@@ -37,7 +36,7 @@ public:
     void TearDown() override;
 
 public:
-    CWeekDayBackgroundItem *m_weekItem;
+    CWeekDayBackgroundItem *m_weekItem = nullptr;
 };
 
 #endif // TEST_CWEEKDAYBACKGROUNDITEM_H

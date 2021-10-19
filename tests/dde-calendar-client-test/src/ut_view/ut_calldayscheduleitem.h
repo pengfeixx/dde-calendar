@@ -29,11 +29,10 @@
 class ut_CAlldayscheduleitem : public ::testing::Test
 {
 public:
-    ut_CAlldayscheduleitem();
     void SetUp() override;
     void TearDown() override;
 public:
-    CAllDayScheduleItem *m_allItem;
+    CAllDayScheduleItem *m_allItem = nullptr;
     QRectF m_rectF;
 };
 
