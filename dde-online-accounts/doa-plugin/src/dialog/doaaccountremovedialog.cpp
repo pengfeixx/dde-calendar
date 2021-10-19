@@ -18,16 +18,24 @@ void DOAAccountRemoveDialog::initWidget()
     DLabel *title = new DLabel(tr("Are you sure you want to delete this account?"), this);
     title->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
     DFontSizeManager::instance()->bind(title, DFontSizeManager::T6, QFont::Medium);
+    QPalette labelPalette;
+    QColor labelColor(labelPalette.color(DPalette::BrightText));
+    labelColor.setAlphaF(0.9);
+    labelPalette.setColor(QPalette::WindowText, labelColor);
+    title->setPalette(labelPalette);
+
     //提醒内容
     DLabel *rompt = new DLabel(tr("You will lose all data associated with the account on this device"), this);
     rompt->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
     DFontSizeManager::instance()->bind(rompt, DFontSizeManager::T6, QFont::Normal);
+    labelColor.setAlphaF(0.7);
+    labelPalette.setColor(QPalette::WindowText, labelColor);
+    rompt->setPalette(labelPalette);
 
     //设置控制中心图标
     setIcon(QIcon::fromTheme("doa_warning"));
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setMargin(0);
-    layout->setSpacing(10);
     layout->addWidget(title);
     layout->addWidget(rompt);
 

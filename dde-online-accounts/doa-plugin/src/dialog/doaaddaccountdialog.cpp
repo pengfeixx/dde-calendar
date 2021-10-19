@@ -52,9 +52,15 @@ void DOAAddAccountDialog::initWidget()
     m_titleLbl = new DLabel(tr("Add a CalDAV Account"));
     m_titleLbl->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
     DFontSizeManager::instance()->bind(m_titleLbl, DFontSizeManager::T6, QFont::Medium);
+    QPalette labelPalatte;
+    QColor labelPaletteColor(labelPalatte.color(DPalette::BrightText));
+    labelPaletteColor.setAlphaF(0.9);
+    labelPalatte.setColor(QPalette::WindowText, labelPaletteColor);
+    m_titleLbl->setPalette(labelPalatte);
     layout->setMargin(0);
     layout->setSpacing(10);
     layout->addWidget(m_titleLbl);
+    layout->addSpacing(11);
     //登录方式
     {
         m_loginModel = new DComboBox(this);

@@ -51,6 +51,11 @@ void DOALoginVerificationDialog::initWidget()
     m_titleLbl = new DLabel(tr("Add a CalDAV Account"));
     m_titleLbl->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
     DFontSizeManager::instance()->bind(m_titleLbl, DFontSizeManager::T6, QFont::Medium);
+    QPalette titleLblPe;
+    QColor titleLblColor(titleLblPe.color(DPalette::BrightText));
+    titleLblColor.setAlphaF(0.9);
+    titleLblPe.setColor(QPalette::WindowText, titleLblColor);
+    m_titleLbl->setPalette(titleLblPe);
 
     layout->setMargin(0);
     layout->setSpacing(0);
@@ -64,6 +69,12 @@ void DOALoginVerificationDialog::initWidget()
     DLabel *verificationLbl = new DLabel();
     verificationLbl->setText(tr("Verifying the account..."));
     verificationLbl->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
+    DFontSizeManager::instance()->bind(verificationLbl, DFontSizeManager::T8, QFont::Normal);
+    QPalette verificationLblPe;
+    QColor verificationLblColor(verificationLblPe.color(DPalette::BrightText));
+    verificationLblColor.setAlphaF(0.7);
+    verificationLblPe.setColor(QPalette::WindowText, verificationLblColor);
+    verificationLbl->setPalette(verificationLblPe);
     layout->addWidget(verificationLbl);
     layout->addStretch();
     QWidget *widget = new QWidget();
