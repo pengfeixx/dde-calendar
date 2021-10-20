@@ -43,18 +43,18 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/dialog/doaaccountremovedialog.cpp" line="22"/>
+        <location filename="../../src/dialog/doaaccountremovedialog.cpp" line="28"/>
         <source>You will lose all data associated with the account on this device</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/dialog/doaaccountremovedialog.cpp" line="38"/>
+        <location filename="../../src/dialog/doaaccountremovedialog.cpp" line="46"/>
         <source>Cancel</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/dialog/doaaccountremovedialog.cpp" line="40"/>
+        <location filename="../../src/dialog/doaaccountremovedialog.cpp" line="48"/>
         <source>Delete</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
@@ -68,89 +68,89 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="61"/>
+        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="67"/>
         <source>Auto</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="62"/>
+        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="68"/>
         <source>Manual</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="64"/>
+        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="70"/>
         <source>Sign-in</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="70"/>
+        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="76"/>
         <source>Account</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="72"/>
+        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="78"/>
         <source>Email/Phone number</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="79"/>
+        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="85"/>
         <source>Password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="80"/>
-        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="91"/>
+        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="86"/>
+        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="97"/>
         <source>Required</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="88"/>
+        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="94"/>
         <source>Server IP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="110"/>
+        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="116"/>
         <source>Cancel</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="111"/>
+        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="117"/>
         <source>Sign In</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="213"/>
-        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="225"/>
+        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="219"/>
+        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="231"/>
         <source>Now only QQ account is supported</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="230"/>
+        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="236"/>
         <source>Illegal email address</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="308"/>
-        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="316"/>
-        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="329"/>
+        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="314"/>
+        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="322"/>
+        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="335"/>
         <source>Server error, please try again</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="320"/>
+        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="326"/>
         <source>Cannot verify the account and password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="324"/>
+        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="330"/>
         <source>Account added already</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="339"/>
-        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="343"/>
+        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="345"/>
+        <location filename="../../src/dialog/doaaddaccountdialog.cpp" line="349"/>
         <source>Network error, please check and try again</source>
         <translation type="unfinished"></translation>
     </message>
@@ -166,7 +166,7 @@
 <context>
     <name>DOAErrorWidget</name>
     <message>
-        <location filename="../../src/widget/doaerrorwidget.cpp" line="110"/>
+        <location filename="../../src/widget/doaerrorwidget.cpp" line="112"/>
         <source>Network error, please check and</source>
         <translation type="unfinished"></translation>
     </message>
@@ -176,12 +176,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widget/doaerrorwidget.cpp" line="105"/>
+        <location filename="../../src/widget/doaerrorwidget.cpp" line="107"/>
         <source>Cannot connect to the account, please check your password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/widget/doaerrorwidget.cpp" line="115"/>
+        <location filename="../../src/widget/doaerrorwidget.cpp" line="117"/>
         <source>Server error, please</source>
         <translation type="unfinished"></translation>
     </message>
@@ -232,12 +232,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/dialog/doaloginverificationdialog.cpp" line="65"/>
+        <location filename="../../src/dialog/doaloginverificationdialog.cpp" line="70"/>
         <source>Verifying the account...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/dialog/doaloginverificationdialog.cpp" line="72"/>
+        <location filename="../../src/dialog/doaloginverificationdialog.cpp" line="83"/>
         <source>Cancel</source>
         <comment>button</comment>
         <translation type="unfinished"></translation>

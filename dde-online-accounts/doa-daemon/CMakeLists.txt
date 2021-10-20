@@ -71,21 +71,6 @@ set(LINK_LIBS
     ${DtkCore_LDFLAGS}
     )
 
-set(DMAN_SEARCH_LINK_LIBS
-    Qt5::Core
-    Qt5::DBus
-    ${DtkCore_LDFLAGS}
-    )
-
-set (DMAN_HELPER_LIBS
-    Qt5::Core
-    Qt5::Sql
-    Qt5::DBus
-    Qt5::Widgets
-    ${DtkGui_LDFLAGS}
-    ${DtkCore_LDFLAGS}
-    )
-
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 include_directories(../doa-lib/src)
 

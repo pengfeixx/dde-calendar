@@ -171,10 +171,10 @@ void DOAAccountModel::slotGetDeleteAccountID(const QString &accountID)
         if (m_accounts.size() > 0 && it == m_accounts.end()) { //剩余一个帐户
             m_currentAccount = m_accounts.begin().value();
             emit signalSelectAccountChanged();
-        } else if(m_accounts.size() > 0 && it != m_accounts.end()){ //多个帐户则显示下一个帐户
+        } else if (m_accounts.size() > 0 && it != m_accounts.end()) { //多个帐户则显示下一个帐户
             m_currentAccount = it.value();
             emit signalSelectAccountChanged();
-        }else {
+        } else {
             setState(Account_Init);
         }
     }

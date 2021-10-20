@@ -24,6 +24,7 @@
 #include "db/accountdb.h"
 
 #include <QObject>
+#include <QVariant>
 
 class QThread;
 class AccountDB;

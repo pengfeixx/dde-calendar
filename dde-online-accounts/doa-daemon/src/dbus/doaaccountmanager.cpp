@@ -28,6 +28,7 @@
 #include "qjsonutils.h"
 
 #include <QtDBus/QDBusConnection>
+#include <QVariant>
 
 DOAAccountManager::DOAAccountManager(QObject *parent)
     : QObject(parent)
@@ -63,14 +64,12 @@ void DOAAccountManager::netWorkStateNotify(const QNetworkConfiguration &config)
     case QNetworkConfiguration::Defined:
         qWarning() << "Defined";
         break;
-    case QNetworkConfiguration::Active: //网络连接成功
-    {
+    case QNetworkConfiguration::Active: { //网络连接成功
         qWarning() << "Active";
         emit this->sign_netWorkChange(true);
         break;
     }
-    case QNetworkConfiguration::Discovered: //discovered和defined 网络断开,实际先触发discovered
-    {
+    case QNetworkConfiguration::Discovered: { //discovered和defined 网络断开,实际先触发discovered
         qWarning() << "Discovered";
         emit this->sign_netWorkChange(false);
         break;

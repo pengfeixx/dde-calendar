@@ -176,13 +176,6 @@ public slots:
      * @param accountID
      */
     void slotAccountPasswordChange(const QString &accountID);
-
-    /**
-     * @brief slotAccountStatusChange        处理帐户状态改变
-     * @param accountID
-     */
-    void slotAccountStatusChange(const QString &accountID);
-
 private:
     QMap<QString, DOAAccount *> m_accounts = {}; //帐户列表
     AccountWidgetState m_state = Account_Init; //当前状态
