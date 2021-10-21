@@ -32,6 +32,7 @@
 
 DOAAccountManager::DOAAccountManager(QObject *parent)
     : QObject(parent)
+    , m_netWorkDBus(new DOANetWorkDBus(this))
 {
     this->setObjectName("DOAAccountManager");
     //当前对象初始化信号槽
@@ -39,8 +40,6 @@ DOAAccountManager::DOAAccountManager(QObject *parent)
     connect(&m_accountDBManager, &AccountDBManager::sign_selectAccountResult, this, &DOAAccountManager::onSelectAccountResult);
     //数据库增加结果信号
     //connect(m_accountDBManager, &AccountDBManager::sign_addAccountResult, this, &DOAAccountManager::onAddResult);
-    //监听网卡状态变化信号
-    connect(&m_netManager, &QNetworkConfigurationManager::configurationChanged, this, &DOAAccountManager::netWorkStateNotify);
 
     //数据库增加信号
     connect(this, &DOAAccountManager::sign_addAccount, &m_accountDBManager, &AccountDBManager::sign_addAccount);
@@ -48,6 +47,9 @@ DOAAccountManager::DOAAccountManager(QObject *parent)
     connect(this, &DOAAccountManager::sign_updateProperty, &m_accountDBManager, &AccountDBManager::sign_updateProperty);
     //数据库删除帐户信号
     connect(this, &DOAAccountManager::sign_deleteAccount, &m_accountDBManager, &AccountDBManager::sign_deleteAccount);
+    //网络状态变化信号
+    connect(m_netWorkDBus, &DOANetWorkDBus::sign_NetWorkChange, this, &DOAAccountManager::netWorkStateNotify);
+
 }
 
 /**
@@ -55,29 +57,18 @@ DOAAccountManager::DOAAccountManager(QObject *parent)
  * @param config
  * 网卡状态变化处理
  */
-void DOAAccountManager::netWorkStateNotify(const QNetworkConfiguration &config)
+void DOAAccountManager::netWorkStateNotify(const DOANetWorkDBus::NetWorkState networkState)
 {
-    QString jsonstr;
-    QMap<QString, QVariant> networkStateMap;
     //验证网络状态
-    switch (config.state()) {
-    case QNetworkConfiguration::Defined:
-        qWarning() << "Defined";
-        break;
-    case QNetworkConfiguration::Active: { //网络连接成功
+    switch (networkState) {
+    case DOANetWorkDBus::Active: { //网络连接成功
         qWarning() << "Active";
         emit this->sign_netWorkChange(true);
         break;
     }
-    case QNetworkConfiguration::Discovered: { //discovered和defined 网络断开,实际先触发discovered
-        qWarning() << "Discovered";
-        emit this->sign_netWorkChange(false);
-        break;
-    }
-    case QNetworkConfiguration::Undefined:
-        qWarning() << "Undefined";
-        break;
     default:
+        qWarning() << networkState;
+        emit this->sign_netWorkChange(false);
         break;
     }
 }
@@ -95,7 +86,6 @@ void DOAAccountManager::initAccountPropertiesChange(DOAAccountsadapter *accountA
     connect(accountAdapter, &DOAAccountsadapter::sign_remove, this, &DOAAccountManager::onRemoveAccount);
 
     //检测帐户状态
-    connect(this, &DOAAccountManager::sign_checkAccountStat, accountAdapter, &DOAAccountsadapter::CheckAccountState, Qt::QueuedConnection);
     connect(this, &DOAAccountManager::sign_netWorkChange, accountAdapter, &DOAAccountsadapter::onNetWorkChange, Qt::QueuedConnection);
 }
 
@@ -184,7 +174,8 @@ void DOAAccountManager::onSelectAccountResult(const AccountResultList &result)
         iface->deleteLater();
     }
 
-    emit this->sign_checkAccountStat();
+    //获取当前网络状态
+    netWorkStateNotify(m_netWorkDBus->getNetWorkState());
 }
 
 /**
@@ -437,7 +428,6 @@ void DOAAccountManager::onRemoveAccount(DOAAccountsadapter *doaAccountAdapter)
     //删除当前帐户所有信号连接
     doaAccountAdapter->disconnect();
     //当前帐户槽连接
-    disconnect(this, &DOAAccountManager::sign_checkAccountStat, doaAccountAdapter, &DOAAccountsadapter::CheckAccountState);
     disconnect(this, &DOAAccountManager::sign_netWorkChange, doaAccountAdapter, &DOAAccountsadapter::onNetWorkChange);
 
     QDBusConnection sessionBus = QDBusConnection::sessionBus();

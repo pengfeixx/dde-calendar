@@ -27,10 +27,9 @@
 #include "dbus/doaaccountscalendar_adapter.h"
 #include "db/account_result.h"
 #include "dbus/doaaccountspasswordadapter.h"
+#include "dbus/doanetworkdbus.h"
 
 #include <QObject>
-#include <QNetworkConfiguration>
-#include <QNetworkConfigurationManager>
 
 #define DOAMANAGERINTFACE "com.dde.onlineaccount.manager"
 
@@ -54,7 +53,7 @@ public slots:
     //帐户属性改变
     void onChangeProperty(const QString &propertyName, DOAProvider *doaProvider);
     //网络状态变化槽
-    void netWorkStateNotify(const QNetworkConfiguration &config);
+    void netWorkStateNotify(const DOANetWorkDBus::NetWorkState networkState);
 
 signals: //内部处理信号
 
@@ -62,8 +61,6 @@ signals: //内部处理信号
     void sign_accountState(const QString &accountState);
     //增加帐户信号->>数据库管理类增加帐户信号->>数据库对象槽
     bool sign_addAccount(const AccountInfo &accountInfo);
-    //检查帐户状态信号->>各个帐户检查状态槽
-    void sign_checkAccountStat();
 
     //修改帐户属性信号->>数据库管理类修改帐户属性信号->>数据库对象槽
     void sign_updateProperty(const QString &accountID, const QString &property, QVariant value);
@@ -123,7 +120,7 @@ private:
     QMetaEnum loginTypemetaEnum = QMetaEnum::fromType<DOAProvider::LoginType>();
 
     //检测网络状态
-    QNetworkConfigurationManager m_netManager;
+    DOANetWorkDBus *m_netWorkDBus;
     //数据库对象
     AccountDBManager m_accountDBManager;
 

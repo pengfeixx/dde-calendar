@@ -34,7 +34,6 @@
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
 #include <QUuid>
-#include <QNetworkConfiguration>
 
 DOAAddAccountDialog::DOAAddAccountDialog(QWidget *parent)
     : DDialog(parent)
@@ -338,13 +337,13 @@ void DOAAddAccountDialog::slotAddAccountResults(int results)
 }
 
 //网络状态处理槽
-void DOAAddAccountDialog::slotConfigurationChanged(const QNetworkConfiguration &config)
+void DOAAddAccountDialog::slotConfigurationChanged(const DOANetWorkDBus::NetWorkState networkstate )
 {
-    if (!config.state().testFlag(QNetworkConfiguration::StateFlag::Active)) {
+    if(networkstate == DOANetWorkDBus::Disconnect){
         //没有连接网络
         m_loginError->setText(tr("Network error, please check and try again"));
         m_networkIsOk = false;
-    } else {
+    }else {
         //如果当前提示为网络错误则去除网络错误提示
         if (m_loginError->text() == tr("Network error, please check and try again")) {
             m_loginError->setText("");

@@ -22,6 +22,7 @@
 #define DOAADDACCOUNTDIALOG_H
 
 #include "consts.h"
+#include "dbus/doanetworkdbus.h"
 
 #include <DDialog>
 
@@ -32,7 +33,6 @@ class DPasswordEdit;
 DWIDGET_END_NAMESPACE
 class QComboBox;
 class DOAPasswordEdit;
-class QNetworkConfiguration;
 
 DWIDGET_USE_NAMESPACE
 /**
@@ -149,7 +149,7 @@ public slots:
      * @brief slotConfigurationChanged      网络状态处理槽
      * @param config                        当前网络配置状态
      */
-    void slotConfigurationChanged(const QNetworkConfiguration &config);
+    void slotConfigurationChanged(const DOANetWorkDBus::NetWorkState networkstate);
 
 private:
     Dtk::Widget::DLabel *m_titleLbl = nullptr;

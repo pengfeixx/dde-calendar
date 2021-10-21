@@ -28,8 +28,6 @@
 
 #include <QLabel>
 #include <QVBoxLayout>
-#include <QNetworkConfigurationManager>
-#include <QNetworkConfiguration>
 
 DWIDGET_USE_NAMESPACE
 DOAAccountProtocolListWidget::DOAAccountProtocolListWidget(QWidget *parent)
@@ -67,10 +65,10 @@ DOAAccountProtocolListWidget::DOAAccountProtocolListWidget(QWidget *parent)
 
     connect(itemDelegate, &DOAProtocolItemDelegate::signalSelectItem, this, &DOAAccountProtocolListWidget::slotAccountItemClicked);
 
-    m_network = new QNetworkConfigurationManager(this);
-    slotConfigurationChanged(m_network->defaultConfiguration());
+    m_netWork = new DOANetWorkDBus(this);
+    slotConfigurationChanged(m_netWork->getNetWorkState());
     //若网络状态发生改变则更新状态信息
-    connect(m_network, &QNetworkConfigurationManager::configurationChanged, this, &DOAAccountProtocolListWidget::slotConfigurationChanged);
+    connect(m_netWork, &DOANetWorkDBus::sign_NetWorkChange, this, &DOAAccountProtocolListWidget::slotConfigurationChanged);
 }
 
 void DOAAccountProtocolListWidget::setModel(DOAAccountModel *model)
@@ -89,7 +87,8 @@ void DOAAccountProtocolListWidget::slotAccountItemClicked(ProtocolType type)
         connect(&addAccountDialog, &DOAAddAccountDialog::signalCaneclLogin, m_dataModel, &DOAAccountModel::slotCancleLogin);
         connect(m_dataModel, &DOAAccountModel::signalAddAccountResults, &addAccountDialog, &DOAAddAccountDialog::slotAddAccountResults);
 
-        connect(m_network, &QNetworkConfigurationManager::configurationChanged, &addAccountDialog, &DOAAddAccountDialog::slotConfigurationChanged);
+        //连接网络状态监听
+        connect(m_netWork, &DOANetWorkDBus::sign_NetWorkChange, &addAccountDialog, &DOAAddAccountDialog::slotConfigurationChanged);
         addAccountDialog.slotConfigurationChanged(m_networkConfiguration);
         addAccountDialog.exec();
     }
@@ -102,7 +101,7 @@ void DOAAccountProtocolListWidget::slotAddAccount(const AddAccountInfo &info)
     }
 }
 
-void DOAAccountProtocolListWidget::slotConfigurationChanged(const QNetworkConfiguration &config)
+void DOAAccountProtocolListWidget::slotConfigurationChanged(const DOANetWorkDBus::NetWorkState networkstate)
 {
-    m_networkConfiguration = config;
+    m_networkConfiguration = networkstate;
 }
