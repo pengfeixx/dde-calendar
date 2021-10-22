@@ -64,12 +64,6 @@ private:
      */
     void accountListChangeHandle(const QString &infoStr);
 
-    /**
-     * @brief accountStateHandle        帐户当前状态处理
-     * @param state                     当前状态
-     */
-    void accountStateHandle(const QString &state);
-
 signals:
     /**
      * @brief signalAddAccountResults       发送添加帐户返回结果

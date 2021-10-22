@@ -54,7 +54,6 @@ public slots:
     void slotConfigurationChanged(const DOANetWorkDBus::NetWorkState networkstate);
 
 private:
-    QListView *m_protocolList;
     DOAAccountModel *m_dataModel = nullptr;
     DOANetWorkDBus *m_netWork = nullptr;
     DOANetWorkDBus::NetWorkState m_networkConfiguration; //当前默认网络配置

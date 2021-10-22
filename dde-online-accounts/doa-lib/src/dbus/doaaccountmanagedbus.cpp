@@ -98,12 +98,6 @@ void DOAAccountManageDBus::accountListChangeHandle(const QString &infoStr)
     }
 }
 
-//帐户当前状态处理
-void DOAAccountManageDBus::accountStateHandle(const QString &state)
-{
-    qDebug() << Q_FUNC_INFO << state;
-}
-
 //监听服务对象信号
 void DOAAccountManageDBus::propertyChanged(const QDBusMessage &msg)
 {

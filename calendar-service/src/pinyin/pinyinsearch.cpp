@@ -199,7 +199,7 @@ bool pinyinsearch::PinyinMatch(const QString &zh, const QString &py) const
  * @param str 汉字
  * @return 汉字对应的拼音
  */
-QList<QStringList> pinyinsearch::Pinyin(QString str)
+QList<QStringList> pinyinsearch::Pinyin(const QString &str)
 {
     QList<QStringList> pys {};
     QStringList py;
@@ -219,7 +219,7 @@ QList<QStringList> pinyinsearch::Pinyin(QString str)
  * @param index 汉字
  * @return 拼音
  */
-QStringList pinyinsearch::SinglePinyin(QString index)
+QStringList pinyinsearch::SinglePinyin(const QString &index)
 {
     //通过汉字的编码找到对应的拼音
     QString value;
@@ -239,7 +239,7 @@ QStringList pinyinsearch::SinglePinyin(QString index)
  * @param pinyin 带有音调的拼音
  * @return 不带音调的拼音
  */
-QStringList pinyinsearch::RemoveYin(QStringList pinyin)
+QStringList pinyinsearch::RemoveYin(const QStringList &pinyin)
 {
     QString str;
     QStringList strList;

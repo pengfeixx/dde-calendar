@@ -45,11 +45,11 @@ private:
     /* 初始化合法拼音表 */
     pinyinsearch();
     //获取汉字对应的拼音，不带音调
-    static QList<QStringList> Pinyin(QString str);
+    static QList<QStringList> Pinyin(const QString &str);
     //找到汉字对应的拼音
-    static QStringList SinglePinyin(QString index);
+    static QStringList SinglePinyin(const QString &index);
     //去掉拼音中的音调
-    static QStringList RemoveYin(QStringList pinyin);
+    static QStringList RemoveYin(const QStringList &pinyin);
     /* 单个合法拼音的最大长度 */
     int singlePinyinMaxLength = 0;
     /* 合法单拼音表 */
