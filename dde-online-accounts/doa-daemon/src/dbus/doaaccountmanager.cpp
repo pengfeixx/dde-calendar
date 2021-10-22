@@ -33,23 +33,16 @@
 DOAAccountManager::DOAAccountManager(QObject *parent)
     : QObject(parent)
     , m_netWorkDBus(new DOANetWorkDBus(this))
+    , m_db(new AccountDB(this))
 {
     this->setObjectName("DOAAccountManager");
-    //当前对象初始化信号槽
     //数据库查询结果信号
-    connect(&m_accountDBManager, &AccountDBManager::sign_selectAccountResult, this, &DOAAccountManager::onSelectAccountResult);
-    //数据库增加结果信号
-    //connect(m_accountDBManager, &AccountDBManager::sign_addAccountResult, this, &DOAAccountManager::onAddResult);
-
-    //数据库增加信号
-    connect(this, &DOAAccountManager::sign_addAccount, &m_accountDBManager, &AccountDBManager::sign_addAccount);
-    //数据库修改属性信号
-    connect(this, &DOAAccountManager::sign_updateProperty, &m_accountDBManager, &AccountDBManager::sign_updateProperty);
-    //数据库删除帐户信号
-    connect(this, &DOAAccountManager::sign_deleteAccount, &m_accountDBManager, &AccountDBManager::sign_deleteAccount);
+    connect(m_db, &AccountDB::selectAccountResult, this, &DOAAccountManager::onSelectAccountResult);
     //网络状态变化信号
     connect(m_netWorkDBus, &DOANetWorkDBus::sign_NetWorkChange, this, &DOAAccountManager::netWorkStateNotify);
 
+    //初始化数据库
+    m_db->initDbAsync();
 }
 
 /**
@@ -96,7 +89,7 @@ void DOAAccountManager::initAccountPropertiesChange(DOAAccountsadapter *accountA
 void DOAAccountManager::creatAllAccountDbusFromDB()
 {
     //读数据库查询数据
-    emit m_accountDBManager.sign_selectAccountList();
+    m_db->queryAccountList();
 }
 
 /**
@@ -395,7 +388,7 @@ int DOAAccountManager::addAccount(const QString &accountData)
     accountInfo.m_accountCreateTime = accountadapter->getDoaProvider()->getCreateTime();
 
     //发送给数据库操作增加帐户
-    bool ret = emit m_accountDBManager.sign_addAccount(accountInfo);
+    bool ret = m_db->addAccount(accountInfo);
     if (!ret) {
         qWarning() << "db error";
         return DOAProvider::DBError;
@@ -437,7 +430,7 @@ void DOAAccountManager::onRemoveAccount(DOAAccountsadapter *doaAccountAdapter)
     }
 
     //删除数据库数据
-    emit this->sign_deleteAccount(doaAccountAdapter->getDoaProvider()->getAccountID());
+    m_db->deleteAccount(doaAccountAdapter->getDoaProvider()->getAccountID());
 
     //从缓存中删除数据
     QMap<QString, DOAAccountsadapter *>::iterator it;
@@ -471,20 +464,20 @@ void DOAAccountManager::onChangeProperty(const QString &propertyName, DOAProvide
     if (propertyName == "CalendarDisable") {
         //修改数据库CalendarDisable值
         value = QVariant::fromValue(doaProvider->getCalendarDisabled());
-        emit m_accountDBManager.sign_updateProperty(doaProvider->getAccountID(), propertyName, value);
+        m_db->updateProperty(doaProvider->getAccountID(), propertyName, value);
     } else if (propertyName == "UserName") {
         //修改数据库用户名
         value = QVariant::fromValue(doaProvider->getDisplayName());
-        emit m_accountDBManager.sign_updateProperty(doaProvider->getAccountID(), propertyName, value);
+        m_db->updateProperty(doaProvider->getAccountID(), propertyName, value);
     } else if (propertyName == "Status") {
         //修改数据库状态
         int state = doaProvider->getAccountStat();
         value = QVariant::fromValue(state);
-        emit m_accountDBManager.sign_updateProperty(doaProvider->getAccountID(), propertyName, value);
+        m_db->updateProperty(doaProvider->getAccountID(), propertyName, value);
     } else if (propertyName == "Password") {
         //修改数据库密码
         value = QVariant::fromValue(doaProvider->getAccountPassword());
-        emit m_accountDBManager.sign_updateProperty(doaProvider->getAccountID(), propertyName, value);
+        m_db->updateProperty(doaProvider->getAccountID(), propertyName, value);
     }
 }
 
@@ -530,24 +523,4 @@ void DOAAccountManager::onAddResult(const QString &accountID, bool result)
 
         emit this->InterfaceAccountInfo(strJson);
     }
-}
-
-//测试接口,后续删除
-QString DOAAccountManager::encPassword(const QString &password)
-{
-    //加密
-    QString desarray;
-    QString orgarray;
-
-    // relPasswordtmp = QString("%1%2").arg(password.length()).arg(password);
-
-    bool ret = AESEncryption::ecb_encrypt(password, desarray, TKEY, true);
-    qWarning() << ret;
-
-    AESEncryption::ecb_encrypt(desarray, orgarray, TKEY, false);
-
-    qWarning() << orgarray;
-    qWarning() << desarray;
-
-    return desarray;
 }

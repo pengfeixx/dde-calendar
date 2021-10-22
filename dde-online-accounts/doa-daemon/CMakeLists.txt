@@ -76,12 +76,8 @@ include_directories(../doa-lib/src)
 
 
 set(CONTROLLER_FILES
-src/controller/doamanager.cpp
-src/controller/doamanager.h
 src/controller/doaqqprovider.cpp
 src/controller/doaqqprovider.h
-src/controller/accountdbmanager.cpp
-src/controller/accountdbmanager.h
     )
 
 set(DBUS_FILES

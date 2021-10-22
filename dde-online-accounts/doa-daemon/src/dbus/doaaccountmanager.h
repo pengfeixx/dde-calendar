@@ -22,7 +22,7 @@
 #define DOAACCOUNTMANAGER_H
 
 #include "doaprovider.h"
-#include "controller/accountdbmanager.h"
+#include "db/accountdb.h"
 #include "dbus/doaaccounts_adapter.h"
 #include "dbus/doaaccountscalendar_adapter.h"
 #include "db/account_result.h"
@@ -74,8 +74,6 @@ public Q_SLOTS: // METHODS
     Q_SCRIPTABLE int addAccount(const QString &accountData);
     //dbus接口 获取所有帐户
     Q_SCRIPTABLE QString getAllAccount();
-    //dbus接口 临时接口
-    Q_SCRIPTABLE QString encPassword(const QString &password);
     //dbus接口 取消当前登录
     Q_SCRIPTABLE void loginCancle(const QString &uuid);
 Q_SIGNALS: // SIGNALS dbus公共信号
@@ -121,8 +119,8 @@ private:
 
     //检测网络状态
     DOANetWorkDBus *m_netWorkDBus;
-    //数据库对象
-    AccountDBManager m_accountDBManager;
+    //数据库操作对象
+    AccountDB *m_db;
 
     QMutex m_mutex;
     QEventLoop eventLoop;

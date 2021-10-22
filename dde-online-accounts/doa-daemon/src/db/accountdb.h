@@ -24,6 +24,7 @@
 #include "account_result.h"
 
 #include <QObject>
+#include <QVariant>
 
 struct AccountDbPrivate;
 

@@ -15,13 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "controller/doamanager.h"
 #include "dbus/dbus_consts.h"
+#include "dbus/doaaccountmanager.h"
 
 #include <DLog>
 
 #include <QCoreApplication>
-#include <QDebug>
+#include <QDBusMessage>
+#include <QtDBus>
+#include <QDBusConnection>
 
 int main(int argc, char **argv)
 {
@@ -35,12 +37,21 @@ int main(int argc, char **argv)
     Dtk::Core::DLogManager::registerConsoleAppender();
 
     QDBusConnection sessionBus = QDBusConnection::sessionBus();
+
     if (!sessionBus.registerService(kAccountsService)) {
         qCritical() << "registerService failed:" << sessionBus.lastError();
         exit(0x0001);
     }
 
-    DOAManager doaManager;
+    //创建帐户管理dbus服务对象
+    DOAAccountManager m_doaaccountManager;
+    //注册服务和对象
+    if (sessionBus.registerService(kAccountsService)) {
+        sessionBus.registerObject(kAccountsServiceManagerPath, &m_doaaccountManager, QDBusConnection::ExportScriptableSlots | QDBusConnection::ExportScriptableSignals | QDBusConnection::ExportAllProperties);
+    }
+
+    //从数据库中查询帐户信息生成dbus服务
+    m_doaaccountManager.creatAllAccountDbusFromDB();
 
     return app.exec();
 }
