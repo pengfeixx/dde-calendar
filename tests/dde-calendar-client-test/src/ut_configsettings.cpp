@@ -30,15 +30,12 @@ ut_configsettings::~ut_configsettings()
 
 void ut_configsettings::SetUp()
 {
-    conf = new CConfigSettings();
-    CConfigSettings::init();
+    conf = CConfigSettings::getInstance();
 }
 
 void ut_configsettings::TearDown()
 {
-    CConfigSettings::releaseInstance();
-    delete conf;
-    conf = nullptr;
+
 }
 
 QString syncstr = "";
@@ -47,7 +44,8 @@ void stub_Handle()
     syncstr = "sync";
 }
 
-void setValue_stub(void *obj, const QString &key, const QVariant &value) {
+void setValue_stub(void *obj, const QString &key, const QVariant &value)
+{
     Q_UNUSED(obj)
     Q_UNUSED(key)
     syncstr = value.toString();
