@@ -13,10 +13,11 @@ if(CMAKE_SAFETYTEST STREQUAL "CMAKE_SAFETYTEST_ARG_ON")
 endif()
 
 #安全编译参数
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fstack-protector-strong -D_FORTITY_SOURCE=1 -z noexecstack -pie -fPIC -z lazy")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fstack-protector-strong -D_FORTITY_SOURCE=1 -z noexecstack  -pie -fPIC -z lazy")
 
 # 设置添加gocv相关信息的输出
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -fprofile-arcs -ftest-coverage")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -fprofile-arcs -fno-inline -ftest-coverage")
 
 ADD_SUBDIRECTORY(dde-online-accounts-daemon-test)
 ADD_SUBDIRECTORY(dde-online-accounts-plugin-test)
+ADD_SUBDIRECTORY(dde-online-accounts-lib-test)
