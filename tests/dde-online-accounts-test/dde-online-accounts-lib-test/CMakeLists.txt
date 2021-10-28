@@ -37,8 +37,9 @@ foreach(subdir ${all_src})
     include_directories(${APP_CLIENT_DIR}/src/${subdir})
 endforeach()
 
-file(GLOB_RECURSE DOA_DAEMON_SRC ${APP_CLIENT_DIR}/src/*.cpp)
+file(GLOB_RECURSE DOA_DAEMON_SRC ${APP_CLIENT_DIR}/src/*.cpp ${CMAKE_SOURCE_DIR}/dde-online-accounts/doa-daemon/src/controller/*.cpp)
 include_directories(${Qt5Gui_PRIVATE_INCLUDE_DIRS})
+include_directories("${CMAKE_SOURCE_DIR}/dde-online-accounts/doa-daemon/src/controller")
 
 #test SRC
 SUBDIRLIST(TEST_SRC ${CMAKE_CURRENT_SOURCE_DIR}/src)
@@ -71,3 +72,4 @@ target_link_libraries(${APP_BIN_NAME}
     pthread
     -lgcrypt
 )
+

@@ -45,3 +45,34 @@ TEST_F(ut_aesencryption, ut_aesencryption_PKCS7Padding_001)
     qWarning() << QString(paddata.toHex());
     EXPECT_EQ(QString(paddata.toHex()), "31323334350b0b0b0b0b0b0b0b0b0b0b");
 }
+
+TEST_F(ut_aesencryption, ut_aesencryption_PKCS7UnPadding_001)
+{
+    QString data = "31323334350b0b0b0b0b0b0b0b0b0b0b";
+    QByteArray unpaddata = aes->PKCS7UnPadding(QByteArray::fromHex(data.toUtf8()));
+    qWarning() << QString(unpaddata);
+    EXPECT_EQ(QString(unpaddata), "12345");
+}
+
+TEST_F(ut_aesencryption, ut_aesencryption_ecb_encrypt_001)
+{
+    QString data = "12345678";
+    QString data1 = "";
+    QString key= "8ddaab0576dd5c9444ccaf8cbcc55aad";
+    AESEncryption::ecb_encrypt(data, data1, key, true);
+    qWarning() << data1;
+    EXPECT_EQ(data1, "0b3b1a9110c75f56b422a9c962078425");
+    AESEncryption::ecb_encrypt(data1, data, key, false);
+    qWarning() << data;
+    EXPECT_EQ(data, "12345678");
+}
+
+
+TEST_F(ut_aesencryption, ut_aesencryption_ecb_encrypt_003)
+{
+    QString data = "b78afe8bc08ab4fc48c23709998a1e6f";
+    bool ret = AESEncryption::ecb_encrypt("b78afe8cf08ab4fc48c23709998a1e6f", data, "123456789012", false);
+    EXPECT_EQ(ret, false);
+}
+
+
