@@ -21,9 +21,12 @@
 #include "ut_yearwindow.h"
 #include "customWidget/customframe.h"
 #include "widget/yearWidget/yearscheduleview.h"
+#include "calendarglobalenv.h"
+#include "constants.h"
 
 ut_yearwindow::ut_yearwindow()
 {
+    CalendarGlobalEnv::getGlobalEnv()->registerKey(DDECalendar::CursorPointKey, QPoint(20, 20));
     mYearWindow = new CYearWindow();
     dateaManger = new CalendarDateDataManager();
 }
@@ -51,9 +54,10 @@ TEST_F(ut_yearwindow, setTheMe)
 
 TEST_F(ut_yearwindow, slotMousePress)
 {
+    CalendarGlobalEnv::getGlobalEnv()->reviseValue(DDECalendar::CursorPointKey, QPoint(20, 20));
     QDate currentDate = QDate::currentDate();
     mYearWindow->slotMousePress(currentDate, 0);
-    ASSERT_EQ(mYearWindow->m_scheduleView->arrowDirection(), DArrowRectangle::ArrowRight);
+    ASSERT_EQ(mYearWindow->getSelectDate(), currentDate);
     mYearWindow->slotMousePress(currentDate, 1);
     mYearWindow->slotMousePress(currentDate, 2);
     mYearWindow->slotMousePress(currentDate, 3);
