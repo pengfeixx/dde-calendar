@@ -50,9 +50,9 @@ DOAAccountProtocolListWidget::DOAAccountProtocolListWidget(QWidget *parent)
     mListView->setDragEnabled(false);
     mListView->setIconSize(QSize(30, 30));
     mListView->setLayoutDirection(Qt::LeftToRight);
-    DOAProtocolItemDelegate *itemDelegate = new DOAProtocolItemDelegate;
+    DOAProtocolItemDelegate *itemDelegate = new DOAProtocolItemDelegate(this);
     mListView->setItemDelegate(itemDelegate);
-    mListView->setModel(new DOAProtocolModel);
+    mListView->setModel(new DOAProtocolModel(this));
     mListView->setSpacing(5);
 
     QVBoxLayout *layout = new QVBoxLayout();
