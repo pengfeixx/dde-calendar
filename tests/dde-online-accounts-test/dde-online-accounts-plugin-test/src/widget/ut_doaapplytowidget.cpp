@@ -18,25 +18,34 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef UT_DOAACCOUNTINFOWIDGET_H
-#define UT_DOAACCOUNTINFOWIDGET_H
+#include "ut_doaapplytowidget.h"
 
-#include "gtest/gtest.h"
-#include "doaaccountinfowidget.h"
-
-class ut_doaaccountinfowidget : public ::testing::Test
+ut_doaapplytowidget::ut_doaapplytowidget()
 {
-public:
-    ut_doaaccountinfowidget();
-    void SetUp() override;
-    void TearDown() override;
-    void stub_slotUpdateCurrentAccount();
-    int stub_slotDialogExec();
-    bool stub_resultAllFalse();
-    bool stub_resultTrue();
-protected:
-    DOAAccountInfoWidget *doaAccountInfoWidget = nullptr;
 
-};
+}
 
-#endif // UT_DOAACCOUNTINFOWIDGET_H
+void ut_doaapplytowidget::SetUp()
+{
+    doaApplyToWidget = new DOAApplyToWidget();
+}
+
+void ut_doaapplytowidget::TearDown()
+{
+    delete doaApplyToWidget;
+    doaApplyToWidget = nullptr;
+}
+
+
+TEST_F(ut_doaapplytowidget, ut_doaapplytowidget_addApp_001)
+{
+    DOAApplyToObject app;
+    doaApplyToWidget->addApp(app);
+    EXPECT_EQ(doaApplyToWidget->m_itemVector.count(), 1);
+}
+
+TEST_F(ut_doaapplytowidget, ut_doaapplytowidget_clearApp_001)
+{
+    doaApplyToWidget->clearApp();
+    EXPECT_EQ(doaApplyToWidget->m_itemVector.count(), 0);
+}

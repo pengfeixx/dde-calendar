@@ -18,25 +18,22 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef UT_DOAACCOUNTINFOWIDGET_H
-#define UT_DOAACCOUNTINFOWIDGET_H
+#ifndef UT_DOAACCOUNTPROTOCOLLISTWIDGET_H
+#define UT_DOAACCOUNTPROTOCOLLISTWIDGET_H
 
 #include "gtest/gtest.h"
-#include "doaaccountinfowidget.h"
+#include "doaaccountprotocollistwidget.h"
 
-class ut_doaaccountinfowidget : public ::testing::Test
+class ut_doaaccountprotocollistwidget : public ::testing::Test
 {
 public:
-    ut_doaaccountinfowidget();
+    ut_doaaccountprotocollistwidget();
     void SetUp() override;
     void TearDown() override;
-    void stub_slotUpdateCurrentAccount();
-    int stub_slotDialogExec();
-    bool stub_resultAllFalse();
-    bool stub_resultTrue();
+    int DDialog_Exec_stub();
+    void stub_slotAddAccount(const AddAccountInfo &info);
 protected:
-    DOAAccountInfoWidget *doaAccountInfoWidget = nullptr;
-
+    DOAAccountProtocolListWidget *doaAccountProtocolListWidget = nullptr;
 };
 
-#endif // UT_DOAACCOUNTINFOWIDGET_H
+#endif // UT_DOAACCOUNTPROTOCOLLISTWIDGET_H

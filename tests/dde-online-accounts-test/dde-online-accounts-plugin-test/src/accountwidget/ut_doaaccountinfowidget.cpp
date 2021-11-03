@@ -24,6 +24,7 @@
 #include "dialog/doaaccountremovedialog.h"
 
 #include <QSignalSpy>
+#include <QResizeEvent>
 
 ut_doaaccountinfowidget::ut_doaaccountinfowidget()
 {
@@ -41,6 +42,16 @@ int ut_doaaccountinfowidget::stub_slotDialogExec()
 {
     resultMsg = "resultMsg";
     return 0;
+}
+
+bool ut_doaaccountinfowidget::stub_resultAllFalse()
+{
+    return false;
+}
+
+bool ut_doaaccountinfowidget::stub_resultTrue()
+{
+    return true;
 }
 
 void ut_doaaccountinfowidget::SetUp()
@@ -122,7 +133,15 @@ TEST_F(ut_doaaccountinfowidget, ut_doaaccountinfowidget_slotUpdateCurrentAccount
 
 TEST_F(ut_doaaccountinfowidget, ut_doaaccountinfowidget_slotDeleteCurrentAccount_001)
 {
-
+    Stub st;
+    typedef int (*ut_QDialog_exec_ptr)();
+    ut_QDialog_exec_ptr dptr = (ut_QDialog_exec_ptr)((int(DDialog::*)())&DDialog::exec);
+    st.set(dptr, ADDR(ut_doaaccountinfowidget, stub_slotDialogExec));
+    resultMsg = "slotDeleteCurrentAccount";
+    DOAAccountModel modele;
+    doaAccountInfoWidget->setModel(&modele);
+    doaAccountInfoWidget->slotDeleteCurrentAccount();
+    EXPECT_EQ(resultMsg, "resultMsg");
 }
 
 TEST_F(ut_doaaccountinfowidget, ut_doaaccountinfowidget_slotUpdateUserName_001)
@@ -210,12 +229,68 @@ TEST_F(ut_doaaccountinfowidget, ut_doaaccountinfowidget_slotUpdateApplyToItem_00
 
 TEST_F(ut_doaaccountinfowidget, ut_doaaccountinfowidget_slotPropertyChanged_001)
 {
-
+    Stub st;
+    st.set(ADDR(DOAAccountInfoWidget, isCurrentShowAccount), ADDR(ut_doaaccountinfowidget, stub_resultAllFalse));
+    doaAccountInfoWidget->slotPropertyChanged("12345");
+    EXPECT_EQ(doaAccountInfoWidget->m_accountInfo->m_displayName, "");
 }
 
 TEST_F(ut_doaaccountinfowidget, ut_doaaccountinfowidget_slotPropertyChanged_002)
 {
-
+    DOAAccountModel modele;
+    modele.m_currentAccount = new DOAAccount(doaAccountInfoWidget);
+    modele.m_currentAccount->setUserName("12345");
+    doaAccountInfoWidget->setModel(&modele);
+    Stub st;
+    st.set(ADDR(DOAAccountInfoWidget, isCurrentShowAccount), ADDR(ut_doaaccountinfowidget, stub_resultTrue));
+    doaAccountInfoWidget->slotPropertyChanged("12345");
+    EXPECT_EQ(doaAccountInfoWidget->m_accountInfo->m_displayName, "12345");
 }
 
+TEST_F(ut_doaaccountinfowidget, ut_doaaccountinfowidget_slotAccountStatusChanged_001)
+{
+    Stub st;
+    st.set(ADDR(DOAAccountInfoWidget, isCurrentShowAccount), ADDR(ut_doaaccountinfowidget, stub_resultAllFalse));
+    st.set(ADDR(DOAErrorWidget, setErrorMsg), ADDR(ut_doaaccountinfowidget, stub_slotUpdateCurrentAccount));
+    resultMsg = "slotAccountStatusChanged";
+    doaAccountInfoWidget->slotAccountStatusChanged("12345");
+    EXPECT_EQ(resultMsg, "slotAccountStatusChanged");
+}
 
+TEST_F(ut_doaaccountinfowidget, ut_doaaccountinfowidget_slotAccountStatusChanged_002)
+{
+    DOAAccountModel modele;
+    modele.m_currentAccount = new DOAAccount(doaAccountInfoWidget);
+    modele.m_currentAccount->setUserName("12345");
+    doaAccountInfoWidget->setModel(&modele);
+    Stub st;
+    st.set(ADDR(DOAAccountInfoWidget, isCurrentShowAccount), ADDR(ut_doaaccountinfowidget, stub_resultTrue));
+    st.set(ADDR(DOAErrorWidget, setErrorMsg), ADDR(ut_doaaccountinfowidget, stub_slotUpdateCurrentAccount));
+    resultMsg = "slotAccountStatusChanged";
+    doaAccountInfoWidget->slotAccountStatusChanged("12345");
+    EXPECT_EQ(resultMsg, "resultMsg");
+}
+
+TEST_F(ut_doaaccountinfowidget, ut_doaaccountinfowidget_initWidget_001)
+{
+    EXPECT_EQ(doaAccountInfoWidget->m_errorWidget->isVisible(), false);
+}
+
+TEST_F(ut_doaaccountinfowidget, ut_doaaccountinfowidget_isCurrentShowAccount_001)
+{
+    DOAAccountModel modele;
+    modele.m_currentAccount = new DOAAccount(doaAccountInfoWidget);
+    modele.m_currentAccount->setUserName("12345");
+    modele.m_currentAccount->setAccountID("12345");
+    doaAccountInfoWidget->setModel(&modele);
+    EXPECT_EQ(doaAccountInfoWidget->isCurrentShowAccount("12345"), true);
+}
+
+TEST_F(ut_doaaccountinfowidget, ut_doaaccountinfowidget_resizeEvent_001)
+{
+    QSize newsize(500, 800);
+    QSize oldsize = doaAccountInfoWidget->size();
+    QResizeEvent event(newsize, oldsize);
+    doaAccountInfoWidget->resizeEvent(&event);
+    EXPECT_EQ(doaAccountInfoWidget->m_content->width(), 500);
+}

@@ -71,3 +71,4 @@ target_link_libraries(${APP_BIN_NAME}
     pthread
     doa-lib
 )
+

@@ -18,25 +18,37 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef UT_DOAACCOUNTINFOWIDGET_H
-#define UT_DOAACCOUNTINFOWIDGET_H
+#include "ut_doanonetworklabel.h"
 
-#include "gtest/gtest.h"
-#include "doaaccountinfowidget.h"
-
-class ut_doaaccountinfowidget : public ::testing::Test
+ut_doanonetworklabel::ut_doanonetworklabel()
 {
-public:
-    ut_doaaccountinfowidget();
-    void SetUp() override;
-    void TearDown() override;
-    void stub_slotUpdateCurrentAccount();
-    int stub_slotDialogExec();
-    bool stub_resultAllFalse();
-    bool stub_resultTrue();
-protected:
-    DOAAccountInfoWidget *doaAccountInfoWidget = nullptr;
 
-};
+}
 
-#endif // UT_DOAACCOUNTINFOWIDGET_H
+void ut_doanonetworklabel::SetUp()
+{
+    doaNoNetWorkLabel = new DOANoNetWorkLabel();
+}
+
+void ut_doanonetworklabel::TearDown()
+{
+    delete doaNoNetWorkLabel;
+    doaNoNetWorkLabel = nullptr;
+}
+
+TEST_F(ut_doanonetworklabel, ut_doanonetworklabel_setText_001)
+{
+    doaNoNetWorkLabel->setText("12345");
+    EXPECT_EQ(doaNoNetWorkLabel->m_text, "12345");
+}
+
+TEST_F(ut_doanonetworklabel, ut_doanonetworklabel_getText_001)
+{
+    doaNoNetWorkLabel->setText("12345");
+    EXPECT_EQ(doaNoNetWorkLabel->getText(), "12345");
+}
+
+TEST_F(ut_doanonetworklabel, ut_doanonetworklabel_paintEvent_001)
+{
+    doaNoNetWorkLabel->paintEvent(nullptr);
+}

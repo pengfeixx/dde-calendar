@@ -18,25 +18,16 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef UT_DOAACCOUNTINFOWIDGET_H
-#define UT_DOAACCOUNTINFOWIDGET_H
+#include "ut_doawarningwidget.h"
 
-#include "gtest/gtest.h"
-#include "doaaccountinfowidget.h"
-
-class ut_doaaccountinfowidget : public ::testing::Test
+ut_doawarningwidget::ut_doawarningwidget()
 {
-public:
-    ut_doaaccountinfowidget();
-    void SetUp() override;
-    void TearDown() override;
-    void stub_slotUpdateCurrentAccount();
-    int stub_slotDialogExec();
-    bool stub_resultAllFalse();
-    bool stub_resultTrue();
-protected:
-    DOAAccountInfoWidget *doaAccountInfoWidget = nullptr;
 
-};
+}
 
-#endif // UT_DOAACCOUNTINFOWIDGET_H
+TEST_F(ut_doawarningwidget, ut_doawarningwidget_DOAWarningWidget_001)
+{
+    doaWarningWidget = new DOAWarningWidget;
+    EXPECT_TRUE(doaWarningWidget);
+    delete  doaWarningWidget;
+}
