@@ -18,5 +18,6 @@ add_custom_command(TARGET test
     COMMAND ${CMAKE_BINARY_DIR}/tests/dde-calendar-service-test/dde-calendar-service-test
     COMMAND ${CMAKE_BINARY_DIR}/tests/dde-online-accounts-test/dde-online-accounts-daemon-test/dde-online-accounts-daemon-test
     COMMAND ${CMAKE_BINARY_DIR}/tests/dde-online-accounts-test/dde-online-accounts-plugin-test/dde-online-accounts-plugin-test
+    COMMAND ${CMAKE_BINARY_DIR}/tests/dde-online-accounts-test/dde-online-accounts-lib-test/dde-online-accounts-lib-test
     COMMAND echo " =================== TEST END ==================== "
     )
