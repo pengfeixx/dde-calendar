@@ -32,7 +32,7 @@ BuildRequires: gtest-devel
 export PATH=%{_qt5_bindir}:$PATH
 sed -i "s|^cmake_minimum_required.*|cmake_minimum_required(VERSION 3.0)|" $(find . -name "CMakeLists.txt")
 mkdir build && pushd build 
-%cmake -DCMAKE_BUILD_TYPE=Release ../  -DAPP_VERSION=%{version} -DVERSION=%{version} 
+%cmake -DCMAKE_BUILD_TYPE=Release ../  -DAPP_VERSION=%{version} -DVERSION=%{version} -DCMAKE_SCHEDULE_PLUGIN_OFF="OFF"
 %make_build  
 popd
 

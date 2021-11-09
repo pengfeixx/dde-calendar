@@ -29,7 +29,10 @@ endmacro()
 ADD_SUBDIRECTORY(calendar-basicstruct)
 ADD_SUBDIRECTORY(calendar-client)
 ADD_SUBDIRECTORY(calendar-service)
-ADD_SUBDIRECTORY(schedule-plugin)
+#如果没有设置助手插件关闭参数则添加插件
+if(NOT DEFINED CMAKE_SCHEDULE_PLUGIN_OFF)
+    ADD_SUBDIRECTORY(schedule-plugin)
+endif()
 ADD_SUBDIRECTORY(tests)
 
 #前后端都有翻译所以将翻译放到更高层级
