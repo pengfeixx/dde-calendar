@@ -274,11 +274,13 @@ void CAllDayEventWeekView::upDateInfoShow(const DragStatus &status, const Schedu
 
     int m_topMagin;
     if (vResultData.count() < 2) {
-        m_topMagin = 32;
+        m_topMagin = 10 + 1 * (itemHeight + 1) - 1;
     } else if (vResultData.count() < 6) {
-        m_topMagin = 31 + (vResultData.count() - 1) * (itemHeight + 1);
+        m_topMagin = 10 + vResultData.count() * (itemHeight + 1) - 1;
+        m_topMagin = m_topMagin > 123 ? 123 : m_topMagin;
     } else {
-        m_topMagin = 123;
+        m_topMagin = 10 + 6 * (itemHeight + 1) - 1;
+        m_topMagin = m_topMagin > 123 ? 123 : m_topMagin;
     }
     setFixedHeight(m_topMagin - 3);
     setDayData(vResultData);
