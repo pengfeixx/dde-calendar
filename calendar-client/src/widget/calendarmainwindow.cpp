@@ -60,6 +60,9 @@ static const int CalendarMHeight = 634;
 const int CalendarSwitchWidth = 647; //当宽度小于这个尺寸时，标题栏需要切换显示逻辑
 const int CalendarViewSwitchWidth = 804; //当宽度小于这个尺寸时，视图部分需要切换显示逻辑
 
+const int Calendar_Default_Width = 860; //默认宽度
+const int Calendar_Default_Height = 634; //默认高度
+
 Calendarmainwindow::Calendarmainwindow(int index, QWidget *w)
     : DMainWindow(w)
     , m_defaultIndex(index)
@@ -108,11 +111,14 @@ Calendarmainwindow::Calendarmainwindow(int index, QWidget *w)
         int width = CConfigSettings::getInstance()->value("base.windowWidth").toInt();
         int height = CConfigSettings::getInstance()->value("base.windowHeight").toInt();
         QRect rect(0, 0, width, height);
-        rect.moveCenter(desktopwidget->geometry().center());
         this->setGeometry(rect);
     } else {
-        Dtk::Widget::moveToCenter(this);
+        //如果没有相关配置则设置为默认尺寸
+        QRect rect(0, 0, Calendar_Default_Width, Calendar_Default_Height);
+        this->setGeometry(rect);
     }
+    //在屏幕中央显示
+    Dtk::Widget::moveToCenter(this);
 
     //注册光标位置
     CalendarGlobalEnv::getGlobalEnv()->registerKey(DDECalendar::CursorPointKey, QPoint());
