@@ -40,14 +40,12 @@ class CMyScheduleView : public DCalendarDDialog
     Q_OBJECT
 public:
     explicit CMyScheduleView(const ScheduleDataInfo &schduleInfo, QWidget *parent = nullptr);
-    ~CMyScheduleView() override;
     ScheduleDataInfo getSchedules()
     {
         return  m_scheduleInfo;
     }
 signals:
     void signalsEditorDelete(int type = 0);
-    void signalViewtransparentFrame(int type);
 public slots:
     //按钮点击事件
     void slotBtClick(int buttonIndex, const QString &buttonName);
@@ -62,7 +60,6 @@ private:
     //设置调色板颜色
     void setPaletteTextColor(QWidget *widget, QColor textColor);
 protected:
-    void showEvent(QShowEvent *event) override;
     bool eventFilter(QObject *o, QEvent *e) override;
     void updateDateTimeFormat() override;
 private:

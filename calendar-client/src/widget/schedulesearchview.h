@@ -49,7 +49,6 @@ public:
     void deleteSchedule();
 signals:
     void signalSelectSchedule(const ScheduleDataInfo &scheduleInfo);
-    void signalViewtransparentFrame(int type);
     void signalScheduleHide();
     void signalSelectCurrentItem();
     void signalSchotCutClicked();
@@ -134,7 +133,6 @@ signals:
     void signalsDelete(CScheduleSearchItem *item);
     void signalsEdit(CScheduleSearchItem *item);
     void signalSelectSchedule(const ScheduleDataInfo &scheduleInfo);
-    void signalViewtransparentFrame(int type);
     void signalSelectCurrentItem(CScheduleSearchItem *item, bool focusOutStatus);
 public slots:
     void slotEdit();

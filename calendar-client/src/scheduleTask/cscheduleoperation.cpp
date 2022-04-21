@@ -54,7 +54,6 @@ bool CScheduleOperation::changeSchedule(const ScheduleDataInfo &newInfo, const S
     } else {
         //如果切换了全天状态则提醒是否修改全部
         if (newInfo.getAllDay() != oldInfo.getAllDay()) {
-            emit signalViewtransparentFrame(1);
             CScheduleCtrlDlg msgBox(m_widget);
             msgBox.setText(
                 tr("All occurrences of a repeating event must have the same all-day status."));
@@ -62,7 +61,6 @@ bool CScheduleOperation::changeSchedule(const ScheduleDataInfo &newInfo, const S
             msgBox.addPushButton(tr("Cancel", "button"), true);
             msgBox.addWaringButton(tr("Change All"), true);
             msgBox.exec();
-            emit signalViewtransparentFrame(0);
 
             if (msgBox.clickButton() == 0) {
                 _result = false;
@@ -72,14 +70,12 @@ bool CScheduleOperation::changeSchedule(const ScheduleDataInfo &newInfo, const S
             }
         } else if (oldInfo.getRepetitionRule().getRuleId() != newInfo.getRepetitionRule().getRuleId()) {
             //修改重复规则
-            emit signalViewtransparentFrame(1);
             CScheduleCtrlDlg msgBox(m_widget);
             msgBox.setText(tr("You are changing the repeating rule of this event."));
             msgBox.setInformativeText(tr("Do you want to change all occurrences?"));
             msgBox.addPushButton(tr("Cancel", "button"), true);
             msgBox.addWaringButton(tr("Change All"), true);
             msgBox.exec();
-            emit signalViewtransparentFrame(0);
             if (msgBox.clickButton() == 0) {
                 _result = false;
             } else if (msgBox.clickButton() == 1) {
@@ -102,14 +98,12 @@ bool CScheduleOperation::deleteSchedule(const ScheduleDataInfo &scheduleInfo)
     bool _restuleBool {false};
     //如果为普通日程
     if (scheduleInfo.getRepetitionRule().getRuleId() == 0) {
-        emit signalViewtransparentFrame(1);
         CScheduleCtrlDlg msgBox(m_widget);
         msgBox.setText(tr("You are deleting an event."));
         msgBox.setInformativeText(tr("Are you sure you want to delete this event?"));
         msgBox.addPushButton(tr("Cancel", "button"), true);
         msgBox.addWaringButton(tr("Delete", "button"), true);
         msgBox.exec();
-        emit signalViewtransparentFrame(0);
         if (msgBox.clickButton() == 0) {
             return false;
         } else if (msgBox.clickButton() == 1) {
@@ -119,7 +113,6 @@ bool CScheduleOperation::deleteSchedule(const ScheduleDataInfo &scheduleInfo)
     } else {
         //如果为重复日程的第一个
         if (scheduleInfo.getRecurID() == 0) {
-            emit signalViewtransparentFrame(1);
             CScheduleCtrlDlg msgBox(m_widget);
             msgBox.setText(tr("You are deleting an event."));
             msgBox.setInformativeText(tr("Do you want to delete all occurrences of this event, or only the selected occurrence?"));
@@ -127,7 +120,6 @@ bool CScheduleOperation::deleteSchedule(const ScheduleDataInfo &scheduleInfo)
             msgBox.addPushButton(tr("Delete All"));
             msgBox.addWaringButton(tr("Delete Only This Event"));
             msgBox.exec();
-            emit signalViewtransparentFrame(0);
             if (msgBox.clickButton() == 0) {
                 return false;
             } else if (msgBox.clickButton() == 1) {
@@ -143,7 +135,6 @@ bool CScheduleOperation::deleteSchedule(const ScheduleDataInfo &scheduleInfo)
                 _restuleBool = true;
             }
         } else {
-            emit signalViewtransparentFrame(1);
             CScheduleCtrlDlg msgBox(m_widget);
             msgBox.setText(tr("You are deleting an event."));
             msgBox.setInformativeText(tr("Do you want to delete this and all future occurrences of this event, or only the selected occurrence?"));
@@ -151,7 +142,6 @@ bool CScheduleOperation::deleteSchedule(const ScheduleDataInfo &scheduleInfo)
             msgBox.addPushButton(tr("Delete All Future Events"));
             msgBox.addWaringButton(tr("Delete Only This Event"));
             msgBox.exec();
-            emit signalViewtransparentFrame(0);
 
             if (msgBox.clickButton() == 0) {
                 return false;
@@ -227,7 +217,6 @@ bool CScheduleOperation::changeRecurInfo(const ScheduleDataInfo &newinfo, const 
     bool _result{false};
     //如果为重复类型第一个
     if (newinfo.getRecurID() == 0) {
-        emit signalViewtransparentFrame(1);
         CScheduleCtrlDlg msgBox(m_widget);
         msgBox.setText(tr("You are changing a repeating event."));
         msgBox.setInformativeText(
@@ -237,7 +226,6 @@ bool CScheduleOperation::changeRecurInfo(const ScheduleDataInfo &newinfo, const 
         msgBox.addPushButton(tr("All"));
         msgBox.addsuggestButton(tr("Only This Event"));
         msgBox.exec();
-        emit signalViewtransparentFrame(0);
 
         if (msgBox.clickButton() == 0) {
             _result = false;
@@ -261,7 +249,6 @@ bool CScheduleOperation::changeRecurInfo(const ScheduleDataInfo &newinfo, const 
             _result = changeOnlyInfo(newinfo, oldinfo);
         }
     } else {
-        emit signalViewtransparentFrame(1);
         CScheduleCtrlDlg msgBox(m_widget);
         msgBox.setText(tr("You are changing a repeating event."));
         msgBox.setInformativeText(
@@ -271,7 +258,6 @@ bool CScheduleOperation::changeRecurInfo(const ScheduleDataInfo &newinfo, const 
         msgBox.addPushButton(tr("All Future Events"));
         msgBox.addsuggestButton(tr("Only This Event"));
         msgBox.exec();
-        emit signalViewtransparentFrame(0);
 
         if (msgBox.clickButton() == 0) {
             _result = false;

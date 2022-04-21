@@ -51,33 +51,32 @@ private:
      * @param begin                             开始时间（DateTime）
      * @param end                               结束时间 (DateTime）
      */
-    void updateEndTimeListAndTimeDiff(const QDateTime &begin ,const QDateTime &end);
+    void updateEndTimeListAndTimeDiff(const QDateTime &begin, const QDateTime &end);
 
     /**
      * @brief updateEndTimeList             更新结束时间下拉列表
      * @param begin                         开始时间(time)
      * @param isShowTimeInterval            是否显示时间偏移
      */
-    void updateEndTimeList(const QTime &begin,bool isShowTimeInterval);
+    void updateEndTimeList(const QTime &begin, bool isShowTimeInterval);
 signals:
-    void signalViewtransparentFrame(int type);
     void signalScheduleUpdate(int id = 0);
 public slots:
     /**
      * @brief 开始时间改变
-     * 
+     *
      */
     void slotBeginTimeChange();
 
     /**
      * @brief 结束时间改变
-     * 
+     *
      */
     void slotEndTimeChange();
 
     /**
      * @brief 结束日期改变
-     * 
+     *
      */
     void slotEndDateChange(const QDate &date);
     //对话框按钮点击处理
@@ -90,7 +89,6 @@ public slots:
     void sloteRpeatactivated(int index);
 protected:
     bool eventFilter(QObject *obj, QEvent *pEvent) override;
-    void showEvent(QShowEvent *event) override;
     void closeEvent(QCloseEvent *event) override;
     void changeEvent(QEvent *event) override;
     void updateDateTimeFormat() override;

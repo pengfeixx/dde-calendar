@@ -55,11 +55,6 @@ CMyScheduleView::CMyScheduleView(const ScheduleDataInfo &schduleInfo, QWidget *p
     focusNextPrevChild(false);
 }
 
-CMyScheduleView::~CMyScheduleView()
-{
-    emit signalViewtransparentFrame(0);
-}
-
 /**
  * @brief CMyScheduleView::AutoFeed     字体改变更改界面显示
  * @param text
@@ -155,12 +150,6 @@ void CMyScheduleView::setPaletteTextColor(QWidget *widget, QColor textColor)
     //设置文字显示颜色
     palette.setColor(DPalette::WindowText, textColor);
     widget->setPalette(palette);
-}
-
-void CMyScheduleView::showEvent(QShowEvent *event)
-{
-    Q_UNUSED(event);
-    emit signalViewtransparentFrame(1);
 }
 
 bool CMyScheduleView::eventFilter(QObject *o, QEvent *e)

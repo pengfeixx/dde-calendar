@@ -333,21 +333,17 @@ void DragInfoGraphicsView::contextMenuEvent(QContextMenuEvent *event)
             QAction *action_t = m_rightMenu->exec(QCursor::pos());
 
             if (action_t == m_editAction) {
-                emit signalViewtransparentFrame(1);
                 CScheduleDlg dlg(0, this);
                 dlg.setData(infoitem->getData());
                 if (dlg.exec() == DDialog::Accepted) {
                     emit signalsUpdateSchedule();
                 }
-                emit signalViewtransparentFrame(0);
             } else if (action_t == m_deleteAction) {
                 DeleteItem(infoitem->getData());
             }
         } else {
-            emit signalViewtransparentFrame(1);
             CMyScheduleView dlg(infoitem->getData(), this);
             dlg.exec();
-            emit signalViewtransparentFrame(0);
         }
     } else {
         RightClickToCreate(listItem, event->pos());
@@ -493,8 +489,6 @@ void DragInfoGraphicsView::setPressSelectInfo(const ScheduleDataInfo &info)
 void DragInfoGraphicsView::updateScheduleInfo(const ScheduleDataInfo &info)
 {
     CScheduleOperation _scheduleOperation(this);
-    //根据是否弹框决定是否设置阴影
-    connect(&_scheduleOperation, &CScheduleOperation::signalViewtransparentFrame, this, &DragInfoGraphicsView::signalViewtransparentFrame);
     if (_scheduleOperation.changeSchedule(info, m_PressScheduleInfo)) {
         //如果日程修改成功则更新更新标志
         m_hasUpdateMark = true;
@@ -575,7 +569,6 @@ void DragInfoGraphicsView::mouseReleaseScheduleUpdate()
         if (MeetCreationConditions(m_MoveDate)) {
             //如果不添加会进入leaveEvent事件内的条件
             m_DragStatus = NONE;
-            emit signalViewtransparentFrame(1);
             CScheduleDlg dlg(1, this);
             dlg.setData(m_DragScheduleInfo);
             //如果取消新建则主动刷新日程信息
@@ -586,7 +579,6 @@ void DragInfoGraphicsView::mouseReleaseScheduleUpdate()
             }
             //设置选中日程为无效日程
             setPressSelectInfo(ScheduleDataInfo());
-            emit signalViewtransparentFrame(0);
         }
         break;
     case ChangeBegin:
@@ -653,11 +645,9 @@ void DragInfoGraphicsView::stopTouchAnimation()
  */
 void DragInfoGraphicsView::DeleteItem(const ScheduleDataInfo &info)
 {
-    emit signalViewtransparentFrame(1);
     //删除日程
     CScheduleOperation _scheduleOperation(this);
     _scheduleOperation.deleteSchedule(info);
-    emit signalViewtransparentFrame(0);
 }
 
 /**
@@ -682,7 +672,6 @@ void DragInfoGraphicsView::setDragPixmap(QDrag *drag, DragInfoItem *item)
 
 void DragInfoGraphicsView::slotCreate(const QDateTime &date)
 {
-    emit signalViewtransparentFrame(1);
     CScheduleDlg dlg(1, this);
     QDateTime tDatatime;
     tDatatime.setDate(date.date());
@@ -698,7 +687,6 @@ void DragInfoGraphicsView::slotCreate(const QDateTime &date)
     if (dlg.exec() == DDialog::Accepted) {
         emit signalsUpdateSchedule();
     }
-    emit signalViewtransparentFrame(0);
 }
 
 ScheduleDataInfo DragInfoGraphicsView::getScheduleInfo(const QDateTime &beginDate, const QDateTime &endDate)
@@ -870,13 +858,11 @@ void DragInfoGraphicsView::slotContextMenu(CFocusItem *item)
         QAction *action_t = m_rightMenu->exec(screen_pos);
 
         if (action_t == m_editAction) {
-            emit signalViewtransparentFrame(1);
             CScheduleDlg dlg(0, this);
             dlg.setData(infoitem->getData());
             if (dlg.exec() == DDialog::Accepted) {
                 emit signalsUpdateSchedule();
             }
-            emit signalViewtransparentFrame(0);
         } else if (action_t == m_deleteAction) {
             DeleteItem(infoitem->getData());
         }
