@@ -61,6 +61,7 @@ target_link_libraries(${PROJECT_NAME}
     ${LINK_LIBS}
     )
 
+# 在debian/rules中有覆盖这个变量，以避免更改daemon安装路经导致专业版上的云同步功能出现问题
 set (SERVICE_INSTALL_DIR "${CMAKE_INSTALL_FULL_LIBEXECDIR}/deepin-daemon" CACHE STRING "Install dir for dde-calendar-service")
 
 target_compile_definitions(${PROJECT_NAME}
