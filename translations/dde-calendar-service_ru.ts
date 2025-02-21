@@ -26,7 +26,7 @@
     </message>
     <message>
         <source>Event types</source>
-        <translation type="unfinished"/>
+        <translation type="vanished">Типы событий</translation>
     </message>
 </context>
 <context>
@@ -250,7 +250,7 @@
     </message>
     <message>
         <source>Repeat:</source>
-        <translation type="vanished">Повторять:</translation>
+        <translation type="vanished">Повтор:</translation>
     </message>
     <message>
         <source>End Repeat:</source>
@@ -692,7 +692,7 @@
     <name>CenterWidget</name>
     <message>
         <source>All Day</source>
-        <translation type="vanished">Весь День:</translation>
+        <translation type="vanished">Весь день:</translation>
     </message>
 </context>
 <context>
@@ -826,7 +826,7 @@
     </message>
     <message>
         <source>Manage calendar</source>
-        <translation type="unfinished"/>
+        <translation type="vanished">Управление календарём</translation>
     </message>
     <message>
         <source>Calendar account</source>
