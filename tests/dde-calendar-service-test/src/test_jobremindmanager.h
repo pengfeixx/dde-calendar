@@ -5,7 +5,7 @@
 #ifndef TEST_JOBREMINDMANAGER_H
 #define TEST_JOBREMINDMANAGER_H
 
-#include "jobremindmanager.h"
+#include "alarmManager/dalarmmanager.h"
 #include "gtest/gtest.h"
 #include <QObject>
 
@@ -15,7 +15,7 @@ public:
     test_jobremindmanager();
     ~test_jobremindmanager();
 protected:
-    JobRemindManager *jobRemindManager = nullptr;
+    DAlarmManager *jobRemindManager = nullptr;
 };
 
 #endif // TEST_JOBREMINDMANAGER_H

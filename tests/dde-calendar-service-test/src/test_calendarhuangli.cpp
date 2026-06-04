@@ -8,36 +8,30 @@
 #include <QSqlDatabase>
 #include <QDebug>
 
-bool stub_OpenHuangliDB(void *obj, const QString &dbpath)
+bool stub_dbOpen(void *obj)
 {
-    Q_UNUSED(dbpath);
-    HuangLiDataBase *o = reinterpret_cast<HuangLiDataBase *>(obj);
-    o->m_database = QSqlDatabase::addDatabase("QSQLITE");
-    o->m_database.setDatabaseName(HL_DATABASE_DIR);
-    return o->m_database.open();
+    Q_UNUSED(obj);
+    return true;
 }
 
 test_calendarhuangli::test_calendarhuangli()
 {
     Stub stub;
-    stub.set(ADDR(HuangLiDataBase, OpenHuangliDatabase), stub_OpenHuangliDB);
+    stub.set(ADDR(DHuangLiDataBase, dbOpen), stub_dbOpen);
     calendarHuangLi = new CalendarHuangLi();
 }
 
 test_calendarhuangli::~test_calendarhuangli()
 {
-    if (calendarHuangLi->m_database->m_database.isOpen()) {
-        calendarHuangLi->m_database->m_database.close();
-    }
     delete calendarHuangLi;
 }
 
-//QString CalendarHuangLi::GetFestivalMonth(quint32 year, quint32 month)
+//QJsonArray CalendarHuangLi::getFestivalMonth(quint32 year, quint32 month)
 TEST_F(test_calendarhuangli, GetFestivalMonth)
 {
     quint32 year = 2020;
     quint32 month = 12;
-    QString fesMonth = calendarHuangLi->getFestivalMonth(year, month);
+    QJsonArray fesMonth = calendarHuangLi->getFestivalMonth(year, month);
 }
 
 //QString CalendarHuangLi::GetHuangLiDay(quint32 year, quint32 month, quint32 day)

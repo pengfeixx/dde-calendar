@@ -53,6 +53,13 @@ TEST_F(test_CKeyEnableDeal, focusItemDeal_Item)
 {
     QRectF rect(0, 0, 100, 100);
     focusItem = new CScheduleItem(rect);
+    //设置有效的日程数据，避免 CMyScheduleView 构造函数空指针崩溃
+    DSchedule::Ptr schedule = DSchedule::Ptr(new DSchedule());
+    schedule->setUid("1");
+    schedule->setDtStart(QDateTime::currentDateTime());
+    schedule->setDtEnd(QDateTime::currentDateTime().addSecs(3600));
+    schedule->setSummary("test");
+    static_cast<CScheduleItem *>(focusItem)->setData(schedule, QDate::currentDate(), 1);
     stub.getStub().set(ADDR(CSceneBackgroundItem, getFocusItem), getFocusItem_stub);
     focusItemType = CFocusItem::CITEM;
     enableDeal->dealEvent();

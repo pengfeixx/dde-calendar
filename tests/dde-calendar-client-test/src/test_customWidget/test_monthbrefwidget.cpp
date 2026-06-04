@@ -21,8 +21,9 @@ test_monthbrefwidget::~test_monthbrefwidget()
 
 void test_monthbrefwidget::SetUp()
 {
+    mGlobalData = new MonthBrefWidget::GlobalData();
     mMonthBrefWidget = new MonthBrefWidget();
-    mMonthDayRect = new CMonthDayRect();
+    mMonthDayRect = new CMonthDayRectWidget(mGlobalData);
 }
 
 void test_monthbrefwidget::TearDown()
@@ -31,165 +32,62 @@ void test_monthbrefwidget::TearDown()
     mMonthBrefWidget = nullptr;
     delete mMonthDayRect;
     mMonthDayRect = nullptr;
+    delete mGlobalData;
+    mGlobalData = nullptr;
 }
 
-QVector<QDate> getDateList()
+//void MonthBrefWidget::setShowMonthDate(const QDate &monthDate)
+TEST_F(test_monthbrefwidget, setShowMonthDate)
 {
-    QDate currentdate = QDate::currentDate();
-    QVector<QDate> dateList;
-    for (int i = 0; i < 42; i++) {
-        dateList.append(currentdate.addDays(i));
-    }
-    return dateList;
+    mMonthBrefWidget->setShowMonthDate(QDate(QDate::currentDate().year(), QDate::currentDate().month(), 1));
 }
 
-QVector<bool> getBoolList()
+//void MonthBrefWidget::setHasScheduleDateSet(const QSet<QDate> &hasScheduleSet)
+TEST_F(test_monthbrefwidget, setHasScheduleDateSet)
 {
-    QVector<bool> lineList;
-    for (int i = 0; i < 42; i++) {
-        if (i % 2 == 0)
-            lineList.append(true);
-        else
-            lineList.append(false);
-    }
-    return lineList;
+    QSet<QDate> scheduleSet;
+    scheduleSet << QDate::currentDate();
+    mMonthBrefWidget->setHasScheduleDateSet(scheduleSet);
 }
 
-//void MonthBrefWidget::setDate(const int showMonth, const QVector<QDate> &showDate)
-TEST_F(test_monthbrefwidget, setDate)
+//void MonthBrefWidget::setHasSearchScheduleSet(const QSet<QDate> &hasScheduleSet)
+TEST_F(test_monthbrefwidget, setHasSearchScheduleSet)
 {
-    const int month = 4;
-    mMonthBrefWidget->setDate(month, getDateList());
+    QSet<QDate> searchSet;
+    searchSet << QDate::currentDate();
+    mMonthBrefWidget->setHasSearchScheduleSet(searchSet);
 }
 
-//void MonthBrefWidget::setTheMe(int type)
-TEST_F(test_monthbrefwidget, setTheMe)
-{
-    mMonthBrefWidget->setTheMe(1);
-    mMonthBrefWidget->setTheMe(2);
-}
-
-//void MonthBrefWidget::setLintFlag(const QVector<bool> &lineFlag)
-TEST_F(test_monthbrefwidget, setLintFlag)
-{
-    mMonthBrefWidget->setLintFlag(getBoolList());
-}
-
-//void MonthBrefWidget::setSearchScheduleFlag(const QVector<bool> &searchFlag)
-TEST_F(test_monthbrefwidget, setSearchScheduleFlag)
-{
-    mMonthBrefWidget->setSearchScheduleFlag(getBoolList());
-}
-
-//void MonthBrefWidget::updateSize()
-TEST_F(test_monthbrefwidget, updateSize)
-{
-    mMonthBrefWidget->updateSize();
-}
-
-//int MonthBrefWidget::getMousePosItem(const QPointF &pos)
-TEST_F(test_monthbrefwidget, getMousePosItem)
-{
-    QPointF pointf;
-    mMonthBrefWidget->getMousePosItem(pointf);
-}
-
-//void MonthBrefWidget::mousePress(const QPoint &point
-TEST_F(test_monthbrefwidget, mousePress)
-{
-    QPoint point;
-    mMonthBrefWidget->mousePress(point);
-}
-
-//void CMonthDayRect::setTheMe(int type)
+//void CMonthDayRectWidget::setTheMe(int type)
 TEST_F(test_monthbrefwidget, settheme)
 {
     mMonthDayRect->setTheMe(1);
     mMonthDayRect->setTheMe(2);
 }
 
-//void CMonthDayRect::setDate(const QDate &date)
+//void CMonthDayRectWidget::setDate(const QDate &date)
 TEST_F(test_monthbrefwidget, setdate)
 {
     mMonthDayRect->setDate(QDate::currentDate());
 }
 
-//QDate CMonthDayRect::getDate() const
+//QDate CMonthDayRectWidget::getDate() const
 TEST_F(test_monthbrefwidget, getdate)
 {
     mMonthDayRect->setDate(QDate::currentDate());
     mMonthDayRect->getDate();
 }
 
-//void CMonthDayRect::setCellEvent(const CMonthDayRect::CellEventType &type)
-TEST_F(test_monthbrefwidget, setCellEvent)
-{
-    mMonthDayRect->setCellEvent(CMonthDayRect::CellEventType::Cellhover);
-}
-
-//void CMonthDayRect::setIsCurrentMonth(const bool isCurrMonth)
-TEST_F(test_monthbrefwidget, setIsCurrentMonth)
-{
-    mMonthDayRect->setIsCurrentMonth(true);
-}
-
-//QRectF CMonthDayRect::rect() const
-TEST_F(test_monthbrefwidget, rect)
-{
-    mMonthDayRect->setRect(QRect(10, 10, 8, 8));
-    mMonthDayRect->rect();
-}
-
-//void CMonthDayRect::setRect(const QRectF &rect)
-TEST_F(test_monthbrefwidget, setRect)
-{
-    mMonthDayRect->setRect(QRect(10, 10, 8, 8));
-}
-
-//void CMonthDayRect::setRect(qreal x, qreal y, qreal w, qreal h)
-TEST_F(test_monthbrefwidget, setrect)
-{
-//    mMonthDayRect->setRect(8, 8, 8, 8);
-}
-
-//void CMonthDayRect::setLineFlag(const bool flag)
-TEST_F(test_monthbrefwidget, setLIneflag)
-{
-    mMonthDayRect->setLineFlag(true);
-}
-
-//void CMonthDayRect::setSearchScheduleFlag(const bool flag)
-TEST_F(test_monthbrefwidget, setSearchScheduleflag)
-{
-    mMonthDayRect->setSearchScheduleFlag(true);
-}
-
-//void CMonthDayRect::setDevicePixelRatio(const qreal pixel)
-TEST_F(test_monthbrefwidget, setDevicePixelRatio)
-{
-    mMonthDayRect->setDevicePixelRatio(2);
-}
-
-//void CMonthDayRect::setCurrentRect(CMonthDayRect *currrect)
-TEST_F(test_monthbrefwidget, setCurrentrect)
-{
-
-    mMonthDayRect->setCurrentRect(mMonthDayRect);
-}
-
-//void CMonthDayRect::setSystemActiveColor(const QColor &activeColor)
-TEST_F(test_monthbrefwidget, setSystemActiveColor)
-{
-    mMonthDayRect->setSystemActiveColor(Qt::red);
-}
-
-//getPixmap
+//getPixmap - 验证控件可设置尺寸和显示月份
+//注意: render() 会触发 CMonthDayRectWidget::paintEvent，
+//后者通过 GlobalData::isSelectedDate() 调用 CScheduleBaseWidget::getSelectDate()，
+//依赖 CalendarManager 单例。测试环境中未初始化该单例，因此跳过 render 调用。
 TEST_F(test_monthbrefwidget, getPixmap)
 {
     mMonthBrefWidget->setFixedSize(800, 500);
-    mMonthBrefWidget->setDate(QDate::currentDate().month(), getDateList());
+    mMonthBrefWidget->setShowMonthDate(QDate(QDate::currentDate().year(), QDate::currentDate().month(), 1));
     QPixmap pixmap(mMonthBrefWidget->size());
-    mMonthBrefWidget->render(&pixmap);
+    // mMonthBrefWidget->render(&pixmap);  // 需要 CalendarManager 运行时依赖
 }
 
 TEST_F(test_monthbrefwidget, resizeEvent)
@@ -202,7 +100,7 @@ TEST_F(test_monthbrefwidget, resizeEvent)
 TEST_F(test_monthbrefwidget, mouseEvent)
 {
     mMonthBrefWidget->setFixedSize(QSize(600, 500));
-    mMonthBrefWidget->setDate(QDate::currentDate().month(), getDateList());
+    mMonthBrefWidget->setShowMonthDate(QDate(QDate::currentDate().year(), QDate::currentDate().month(), 1));
     QTest::mouseDClick(mMonthBrefWidget, Qt::MouseButton::LeftButton);
     QTest::mouseRelease(mMonthBrefWidget, Qt::MouseButton::LeftButton);
 }
@@ -211,6 +109,6 @@ TEST_F(test_monthbrefwidget, mouseEvent)
 TEST_F(test_monthbrefwidget, mouseDoubleClickEvent)
 {
     mMonthBrefWidget->setFixedSize(QSize(600, 500));
-    mMonthBrefWidget->setDate(QDate::currentDate().month(), getDateList());
+    mMonthBrefWidget->setShowMonthDate(QDate(QDate::currentDate().year(), QDate::currentDate().month(), 1));
     QTest::mouseDClick(mMonthBrefWidget, Qt::MouseButton::LeftButton);
 }

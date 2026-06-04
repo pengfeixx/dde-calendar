@@ -9,130 +9,72 @@ test_calendarservice::test_calendarservice()
 
 }
 
-TEST_F(test_calendarservice, GetFestivalMonth_01)
+// Test constructor/destructor
+TEST_F(test_calendarservice, Constructor)
 {
-    mService->GetFestivalMonth(2022, 4);
+    ASSERT_NE(mService, nullptr);
 }
 
-TEST_F(test_calendarservice, GetHuangLiDay_01)
+TEST_F(test_calendarservice, getAccountList)
 {
-    EXPECT_FALSE(mService->GetHuangLiDay(2022, 4, 22).isEmpty());
+    mService->getAccountList();
 }
 
-TEST_F(test_calendarservice, GetHuangLiMonth_01)
+TEST_F(test_calendarservice, getCalendarGeneralSettings)
 {
-    EXPECT_FALSE(mService->GetHuangLiMonth(2022, 4, true).isEmpty());
+    mService->getCalendarGeneralSettings();
 }
 
-TEST_F(test_calendarservice, GetLunarInfoBySolar_01)
+TEST_F(test_calendarservice, setCalendarGeneralSettings)
 {
-    EXPECT_FALSE(mService->GetLunarInfoBySolar(2022, 4, true).mLunarDayName.isEmpty());
+    mService->setCalendarGeneralSettings("{}");
 }
 
-TEST_F(test_calendarservice, GetLunarMonthCalendar_01)
+TEST_F(test_calendarservice, getfirstDayOfWeek)
 {
-    EXPECT_TRUE(mService->GetLunarMonthCalendar(2022, 4, true).mDays);
+    mService->getfirstDayOfWeek();
 }
 
-TEST_F(test_calendarservice, CreateJob_01)
+TEST_F(test_calendarservice, setFirstDayOfWeek)
 {
-    QString str("{\"AllDay\":true,\"Description\":\"\",\"End\":\"2022-04-07T23:59:00+08:00\",\"ID\":1,\"Ignore\":[],\"IsLunar\":false,\"RRule\":\"\",\"RecurID\":0,\"Remind\":\"1;09:00\",\"Start\":\"2022-04-06T00:00:00+08:00\",\"Title\":\"新建日程\",\"Type\":1}");
-    mService->CreateJob(str);
+    mService->setFirstDayOfWeek(0);
+    mService->setFirstDayOfWeek(1);
 }
 
-TEST_F(test_calendarservice, CreateType_01)
+TEST_F(test_calendarservice, getTimeFormatType)
 {
-    QString str("[{\"Authority\":7,\"ColorHex\":\"#5bdd80\",\"ColorTypeNo\":4,\"JobTypeName\":\"123\",\"JobTypeNo\":12}]");
-    mService->CreateType(str);
+    mService->getTimeFormatType();
 }
 
-TEST_F(test_calendarservice, DeleteJob_01)
+TEST_F(test_calendarservice, setTimeFormatType)
 {
-    mService->DeleteJob(1);
-}
-
-TEST_F(test_calendarservice, GetJob_01)
-{
-    mService->GetJob(1);
-}
-
-TEST_F(test_calendarservice, GetJobs_01)
-{
-    mService->GetJobs(2022, 2, 1, 2022, 4, 1);
-}
-
-TEST_F(test_calendarservice, UpdateJob_01)
-{
-    QString str("{\"AllDay\":true,\"Description\":\"\",\"End\":\"2022-04-07T23:59:00+08:00\",\"ID\":1,\"Ignore\":[],\"IsLunar\":false,\"RRule\":\"\",\"RecurID\":0,\"Remind\":\"1;09:00\",\"Start\":\"2022-04-06T00:00:00+08:00\",\"Title\":\"新建日程\",\"Type\":1}");
-    mService->UpdateJob(str);
-}
-
-TEST_F(test_calendarservice, QueryJobs_01)
-{
-    QString str("{\"End\":\"2022-10-22T14:52:29+08:00\",\"Key\":\"sd\",\"Start\":\"2021-10-22T14:52:29+08:00\"}");
-    EXPECT_FALSE(mService->QueryJobs(str).isEmpty());
-}
-
-TEST_F(test_calendarservice, QueryJobsWithLimit_01)
-{
-    QString str("{\"End\":\"2022-10-22T14:52:29+08:00\",\"Key\":\"sd\",\"Start\":\"2021-10-22T14:52:29+08:00\"}");
-    EXPECT_FALSE(mService->QueryJobsWithLimit(str, 5).isEmpty());
-}
-
-TEST_F(test_calendarservice, QueryJobsWithRule_01)
-{
-    QString str("{\"End\":\"2022-10-22T14:52:29+08:00\",\"Key\":\"sd\",\"Start\":\"2021-10-22T14:52:29+08:00\"}");
-    EXPECT_FALSE(mService->QueryJobsWithRule(str, "").isEmpty());
+    mService->setTimeFormatType(0);
+    mService->setTimeFormatType(1);
 }
 
 TEST_F(test_calendarservice, remindJob_01)
 {
-    mService->remindJob(1, 2);
+    mService->remindJob("account1", "alarm1");
 }
 
-TEST_F(test_calendarservice, updateRemindJob_01)
+TEST_F(test_calendarservice, updateRemindSchedules_01)
 {
-    mService->updateRemindJob(true);
-}
-
-TEST_F(test_calendarservice, CreateJobType_01)
-{
-    QString str("[{\"Authority\":7,\"ColorHex\":\"#5bdd80\",\"ColorTypeNo\":4,\"JobTypeName\":\"123\",\"JobTypeNo\":8}]");
-    EXPECT_FALSE(mService->CreateJobType(str));
-}
-
-TEST_F(test_calendarservice, DeleteJobType_01)
-{
-    mService->DeleteJobType(7);
-}
-
-TEST_F(test_calendarservice, UpdateJobType_01)
-{
-    QString str("[{\"Authority\":7,\"ColorHex\":\"#5bdd80\",\"ColorTypeNo\":4,\"JobTypeName\":\"123\",\"JobTypeNo\":8}]");
-    mService->UpdateJobType(str);
-}
-
-TEST_F(test_calendarservice, GetJobTypeList_01)
-{
-    mService->GetJobTypeList().isEmpty();
-}
-
-TEST_F(test_calendarservice, isJobTypeUsed_01)
-{
-    mService->isJobTypeUsed(0);
-}
-
-TEST_F(test_calendarservice, GetColorTypeList_01)
-{
-    mService->GetColorTypeList().isEmpty();
+    mService->updateRemindSchedules(true);
+    mService->updateRemindSchedules(false);
 }
 
 TEST_F(test_calendarservice, notifyMsgHanding_01)
 {
-    mService->notifyMsgHanding(1, 1, 1);
+    mService->notifyMsgHanding("account1", "alarm1", 1);
 }
 
-TEST_F(test_calendarservice, initConnections_01)
+TEST_F(test_calendarservice, isSupportUid)
 {
-    mService->initConnections();
+    mService->isSupportUid();
+}
+
+TEST_F(test_calendarservice, calendarOpen)
+{
+    mService->calendarOpen(true);
+    mService->calendarOpen(false);
 }

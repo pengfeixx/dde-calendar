@@ -4,68 +4,65 @@
 
 #include "test_schedulesearchview.h"
 #include "../third-party_stub/stub.h"
-#include "../calendar-basicstruct/src/utils.h"
 #include "../third-party_stub/addr_pri.h"
-#include "scheduleTask/cscheduledbus.h"
-#include "scheduleTask/scheduletask.h"
+#include "dataManage/schedulemanager.h"
 #include "constants.h"
 #include "../testscheduledata.h"
 #include "../dialog_stub.h"
 #include <QContextMenuEvent>
 
-QVector<ScheduleDataInfo> getScheduleDInfo()
+DSchedule::List getScheduleDInfo()
 {
-    QVector<ScheduleDataInfo> scheduleDate {};
-    ScheduleDataInfo schedule1, schedule2, schedule3, schedule4, schedule5, scheduleFes;
+    DSchedule::List scheduleDate;
     QDateTime currentDateTime = QDateTime::currentDateTime();
 
-    schedule1.setID(1);
-    schedule1.setBeginDateTime(currentDateTime);
-    schedule1.setEndDateTime(currentDateTime.addSecs(60 * 60));
-    schedule1.setTitleName("scheduleOne");
-    schedule1.setAllDay(true);
-    schedule1.setType(1);
-    schedule1.setRecurID(0);
+    DSchedule::Ptr schedule1 = DSchedule::Ptr(new DSchedule());
+    schedule1->setUid("1");
+    schedule1->setDtStart(currentDateTime);
+    schedule1->setDtEnd(currentDateTime.addSecs(60 * 60));
+    schedule1->setSummary("scheduleOne");
+    schedule1->setAllDay(true);
+    schedule1->setScheduleTypeID("1");
 
-    schedule2.setID(2);
-    schedule2.setBeginDateTime(currentDateTime.addDays(1));
-    schedule2.setEndDateTime(currentDateTime.addDays(1).addSecs(60 * 60));
-    schedule2.setTitleName("scheduleTwo");
-    schedule2.setAllDay(true);
-    schedule2.setType(2);
-    schedule2.setRecurID(0);
+    DSchedule::Ptr schedule2 = DSchedule::Ptr(new DSchedule());
+    schedule2->setUid("2");
+    schedule2->setDtStart(currentDateTime.addDays(1));
+    schedule2->setDtEnd(currentDateTime.addDays(1).addSecs(60 * 60));
+    schedule2->setSummary("scheduleTwo");
+    schedule2->setAllDay(true);
+    schedule2->setScheduleTypeID("2");
 
-    schedule3.setID(3);
-    schedule3.setBeginDateTime(currentDateTime.addDays(2));
-    schedule3.setEndDateTime(currentDateTime.addDays(2).addSecs(60 * 60));
-    schedule3.setTitleName("scheduleThree");
-    schedule3.setAllDay(false);
-    schedule3.setType(3);
-    schedule3.setRecurID(0);
+    DSchedule::Ptr schedule3 = DSchedule::Ptr(new DSchedule());
+    schedule3->setUid("3");
+    schedule3->setDtStart(currentDateTime.addDays(2));
+    schedule3->setDtEnd(currentDateTime.addDays(2).addSecs(60 * 60));
+    schedule3->setSummary("scheduleThree");
+    schedule3->setAllDay(false);
+    schedule3->setScheduleTypeID("3");
 
-    schedule4.setID(4);
-    schedule4.setBeginDateTime(currentDateTime.addDays(3));
-    schedule4.setEndDateTime(currentDateTime.addDays(3).addSecs(60 * 60));
-    schedule4.setTitleName("scheduleFour");
-    schedule4.setAllDay(false);
-    schedule4.setType(1);
-    schedule4.setRecurID(0);
+    DSchedule::Ptr schedule4 = DSchedule::Ptr(new DSchedule());
+    schedule4->setUid("4");
+    schedule4->setDtStart(currentDateTime.addDays(3));
+    schedule4->setDtEnd(currentDateTime.addDays(3).addSecs(60 * 60));
+    schedule4->setSummary("scheduleFour");
+    schedule4->setAllDay(false);
+    schedule4->setScheduleTypeID("1");
 
-    schedule5.setID(5);
-    schedule5.setBeginDateTime(currentDateTime.addDays(4));
-    schedule5.setEndDateTime(currentDateTime.addDays(4).addSecs(60 * 60));
-    schedule5.setTitleName("scheduleFive");
-    schedule5.setAllDay(false);
-    schedule5.setType(2);
-    schedule5.setRecurID(0);
+    DSchedule::Ptr schedule5 = DSchedule::Ptr(new DSchedule());
+    schedule5->setUid("5");
+    schedule5->setDtStart(currentDateTime.addDays(4));
+    schedule5->setDtEnd(currentDateTime.addDays(4).addSecs(60 * 60));
+    schedule5->setSummary("scheduleFive");
+    schedule5->setAllDay(false);
+    schedule5->setScheduleTypeID("2");
 
-    scheduleFes.setID(6);
-    scheduleFes.setBeginDateTime(currentDateTime.addDays(5));
-    scheduleFes.setEndDateTime(currentDateTime.addDays(5).addSecs(60 * 60));
-    scheduleFes.setTitleName("scheduleFestival");
-    scheduleFes.setAllDay(true);
-    scheduleFes.setType(4);
-    scheduleFes.setRecurID(0);
+    DSchedule::Ptr scheduleFes = DSchedule::Ptr(new DSchedule());
+    scheduleFes->setUid("6");
+    scheduleFes->setDtStart(currentDateTime.addDays(5));
+    scheduleFes->setDtEnd(currentDateTime.addDays(5).addSecs(60 * 60));
+    scheduleFes->setSummary("scheduleFestival");
+    scheduleFes->setAllDay(true);
+    scheduleFes->setScheduleTypeID("4");
 
     scheduleDate.append(schedule1);
     scheduleDate.append(schedule2);
@@ -76,11 +73,11 @@ QVector<ScheduleDataInfo> getScheduleDInfo()
     return scheduleDate;
 }
 
-QMap<QDate, QVector<ScheduleDataInfo>> getMapScheduleDInfo(int getDays)
+QMap<QDate, DSchedule::List> getMapScheduleDInfo(int getDays)
 {
     QDate currentDate = QDate::currentDate();
-    QVector<ScheduleDataInfo> scheduleInfo {};
-    QMap<QDate, QVector<ScheduleDataInfo>> scheduleDateInof {};
+    DSchedule::List scheduleInfo;
+    QMap<QDate, DSchedule::List> scheduleDateInof;
     switch (getDays) {
     case 0: {
         scheduleInfo.append(getScheduleDInfo().at(0));
@@ -104,28 +101,6 @@ QMap<QDate, QVector<ScheduleDataInfo>> getMapScheduleDInfo(int getDays)
     } break;
     }
     return scheduleDateInof;
-}
-
-bool stub_QueryJobs(const QString &key, QDateTime starttime, QDateTime endtime, QMap<QDate, QVector<ScheduleDataInfo>> &out)
-{
-    Q_UNUSED(key);
-    int days = static_cast<int>(starttime.daysTo(endtime));
-
-    switch (days) {
-    case 0: {
-        out = getMapScheduleDInfo(0);
-    } break;
-    case 1: {
-        out = getMapScheduleDInfo(1);
-    } break;
-    case 2: {
-        out = getMapScheduleDInfo(2);
-    } break;
-    default: {
-        out = getMapScheduleDInfo(days);
-    } break;
-    }
-    return true;
 }
 
 static QAction* schedulesearchview_stub_QMenu_exec()
@@ -174,14 +149,12 @@ TEST_F(test_schedulesearchview, setTheMe)
 //void CScheduleSearchView::clearSearch()
 TEST_F(test_schedulesearchview, clearSearch)
 {
-    ScheduleDataInfo schedule1;
-    schedule1.setID(1);
-    schedule1.setBeginDateTime(QDateTime(QDate(2021, 1, 1), QTime(0, 0, 0)));
-    schedule1.setEndDateTime(QDateTime(QDate(2021, 1, 2), QTime(23, 59, 59)));
-    schedule1.setTitleName("schedule test one");
-    schedule1.setAllDay(true);
-    schedule1.setType(1);
-    schedule1.setRecurID(0);
+    DSchedule::Ptr schedule1 = DSchedule::Ptr(new DSchedule());
+    schedule1->setUid("1");
+    schedule1->setDtStart(QDateTime(QDate(2021, 1, 1), QTime(0, 0, 0)));
+    schedule1->setDtEnd(QDateTime(QDate(2021, 1, 2), QTime(23, 59, 59)));
+    schedule1->setSummary("schedule test one");
+    schedule1->setAllDay(true);
     mScheduleSearchView->createItemWidget(schedule1, QDate(2021, 1, 1), 1);
 
     mScheduleSearchView->clearSearch();
@@ -199,10 +172,10 @@ TEST_F(test_schedulesearchview, slotsetSearch)
     //    mScheduleSearchView->slotsetSearch("jie");
 }
 
-//void CScheduleSearchView::createItemWidget(ScheduleDataInfo info, QDate date, int rtype)
+//void CScheduleSearchView::createItemWidget(DSchedule::Ptr info, QDate date, int rtype)
 TEST_F(test_schedulesearchview, createItemWidget)
 {
-    ScheduleDataInfo scheduleinof = getScheduleDInfo().first();
+    DSchedule::Ptr scheduleinof = getScheduleDInfo().first();
     mScheduleSearchView->createItemWidget(scheduleinof, QDate::currentDate(), 3);
 }
 
@@ -212,10 +185,10 @@ TEST_F(test_schedulesearchview, createItemWidgetDate)
     mScheduleSearchView->createItemWidget(QDate::currentDate());
 }
 
-//void CScheduleSearchView::slotSelectSchedule(const ScheduleDataInfo &scheduleInfo)
+//void CScheduleSearchView::slotSelectSchedule(const DSchedule::Ptr &scheduleInfo)
 TEST_F(test_schedulesearchview, slotSelectSchedule)
 {
-    ScheduleDataInfo scheduleinof = getScheduleDInfo().first();
+    DSchedule::Ptr scheduleinof = getScheduleDInfo().first();
     mScheduleSearchView->slotSelectSchedule(scheduleinof);
 }
 
@@ -275,10 +248,10 @@ TEST_F(test_schedulesearchview, setTimeC)
     mScheduleSearchItem->setTimeC(color, font);
 }
 
-//void CScheduleSearchItem::setData(ScheduleDataInfo vScheduleInfo, QDate date)
+//void CScheduleSearchItem::setData(DSchedule::Ptr vScheduleInfo, QDate date)
 TEST_F(test_schedulesearchview, setItemDate)
 {
-    ScheduleDataInfo scheduleinfo = getScheduleDInfo().first();
+    DSchedule::Ptr scheduleinfo = getScheduleDInfo().first();
     mScheduleSearchItem->setData(scheduleinfo, QDate::currentDate());
 }
 
@@ -301,7 +274,7 @@ TEST_F(test_schedulesearchview, slotEdit_01)
 {
     Stub stub;
     calendarDDialogExecStub(stub);
-    ScheduleDataInfo scheduleinfo = getScheduleDInfo().first();
+    DSchedule::Ptr scheduleinfo = getScheduleDInfo().first();
     CScheduleSearchItem item;
     item.setData(scheduleinfo, QDate::currentDate());
     item.slotEdit();
@@ -312,7 +285,7 @@ TEST_F(test_schedulesearchview, slotDelete_01)
 {
     Stub stub;
     calendarDDialogExecStub(stub);
-    ScheduleDataInfo scheduleinfo = getScheduleDInfo().first();
+    DSchedule::Ptr scheduleinfo = getScheduleDInfo().first();
     CScheduleSearchItem item;
     item.setData(scheduleinfo, QDate::currentDate());
     item.slotDelete();
@@ -377,7 +350,7 @@ TEST_F(test_schedulesearchview, mouseReleaseEvent_01)
 TEST_F(test_schedulesearchview, enterEvent_01)
 {
     CScheduleSearchItem item;
-    QEvent event(QEvent::Enter);
+    QEnterEvent event(QPointF(0, 0), QPointF(0, 0), QPointF(0, 0));
     item.enterEvent(&event);
     EXPECT_EQ(item.m_mouseStatus, CScheduleSearchItem::M_HOVER);
 }
@@ -412,19 +385,16 @@ TEST_F(test_schedulesearchview, keyPressEvent_02)
     item.keyPressEvent(&event);
 }
 
-//const ScheduleDataInfo &getData() const
+//const DSchedule::Ptr &getData() const
 TEST_F(test_schedulesearchview, getDate)
 {
     mScheduleSearchItem->getData();
 }
 
-QMap<QDate, QVector<ScheduleDataInfo>> stub_getSearchScheduleInfo(void *obj, const QString &key, const QDateTime &startTime, const QDateTime &endTime)
+QMap<QDate, DSchedule::List> stub_getAllSearchedScheduleMap(void *obj)
 {
     Q_UNUSED(obj)
-    Q_UNUSED(key)
-    Q_UNUSED(startTime)
-    Q_UNUSED(endTime)
-    QMap<QDate, QVector<ScheduleDataInfo>> searchScheduleInfo {};
+    QMap<QDate, DSchedule::List> searchScheduleInfo;
     searchScheduleInfo[QDate::currentDate()] = TestDataInfo::getScheduleItemDInfo();
     return searchScheduleInfo;
 }
@@ -434,7 +404,7 @@ TEST_F(test_schedulesearchview, getPixmap)
 {
     Stub stub;
 
-    stub.set((QMap<QDate, QVector<ScheduleDataInfo>>(CScheduleTask::*)(const QString &, const QDateTime &, const QDateTime &))ADDR(CScheduleTask, getSearchScheduleInfo), stub_getSearchScheduleInfo);
+    stub.set((QMap<QDate, DSchedule::List>(ScheduleManager::*)())ADDR(ScheduleManager, getAllSearchedScheduleMap), stub_getAllSearchedScheduleMap);
 
     mScheduleSearchView->slotsetSearch("xjrc");
     mScheduleSearchView->setFixedSize(300, 800);

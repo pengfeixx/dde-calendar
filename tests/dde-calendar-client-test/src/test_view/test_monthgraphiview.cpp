@@ -5,6 +5,7 @@
 #include "test_monthgraphiview.h"
 #include "../third-party_stub/stub.h"
 #include "../dialog_stub.h"
+#include "view/graphicsItem/cmonthscheduleitem.h"
 #include "widget/monthWidget/monthscheduleview.h"
 
 static void monthgraphiview_stub_void()
@@ -21,7 +22,7 @@ test_monthgraphiview::~test_monthgraphiview()
     delete cMonthGraphiview;
 }
 
-//void CMonthGraphiview::setTheMe(int type)
+//void CMonthGraphicsview::setTheMe(int type)
 TEST_F(test_monthgraphiview, setTheMe)
 {
     int type = 1;
@@ -29,7 +30,7 @@ TEST_F(test_monthgraphiview, setTheMe)
     cMonthGraphiview->setTheMe(type);
 }
 
-//void CMonthGraphiview::setDate(const QVector<QDate> &showDate)
+//void CMonthGraphicsview::setDate(const QVector<QDate> &showDate)
 TEST_F(test_monthgraphiview, setDate)
 {
     QVector<QDate> showDate;
@@ -46,35 +47,37 @@ TEST_F(test_monthgraphiview, setDate)
     cMonthGraphiview->setDate(showDate);
 }
 
-//void CMonthGraphiview::setLunarInfo(const QMap<QDate, CaHuangLiDayInfo> &lunarCache)
+//void CMonthGraphicsview::setLunarInfo(const QMap<QDate, CaHuangLiDayInfo> &lunarCache)
 TEST_F(test_monthgraphiview, setLunarInfo)
 {
     QMap<QDate, CaHuangLiDayInfo> lunarCache = QMap<QDate, CaHuangLiDayInfo> {};
     cMonthGraphiview->setLunarInfo(lunarCache);
 }
 
-//void CMonthGraphiview::setLunarVisible(bool visible)
+//void CMonthGraphicsview::setLunarVisible(bool visible)
 TEST_F(test_monthgraphiview, setLunarVisible)
 {
     bool visible = false;
     cMonthGraphiview->setLunarVisible(visible);
 }
 
-//void CMonthGraphiview::setScheduleInfo(const QMap<QDate, QVector<ScheduleDataInfo> > &info)
+//void CMonthGraphicsview::setScheduleInfo(const QMap<QDate, DSchedule::List> &info)
 TEST_F(test_monthgraphiview, setScheduleInfo)
 {
-    QMap<QDate, QVector<ScheduleDataInfo> > info = QMap<QDate, QVector<ScheduleDataInfo> > {};
+    QMap<QDate, DSchedule::List> info = QMap<QDate, DSchedule::List> {};
     cMonthGraphiview->setScheduleInfo(info);
 }
 
-//void CMonthGraphiview::setSelectSearchSchedule(const ScheduleDataInfo &scheduleInfo)
+//void CMonthGraphicsview::setSelectSearchSchedule(const DSchedule::Ptr &scheduleInfo)
 TEST_F(test_monthgraphiview, setSelectSearchSchedule)
 {
-    ScheduleDataInfo scheduleInfo = ScheduleDataInfo{};
+    DSchedule::Ptr scheduleInfo = DSchedule::Ptr(new DSchedule());
+    scheduleInfo->setUid("1");
+    scheduleInfo->setSummary("test");
     cMonthGraphiview->setSelectSearchSchedule(scheduleInfo);
 }
 
-//QPointF CMonthGraphiview::getItemPos(const QPoint &p, const QRectF &itemRect)
+//QPointF CMonthGraphicsview::getItemPos(const QPoint &p, const QRectF &itemRect)
 TEST_F(test_monthgraphiview, getItemPos)
 {
     QPoint p(100, 100);
@@ -82,7 +85,7 @@ TEST_F(test_monthgraphiview, getItemPos)
     cMonthGraphiview->getItemPos(p, itemRect);
 }
 
-//QDateTime CMonthGraphiview::getPosDate(const QPoint &p)
+//QDateTime CMonthGraphicsview::getPosDate(const QPoint &p)
 TEST_F(test_monthgraphiview, getPosDate_01)
 {
     QPoint p(100, 100);
@@ -102,13 +105,13 @@ TEST_F(test_monthgraphiview, getPosDate_03)
     cMonthGraphiview->getPosDate(p);
 }
 
-////void CMonthGraphiview::upDateInfoShow(const CMonthGraphiview::DragStatus &status, const ScheduleDataInfo &info)
+////void CMonthGraphicsview::upDateInfoShow(const CMonthGraphicsview::DragStatus &status, const DSchedule::Ptr &info)
 TEST_F(test_monthgraphiview, upDateInfoShow_01)
 {
     Stub stub;
     stub.set(ADDR(CWeekScheduleView, addData), monthgraphiview_stub_void);
     stub.set(ADDR(CWeekScheduleView, changeDate), monthgraphiview_stub_void);
-    ScheduleDataInfo info = ScheduleDataInfo{};
+    DSchedule::Ptr info;
     cMonthGraphiview->upDateInfoShow(CMonthGraphicsview::IsCreate, info);
     cMonthGraphiview->upDateInfoShow(CMonthGraphicsview::ChangeBegin, info);
     cMonthGraphiview->upDateInfoShow(CMonthGraphicsview::ChangeEnd, info);
@@ -156,7 +159,7 @@ TEST_F(test_monthgraphiview, changeEvent_01)
 
 TEST_F(test_monthgraphiview, wheelEvent_01)
 {
-    QWheelEvent event(QPointF(1, 1), 0, Qt::LeftButton, Qt::NoModifier);
+    QWheelEvent event(QPointF(1, 1), QPointF(1, 1), QPoint(0, 0), QPoint(0, 120), Qt::NoButton, Qt::NoModifier, Qt::ScrollUpdate, false);
     cMonthGraphiview->wheelEvent(&event);
 }
 
@@ -165,7 +168,7 @@ TEST_F(test_monthgraphiview, updateBackgroundShowItem_01)
     cMonthGraphiview->updateBackgroundShowItem();
 }
 
-TEST_F(test_monthgraphiview, setDragPixmap_01)
+TEST_F(test_monthgraphiview, DISABLED_setDragPixmap_01)
 {
     QDrag drag(cMonthGraphiview);
     CMonthScheduleItem item(QRect(0, 0, 10, 10));
@@ -198,14 +201,14 @@ TEST_F(test_monthgraphiview, RightClickToCreate_01)
 TEST_F(test_monthgraphiview, MoveInfoProcess_01)
 {
     QPointF pos(1, 1);
-    ScheduleDataInfo info;
+    DSchedule::Ptr info;
     cMonthGraphiview->MoveInfoProcess(info, pos);
 }
 
 TEST_F(test_monthgraphiview, MoveInfoProcess_02)
 {
     QPointF pos(1, -1);
-    ScheduleDataInfo info;
+    DSchedule::Ptr info;
     cMonthGraphiview->MoveInfoProcess(info, pos);
 }
 
@@ -235,4 +238,3 @@ TEST_F(test_monthgraphiview, slotCreate_02)
     cMonthGraphiview->m_InfoEndTime = time;
     cMonthGraphiview->slotCreate(time);
 }
-

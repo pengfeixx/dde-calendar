@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.7)
-include(../qt-version-macros)
+include(${CMAKE_CURRENT_LIST_DIR}/../qt-version-macros.cmake)
 
 # common resource names
 project(dde-calendar-client-test)
@@ -28,19 +28,23 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,--as-needed -fPIE")
 set(CMAKE_EXE_LINKER_FLAGS "-pie")
 
 include_directories(${APP_CLIENT_DIR}/src)
-SUBDIRLIST(all_src ${APP_CLIENT_DIR}/src)
+SUBDIRLIST(client_src ${APP_CLIENT_DIR}/src)
 
 include_directories(${APP_COMMON_DIR}/src)
-SUBDIRLIST(all_src ${APP_COMMON_DIR}/src)
+SUBDIRLIST(common_src ${APP_COMMON_DIR}/src)
 
 include_directories(${APP_3PARTY_DIR}/src)
-SUBDIRLIST(all_src ${APP_3PARTY_DIR}/src)
+SUBDIRLIST(party_src ${APP_3PARTY_DIR}/src)
 
 # Include all app own subdirectories
-foreach(subdir ${all_src})
+foreach(subdir ${client_src})
     include_directories(${APP_CLIENT_DIR}/src/${subdir})
+endforeach()
+foreach(subdir ${common_src})
     include_directories(${APP_COMMON_DIR}/src/${subdir})
-    include_directories(${APP_COMMON_DIR}/src/${subdir})
+endforeach()
+foreach(subdir ${party_src})
+    include_directories(${APP_3PARTY_DIR}/src/${subdir})
 endforeach()
 
 QT_INCLUDE_GUI_PRIVATE_DIRS()
@@ -59,10 +63,12 @@ foreach(subdir ${TEST_SRC})
     include_directories(${subdir})
 endforeach()
 
-file(GLOB_RECURSE Calendar_TEST_SRC ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
-include_directories(../../calendar-basicstruct/)
+# Include third-party stub directory for test stubs
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/third-party_stub)
 
-list(APPEND CMAKE_MODULE_PATH "${ASAN_CMAKE_DIR}")
+file(GLOB_RECURSE Calendar_TEST_SRC ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
+
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake")
 include(asan)
 
 # Tell CMake to create the executable
@@ -81,5 +87,5 @@ target_link_libraries(${APP_BIN_NAME}
     ${GTEST_LIBRARIES}
     ${GTEST_MAIN_LIBRARIES}
     pthread
-    basestruct
+    commondata
 )

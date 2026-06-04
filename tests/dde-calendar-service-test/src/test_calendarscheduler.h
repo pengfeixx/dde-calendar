@@ -5,7 +5,7 @@
 #ifndef TEST_CALENDARSCHEDULER_H
 #define TEST_CALENDARSCHEDULER_H
 
-#include "calendarscheduler.h"
+#include "calendarDataManager/daccountmodule.h"
 #include <QObject>
 #include <gtest/gtest.h>
 
@@ -16,7 +16,7 @@ public:
 
     virtual void SetUp()
     {
-        mCalendar = new CalendarScheduler();
+        mCalendar = new DAccountModule(DAccount::Ptr());
     }
 
     virtual void TearDown()
@@ -25,7 +25,7 @@ public:
         mCalendar = nullptr;
     }
 protected:
-    CalendarScheduler *mCalendar = nullptr;
+    DAccountModule *mCalendar = nullptr;
 };
 
 #endif // TEST_CALENDARSCHEDULER_H

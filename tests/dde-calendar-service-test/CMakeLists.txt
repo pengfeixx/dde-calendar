@@ -26,6 +26,8 @@ set(LINK_LIBS
 )
 
 include_directories(${APP_SERVICE_DIR}/src)
+include_directories(${CMAKE_SOURCE_DIR}/src/calendar-common/src)
+include_directories(${CMAKE_SOURCE_DIR}/src/calendar-common/src/lunarandfestival)
 
 SUBDIRLIST(all_src ${APP_SERVICE_DIR}/src)
 
@@ -35,7 +37,6 @@ foreach(subdir ${all_src})
 endforeach()
 
 file(GLOB_RECURSE CALENDARSERVICE_SRCS ${APP_SERVICE_DIR}/src/*.cpp)
-include_directories(../../calendar-basicstruct/)
 list(REMOVE_ITEM CALENDARSERVICE_SRCS ${APP_SERVICE_DIR}/src/main.cpp)
 
 # test src
@@ -51,15 +52,17 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/config.h.in config.h @ONLY)
 
 file(GLOB_RECURSE Calendar_Service_TEST_SRC ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
-list(APPEND CMAKE_MODULE_PATH "${ASAN_CMAKE_DIR}")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake")
 include(asan)
 
 add_executable(${APP_BIN_NAME} ${Calendar_Service_TEST_SRC} ${CALENDARSERVICE_SRCS} ${APP_QRC})
+
+target_compile_definitions(${APP_BIN_NAME} PRIVATE CALENDAR_SERVICE_PATH="/usr/lib/deepin-daemon")
 
 target_link_libraries(${APP_BIN_NAME}
     ${LINK_LIBS}
     ${GTEST_LIBRARIES}
     ${GTEST_MAIN_LIBRARIES}
     pthread
-    basestruct
+    commondata
 )

@@ -5,7 +5,7 @@
 #ifndef TEST_HUANGLIDATABASE_H
 #define TEST_HUANGLIDATABASE_H
 
-#include "dbmanager/huanglidatabase.h"
+#include "dbmanager/dhuanglidatabase.h"
 #include "gtest/gtest.h"
 #include <QObject>
 
@@ -15,7 +15,7 @@ public:
     test_huanglidatabase();
     ~test_huanglidatabase();
 protected:
-    HuangLiDataBase *hlDb = nullptr;
+    DHuangLiDataBase *hlDb = nullptr;
 };
 
 #endif // TEST_HUANGLIDATABASE_H

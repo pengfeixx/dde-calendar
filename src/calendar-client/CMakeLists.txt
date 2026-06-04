@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.7)
-include(qt-version-macros)
+include(${CMAKE_SOURCE_DIR}/cmake/qt-version-macros.cmake)
 
 if(NOT DEFINED VERSION)
     if(SUPPORT_QT6)

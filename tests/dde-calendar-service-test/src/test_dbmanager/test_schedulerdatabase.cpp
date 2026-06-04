@@ -9,75 +9,63 @@ test_schedulerdatabase::test_schedulerdatabase()
 
 }
 
-TEST_F(test_schedulerdatabase, GetJob_01)
+// Test constructor/destructor
+TEST_F(test_schedulerdatabase, Constructor)
 {
-    schedulerdatabase_next = false;
-    mBase->GetJob(0);
+    ASSERT_NE(mBase, nullptr);
 }
 
-TEST_F(test_schedulerdatabase, GetAllOriginJobs_01)
+TEST_F(test_schedulerdatabase, getScheduleTypeList)
 {
     schedulerdatabase_next = false;
-    mBase->GetAllOriginJobs("", "");
+    mBase->getScheduleTypeList();
 }
 
-TEST_F(test_schedulerdatabase, saveRemindJob_01)
-{
-    schedulerdatabase_next = false;
-    mBase->saveRemindJob(Job());
-}
-
-TEST_F(test_schedulerdatabase, updateRemindJob_01)
-{
-    schedulerdatabase_next = false;
-    mBase->updateRemindJob(Job());
-}
-
-TEST_F(test_schedulerdatabase, getValidRemindJob_01)
+TEST_F(test_schedulerdatabase, getValidRemindJob)
 {
     schedulerdatabase_next = false;
     mBase->getValidRemindJob();
 }
 
-TEST_F(test_schedulerdatabase, getRemindJob_01)
+TEST_F(test_schedulerdatabase, getRemindSchedule)
 {
     schedulerdatabase_next = false;
-    mBase->getRemindJob(1, 2);
+    mBase->getRemindSchedule();
 }
 
-TEST_F(test_schedulerdatabase, getRemindJob_02)
+TEST_F(test_schedulerdatabase, getScheduleIDListByTypeID)
 {
     schedulerdatabase_next = false;
-    mBase->getRemindJob(1);
+    mBase->getScheduleIDListByTypeID("0");
 }
 
-TEST_F(test_schedulerdatabase, UpdateJobIgnore_01)
+TEST_F(test_schedulerdatabase, deleteSchedulesByScheduleTypeID)
 {
     schedulerdatabase_next = false;
-    mBase->UpdateJobIgnore("", 0);
+    mBase->deleteSchedulesByScheduleTypeID("0");
 }
 
-TEST_F(test_schedulerdatabase, DeleteJobsByJobType_01)
+TEST_F(test_schedulerdatabase, scheduleTypeByUsed)
 {
     schedulerdatabase_next = false;
-    mBase->DeleteJobsByJobType(0);
+    mBase->scheduleTypeByUsed("0");
 }
 
-TEST_F(test_schedulerdatabase, getJobIDByJobType_01)
+TEST_F(test_schedulerdatabase, deleteScheduleTypeByID)
 {
     schedulerdatabase_next = false;
-    mBase->getJobIDByJobType(0);
+    mBase->deleteScheduleTypeByID("0");
 }
 
-TEST_F(test_schedulerdatabase, updateColorType_01)
+TEST_F(test_schedulerdatabase, getFestivalTypeID)
 {
     schedulerdatabase_next = false;
-    mBase->updateColorType(0, "#000000");
+    mBase->getFestivalTypeID();
 }
 
-TEST_F(test_schedulerdatabase, setDbPath_01)
+TEST_F(test_schedulerdatabase, setDBPath_01)
 {
     schedulerdatabase_next = false;
-    mBase->setDbPath("123");
-    EXPECT_EQ(mBase->m_dbPath, "123");
+    mBase->setDBPath("123");
+    EXPECT_EQ(mBase->getDBPath(), "123");
 }

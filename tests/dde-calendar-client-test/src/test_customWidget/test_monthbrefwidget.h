@@ -18,7 +18,8 @@ public:
     void TearDown() override;
 protected:
     MonthBrefWidget *mMonthBrefWidget = nullptr;
-    CMonthDayRect *mMonthDayRect = nullptr;
+    CMonthDayRectWidget *mMonthDayRect = nullptr;
+    MonthBrefWidget::GlobalData *mGlobalData = nullptr;
 };
 
 #endif // TEST_MONTHBREFWIDGET_H

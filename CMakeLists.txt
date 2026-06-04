@@ -82,8 +82,10 @@ if(WITH_AIASSISTANT_PLUGIN)
     ADD_SUBDIRECTORY(src/schedule-plugin)
 endif()
 
-# FIXME: Unit tests have not been maintained for a long time
-# ADD_SUBDIRECTORY(tests)
+# Unit tests (仅 Debug 模式下构建)
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+  ADD_SUBDIRECTORY(tests)
+endif()
 
 # ##### Translation #####
 include(translation-generate)

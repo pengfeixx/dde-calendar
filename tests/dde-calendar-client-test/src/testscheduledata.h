@@ -5,18 +5,16 @@
 #ifndef TESTSCHEDULEDATA_H
 #define TESTSCHEDULEDATA_H
 
-//#include "src/scheduledatainfo.h"
+#include "dschedule.h"
 
-//#include <QVector>
+class TestScheduleData
+{
+public:
+    TestScheduleData();
+};
 
-//class TestScheduleData
-//{
-//public:
-//    TestScheduleData();
-//};
-
-//namespace TestDataInfo {
-//QVector<ScheduleDataInfo> getScheduleItemDInfo();
-//}
+namespace TestDataInfo {
+DSchedule::List getScheduleItemDInfo();
+}
 
 #endif // TESTSCHEDULEDATA_H

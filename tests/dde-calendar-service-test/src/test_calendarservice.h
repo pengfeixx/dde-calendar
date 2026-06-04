@@ -5,7 +5,7 @@
 #ifndef TEST_CALENDARSERVICE_H
 #define TEST_CALENDARSERVICE_H
 
-#include "calendarservice.h"
+#include "calendarDataManager/daccountmanagemodule.h"
 #include <QObject>
 #include <gtest/gtest.h>
 
@@ -16,7 +16,7 @@ public:
 
     virtual void SetUp()
     {
-        mService = new CalendarService();
+        mService = new DAccountManageModule();
     }
 
     virtual void TearDown()
@@ -25,7 +25,7 @@ public:
         mService = nullptr;
     }
 protected:
-    CalendarService *mService = nullptr;
+    DAccountManageModule *mService = nullptr;
 };
 
 #endif // TEST_CALENDARSERVICE_H

@@ -8,59 +8,58 @@ TestScheduleData::TestScheduleData()
 {
 }
 
-QVector<ScheduleDataInfo> TestDataInfo::getScheduleItemDInfo()
+DSchedule::List TestDataInfo::getScheduleItemDInfo()
 {
-    QVector<ScheduleDataInfo> scheduleDate {};
-    ScheduleDataInfo schedule1, schedule2, schedule3, schedule4, schedule5, scheduleFes;
+    DSchedule::List scheduleDate;
     QDateTime currentDateTime = QDateTime::currentDateTime();
 
-    schedule1.setID(1);
-    schedule1.setBeginDateTime(currentDateTime);
-    schedule1.setEndDateTime(currentDateTime.addDays(1));
-    schedule1.setTitleName("scheduleOne");
-    schedule1.setAllDay(true);
-    schedule1.setType(1);
-    schedule1.setRecurID(0);
+    DSchedule::Ptr schedule1 = DSchedule::Ptr(new DSchedule());
+    schedule1->setUid("1");
+    schedule1->setDtStart(currentDateTime);
+    schedule1->setDtEnd(currentDateTime.addDays(1));
+    schedule1->setSummary("scheduleOne");
+    schedule1->setAllDay(true);
+    schedule1->setScheduleTypeID("1");
 
-    schedule2.setID(2);
-    schedule2.setBeginDateTime(currentDateTime.addDays(1));
-    schedule2.setEndDateTime(currentDateTime.addDays(1).addSecs(60 * 60));
-    schedule2.setTitleName("scheduleTwo");
-    schedule2.setAllDay(true);
-    schedule2.setType(2);
-    schedule2.setRecurID(0);
+    DSchedule::Ptr schedule2 = DSchedule::Ptr(new DSchedule());
+    schedule2->setUid("2");
+    schedule2->setDtStart(currentDateTime.addDays(1));
+    schedule2->setDtEnd(currentDateTime.addDays(1).addSecs(60 * 60));
+    schedule2->setSummary("scheduleTwo");
+    schedule2->setAllDay(true);
+    schedule2->setScheduleTypeID("2");
 
-    schedule3.setID(3);
-    schedule3.setBeginDateTime(currentDateTime.addDays(2));
-    schedule3.setEndDateTime(currentDateTime.addDays(2).addSecs(60 * 60));
-    schedule3.setTitleName("scheduleThree");
-    schedule3.setAllDay(false);
-    schedule3.setType(3);
-    schedule3.setRecurID(0);
+    DSchedule::Ptr schedule3 = DSchedule::Ptr(new DSchedule());
+    schedule3->setUid("3");
+    schedule3->setDtStart(currentDateTime.addDays(2));
+    schedule3->setDtEnd(currentDateTime.addDays(2).addSecs(60 * 60));
+    schedule3->setSummary("scheduleThree");
+    schedule3->setAllDay(false);
+    schedule3->setScheduleTypeID("3");
 
-    schedule4.setID(4);
-    schedule4.setBeginDateTime(currentDateTime.addDays(3));
-    schedule4.setEndDateTime(currentDateTime.addDays(3).addSecs(60 * 60));
-    schedule4.setTitleName("scheduleFour");
-    schedule4.setAllDay(false);
-    schedule4.setType(1);
-    schedule4.setRecurID(0);
+    DSchedule::Ptr schedule4 = DSchedule::Ptr(new DSchedule());
+    schedule4->setUid("4");
+    schedule4->setDtStart(currentDateTime.addDays(3));
+    schedule4->setDtEnd(currentDateTime.addDays(3).addSecs(60 * 60));
+    schedule4->setSummary("scheduleFour");
+    schedule4->setAllDay(false);
+    schedule4->setScheduleTypeID("1");
 
-    schedule5.setID(5);
-    schedule5.setBeginDateTime(currentDateTime.addDays(4));
-    schedule5.setEndDateTime(currentDateTime.addDays(4).addSecs(60 * 60));
-    schedule5.setTitleName("scheduleFive");
-    schedule5.setAllDay(false);
-    schedule5.setType(2);
-    schedule5.setRecurID(0);
+    DSchedule::Ptr schedule5 = DSchedule::Ptr(new DSchedule());
+    schedule5->setUid("5");
+    schedule5->setDtStart(currentDateTime.addDays(4));
+    schedule5->setDtEnd(currentDateTime.addDays(4).addSecs(60 * 60));
+    schedule5->setSummary("scheduleFive");
+    schedule5->setAllDay(false);
+    schedule5->setScheduleTypeID("2");
 
-    scheduleFes.setID(6);
-    scheduleFes.setBeginDateTime(currentDateTime.addDays(5));
-    scheduleFes.setEndDateTime(currentDateTime.addDays(5).addSecs(60 * 60));
-    scheduleFes.setTitleName("scheduleFestival");
-    scheduleFes.setAllDay(true);
-    scheduleFes.setType(4);
-    scheduleFes.setRecurID(0);
+    DSchedule::Ptr scheduleFes = DSchedule::Ptr(new DSchedule());
+    scheduleFes->setUid("6");
+    scheduleFes->setDtStart(currentDateTime.addDays(5));
+    scheduleFes->setDtEnd(currentDateTime.addDays(5).addSecs(60 * 60));
+    scheduleFes->setSummary("scheduleFestival");
+    scheduleFes->setAllDay(true);
+    scheduleFes->setScheduleTypeID("4");
 
     scheduleDate.append(schedule1);
     scheduleDate.append(schedule2);

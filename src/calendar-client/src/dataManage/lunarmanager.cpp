@@ -5,7 +5,7 @@
 #include "lunarmanager.h"
 #include "commondef.h"
 #include <QFutureWatcher>
-#include <QtConcurrent>
+#include <QtConcurrent/QtConcurrent>
 #include <iterator>
 
 static constexpr int MAX_CACHED_RANGES = 10;

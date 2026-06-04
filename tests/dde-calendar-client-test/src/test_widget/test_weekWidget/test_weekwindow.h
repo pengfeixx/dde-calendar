@@ -6,23 +6,20 @@
 #define TEST_WEEKWINDOW_H
 
 #include "gtest/gtest.h"
-//#include "weekWidget/weekwindow.h"
+#include "widget/weekWidget/weekwindow.h"
 
-//#include <QObject>
+#include <QObject>
 
-//class test_weekWindow : public QObject
-//    , public ::testing::Test
-//{
-//    Q_OBJECT
-//public:
-//    explicit test_weekWindow();
-//    void SetUp() override;
-//    void TearDown() override;
-//signals:
+class test_weekWindow : public QObject
+    , public ::testing::Test
+{
+public:
+    explicit test_weekWindow();
+    void SetUp() override;
+    void TearDown() override;
 
-//public slots:
-//public:
-//    CWeekWindow *m_weekWindow {nullptr};
-//};
+public:
+    CWeekWindow *m_weekWindow {nullptr};
+};
 
 #endif // TEST_WEEKWINDOW_H

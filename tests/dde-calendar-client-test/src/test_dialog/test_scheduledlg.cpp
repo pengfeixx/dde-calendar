@@ -20,33 +20,33 @@ test_scheduledlg::~test_scheduledlg()
     mScheduleDlg = nullptr;
 }
 
-QVector<ScheduleDataInfo> getScheduleDlgData()
+DSchedule::List getScheduleDlgData()
 {
-    ScheduleDataInfo schedule1, schedule2;
+    DSchedule::List scheduleList;
 
     QDateTime currentDateTime = QDateTime::currentDateTime();
-    schedule1.setID(1);
-    schedule1.setBeginDateTime(currentDateTime);
-    schedule1.setEndDateTime(currentDateTime.addDays(1));
-    schedule1.setTitleName("scheduleOne");
-    schedule1.setAllDay(true);
-    schedule1.setType(1);
-    schedule1.setRecurID(0);
 
-    schedule2.setID(2);
-    schedule2.setBeginDateTime(currentDateTime.addDays(1));
-    schedule2.setEndDateTime(currentDateTime.addDays(1).addSecs(60 * 60));
-    schedule2.setTitleName("scheduleTwo");
-    schedule2.setAllDay(true);
-    schedule2.setType(2);
-    schedule2.setRecurID(0);
+    DSchedule::Ptr schedule1 = DSchedule::Ptr(new DSchedule());
+    schedule1->setUid("1");
+    schedule1->setDtStart(currentDateTime);
+    schedule1->setDtEnd(currentDateTime.addDays(1));
+    schedule1->setSummary("scheduleOne");
+    schedule1->setAllDay(true);
+    schedule1->setScheduleTypeID("1");
 
-    QVector<ScheduleDataInfo> scheduleList{};
+    DSchedule::Ptr schedule2 = DSchedule::Ptr(new DSchedule());
+    schedule2->setUid("2");
+    schedule2->setDtStart(currentDateTime.addDays(1));
+    schedule2->setDtEnd(currentDateTime.addDays(1).addSecs(60 * 60));
+    schedule2->setSummary("scheduleTwo");
+    schedule2->setAllDay(true);
+    schedule2->setScheduleTypeID("2");
+
     scheduleList.append(schedule1);
     scheduleList.append(schedule2);
     return scheduleList;
 }
-//void CScheduleDlg::setData(const ScheduleDataInfo &info)
+//void CScheduleDlg::setData(const DSchedule::Ptr &info)
 TEST_F(test_scheduledlg, setData)
 {
     mScheduleDlg->setData(getScheduleDlgData().first());
@@ -79,21 +79,20 @@ TEST_F(test_scheduledlg, clickOkBtn)
     mScheduleDlg->clickOkBtn();
 
     //begindatetime < enddatetime
-    ScheduleDataInfo schedule;
+    DSchedule::Ptr schedule = DSchedule::Ptr(new DSchedule());
     QDateTime currentDateTime = QDateTime::currentDateTime();
-    schedule.setID(1);
-    schedule.setBeginDateTime(currentDateTime);
-    schedule.setEndDateTime(currentDateTime.addDays(-1));
-    schedule.setTitleName("scheduleOne");
-    schedule.setAllDay(true);
-    schedule.setType(1);
-    schedule.setRecurID(0);
+    schedule->setUid("1");
+    schedule->setDtStart(currentDateTime);
+    schedule->setDtEnd(currentDateTime.addDays(-1));
+    schedule->setSummary("scheduleOne");
+    schedule->setAllDay(true);
+    schedule->setScheduleTypeID("1");
     mScheduleDlg->setData(schedule);
     mScheduleDlg->clickOkBtn();
 
     //
     mScheduleDlg->m_type = 1;
-    schedule.setEndDateTime(currentDateTime.addDays(1));
+    schedule->setDtEnd(currentDateTime.addDays(1));
     mScheduleDlg->setData(schedule);
     mScheduleDlg->clickOkBtn();
 
@@ -106,7 +105,7 @@ TEST_F(test_scheduledlg, clickOkBtn)
     mScheduleDlg->m_rmindCombox->setCurrentIndex(5);
     mScheduleDlg->clickOkBtn();
 
-    schedule.setAllDay(false);
+    schedule->setAllDay(false);
     mScheduleDlg->setData(schedule);
     mScheduleDlg->clickOkBtn();
 
